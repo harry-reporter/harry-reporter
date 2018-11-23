@@ -1,0 +1,46 @@
+{
+  "name": "harry-reporter",
+  "version": "1.0.0",
+  "description": "Reporter plugin for hermione",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --mode development",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npm run lint:styles && npm run lint:ts",
+    "lint:styles": "stylelint src/**/*.scss",
+    "lint:ts": "tslint -p tsconfig.json -c tslint.json src/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harry-reporter/harry-reporter.git"
+  },
+  "keywords": [
+    "hermione",
+    "plugin",
+    "html-reporter"
+  ],
+  "contributors": [],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/harry-reporter/harry-reporter/issues"
+  },
+  "homepage": "https://github.com/harry-reporter/harry-reporter#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-conventional": "^7.1.2",
+    "awesome-typescript-loader": "^5.2.1",
+    "css-loader": "^1.0.1",
+    "husky": "^1.2.0",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "stylelint": "^9.8.0",
+    "stylelint-config-standard": "^18.2.0",
+    "tslint": "^5.11.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.1.6",
+    "webpack": "^4.26.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  }
+}
