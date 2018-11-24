@@ -1,3 +1,7 @@
-import stylesScss from 'styles.scss';
+const harry = (hermione: any, opts: any): void => {
+  hermione.on(hermione.events.INIT, () => {
+    process.stdout.write('Harry init');
+  });
+};
 
-export const index: () => string = (): string => `Hello, ${stylesScss.World}`;
+module.exports = harry;
