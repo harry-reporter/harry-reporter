@@ -1,6 +1,6 @@
-import path from 'path';
-import chai from 'chai';
-import sinon from 'sinon';
+const path = require('path');
+const chai = require('chai');
+const sinon = require('sinon');
 
 global.sinon = sinon;
 global.assert = chai.assert;
