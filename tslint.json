@@ -9,6 +9,8 @@
     "quotemark": [true, "single"],
     "no-unsafe-any": false,
     "no-implicit-dependencies": false,
-    "missing-jsdoc": false
+    "missing-jsdoc": false,
+    "ordered-imports": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   }
 }
