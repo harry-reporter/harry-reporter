@@ -14,145 +14,145 @@ export default class DataTree {
     return new this(initialData, destPath);
   }
 
-  private _data: any;
-  private _srcPath: string;
-  private _destPath: string;
+  private data: any;
+  private srcPath: string;
+  private destPath: string;
 
   constructor(initialData: any, destPath: string) {
-    this._data = initialData;
-    this._destPath = destPath;
+    this.data = initialData;
+    this.destPath = destPath;
   }
 
   public async mergeWith(dataCollection: any) {
     // make it serially in order to perform correct merge/permutation of images and datas
     await BPromise.each(_.toPairs(dataCollection), async ([srcPath, data]: [string, any]) => {
-      this._srcPath = srcPath;
-      this._mergeSkips(data.skips);
+      this.srcPath = srcPath;
+      this.mergeSkips(data.skips);
 
-      await this._mergeSuites(data.suites);
+      await this.mergeSuites(data.suites);
     });
 
-    return this._data;
+    return this.data;
   }
 
-  private _mergeSkips(srcSkips: any) {
+  private mergeSkips(srcSkips: any) {
     srcSkips.forEach((skip: any) => {
-      if (!_.find(this._data.skips, {suite: skip.suite, browser: skip.browser})) {
-        this._data.skips.push(skip);
+      if (!_.find(this.data.skips, {suite: skip.suite, browser: skip.browser})) {
+        this.data.skips.push(skip);
       }
     });
   }
 
-  private async _mergeSuites(srcSuites: any) {
+  private async mergeSuites(srcSuites: any) {
     await BPromise.map(srcSuites, async (suite: any) => {
-      await this._mergeSuiteResult(suite);
+      await this.mergeSuiteResult(suite);
     });
   }
 
-  private async _mergeSuiteResult(suite: any) {
-    const existentSuite = findNode(this._data.suites, suite.suitePath);
+  private async mergeSuiteResult(suite: any) {
+    const existentSuite = findNode(this.data.suites, suite.suitePath);
 
     if (!existentSuite) {
-      await this._addSuiteResult(suite);
+      await this.addSuiteResult(suite);
       return;
     }
 
     if (suite.children) {
-      await BPromise.map(suite.children, (childSuite: any) => this._mergeSuiteResult(childSuite));
+      await BPromise.map(suite.children, (childSuite: any) => this.mergeSuiteResult(childSuite));
     } else {
-      await this._mergeBrowserResult(suite);
+      await this.mergeBrowserResult(suite);
     }
   }
 
-  private async _mergeBrowserResult(suite: any) {
+  private async mergeBrowserResult(suite: any) {
     await BPromise.map(suite.browsers, async (bro: any) => {
-      const existentBro = this._findBrowserResult(suite.suitePath, bro.name);
+      const existentBro = this.findBrowserResult(suite.suitePath, bro.name);
 
       if (!existentBro) {
-        await this._addBrowserResult(bro, suite.suitePath);
+        await this.addBrowserResult(bro, suite.suitePath);
         return;
       }
 
-      this._moveTestResultToRetries(existentBro);
-      await this._addTestRetries(existentBro, bro.retries);
-      await this._changeTestResult(existentBro, bro.result, suite.suitePath);
+      this.moveTestResultToRetries(existentBro);
+      await this.addTestRetries(existentBro, bro.retries);
+      await this.changeTestResult(existentBro, bro.result, suite.suitePath);
     });
   }
 
-  private async _addSuiteResult(suite: any) {
+  private async addSuiteResult(suite: any) {
     if (suite.suitePath.length === 1) {
-      this._data.suites.push(suite);
+      this.data.suites.push(suite);
     } else {
-      const existentParentSuite = findNode(this._data.suites, suite.suitePath.slice(0, -1));
+      const existentParentSuite = findNode(this.data.suites, suite.suitePath.slice(0, -1));
       existentParentSuite.children.push(suite);
     }
 
-    this._mergeStatistics(suite);
-    await this._moveImages(suite, {fromFields: ['result', 'retries']});
+    this.mergeStatistics(suite);
+    await this.moveImages(suite, {fromFields: ['result', 'retries']});
   }
 
-  private async _addBrowserResult(bro: any, suitePath: any) {
-    const existentParentSuite = findNode(this._data.suites, suitePath);
+  private async addBrowserResult(bro: any, suitePath: any) {
+    const existentParentSuite = findNode(this.data.suites, suitePath);
     existentParentSuite.browsers.push(bro);
 
-    this._mergeStatistics(bro);
-    await this._moveImages(bro, {fromFields: ['result', 'retries']});
+    this.mergeStatistics(bro);
+    await this.moveImages(bro, {fromFields: ['result', 'retries']});
   }
 
-  private _moveTestResultToRetries(existentBro: any) {
+  private moveTestResultToRetries(existentBro: any) {
     existentBro.retries.push(existentBro.result);
 
-    this._data.retries += 1;
+    this.data.retries += 1;
     const statName = getStatNameForStatus(existentBro.result.status);
-    this._data[statName] -= 1;
+    this.data[statName] -= 1;
   }
 
-  private async _addTestRetries(existentBro: any, retries: any) {
-    await BPromise.mapSeries(retries, (retry: any) => this._addTestRetry(existentBro, retry));
+  private async addTestRetries(existentBro: any, retries: any) {
+    await BPromise.mapSeries(retries, (retry: any) => this.addTestRetry(existentBro, retry));
   }
 
-  private async _addTestRetry(existentBro: any, retry: any) {
+  private async addTestRetry(existentBro: any, retry: any) {
     const newAttempt = existentBro.retries.length;
 
-    await this._moveImages(retry, {newAttempt});
-    retry = this._changeFieldsWithAttempt(retry, {newAttempt});
+    await this.moveImages(retry, {newAttempt});
+    retry = this.changeFieldsWithAttempt(retry, {newAttempt});
 
     existentBro.retries.push(retry);
-    this._data.retries += 1;
+    this.data.retries += 1;
   }
 
-  private async _changeTestResult(existentBro: any, result: any, suitePath: any) {
-    await this._moveImages(result, {newAttempt: existentBro.retries.length});
-    existentBro.result = this._changeFieldsWithAttempt(result, {newAttempt: existentBro.retries.length});
+  private async changeTestResult(existentBro: any, result: any, suitePath: any) {
+    await this.moveImages(result, {newAttempt: existentBro.retries.length});
+    existentBro.result = this.changeFieldsWithAttempt(result, {newAttempt: existentBro.retries.length});
 
     const statName = getStatNameForStatus(existentBro.result.status);
-    this._data[statName] += 1;
+    this.data[statName] += 1;
 
     if (!isSkippedStatus(existentBro.result.status)) {
-      setStatusForBranch(this._data.suites, suitePath, existentBro.result.status);
+      setStatusForBranch(this.data.suites, suitePath, existentBro.result.status);
     }
   }
 
-  private _mergeStatistics(node: any) {
+  private mergeStatistics(node: any) {
     const testResultStatuses = getDataFrom(node, {fieldName: 'status', fromFields: 'result'});
 
     testResultStatuses.forEach((testStatus: any) => {
       const statName = getStatNameForStatus(testStatus);
-      if (this._data.hasOwnProperty(statName)) {
-        this._data.total += 1;
-        this._data[statName] += 1;
+      if (this.data.hasOwnProperty(statName)) {
+        this.data.total += 1;
+        this.data[statName] += 1;
       }
     });
 
     const testRetryStatuses = getDataFrom(node, {fieldName: 'status', fromFields: 'retries'});
-    this._data.retries += testRetryStatuses.length;
+    this.data.retries += testRetryStatuses.length;
   }
 
-  private async _moveImages(node: any, {newAttempt, fromFields}: {newAttempt?: any, fromFields?: any}) {
+  private async moveImages(node: any, {newAttempt, fromFields}: {newAttempt?: any, fromFields?: any}) {
     await BPromise.map(getImagePaths(node, fromFields), async (imgPath: any) => {
-      const srcImgPath = path.resolve(this._srcPath, imgPath);
+      const srcImgPath = path.resolve(this.srcPath, imgPath);
       const destImgPath = path.resolve(
-        this._destPath,
+        this.destPath,
         _.isNumber(newAttempt) ? imgPath.replace(/\d+(?=.png$)/, newAttempt) : imgPath,
       );
 
@@ -160,7 +160,7 @@ export default class DataTree {
     });
   }
 
-  private _changeFieldsWithAttempt(testResult: any, {newAttempt}: {newAttempt: any}) {
+  private changeFieldsWithAttempt(testResult: any, {newAttempt}: {newAttempt: any}) {
     const pathes: any = ['expectedPath', 'actualPath', 'diffPath'];
     const imagesInfo = testResult.imagesInfo.map((imageInfo: any) => {
       return _.mapValues(imageInfo, (val: string, key: string) => {
@@ -173,8 +173,8 @@ export default class DataTree {
     return _.extend({}, testResult, {attempt: newAttempt, imagesInfo});
   }
 
-  private _findBrowserResult(suitePath: any, browserId: any) {
-    const existentNode = findNode(this._data.suites, suitePath);
+  private findBrowserResult(suitePath: any, browserId: any) {
+    const existentNode = findNode(this.data.suites, suitePath);
     return _.find(_.get(existentNode, 'browsers'), {name: browserId});
   }
 }

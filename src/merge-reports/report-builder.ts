@@ -39,16 +39,16 @@ export default class ReportBuilder {
   public async build() {
     await moveContentToReportDir({from: this.srcPaths[0], to: this.destPath});
 
-    const srcReportsData = this._loadReportsData();
+    const srcReportsData = this.loadReportsData();
     const dataTree = DataTree.create(srcReportsData[0], this.destPath);
     const srcDataCollection = _.zipObject(this.srcPaths.slice(1), srcReportsData.slice(1));
 
     const mergedData = await dataTree.mergeWith(srcDataCollection);
 
-    await this._saveDataFile(mergedData);
+    await this.saveDataFile(mergedData);
   }
 
-  private _loadReportsData() {
+  private loadReportsData() {
     return _(this.srcPaths)
       .map((reportPath: string) => {
         const srcDataPath = path.resolve(reportPath, 'data');
@@ -63,7 +63,7 @@ export default class ReportBuilder {
       .value();
   }
 
-  private async _copyToReportDir(files: string[], {from, to}: {from: string, to: string}) {
+  private async copyToReportDir(files: string[], {from, to}: {from: string, to: string}) {
     await BPromise.map(files, async (dataName: string) => {
       const srcDataPath = path.resolve(from, dataName);
       const destDataPath = path.resolve(to, dataName);
@@ -72,7 +72,7 @@ export default class ReportBuilder {
     });
   }
 
-  private async _saveDataFile(data: any) {
+  private async saveDataFile(data: any) {
     const formattedData = prepareCommonJSData(data);
     const destDataPath = path.resolve(this.destPath, 'data.js');
 
