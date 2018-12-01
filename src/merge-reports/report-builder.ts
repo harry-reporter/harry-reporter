@@ -9,7 +9,7 @@ import {logger, prepareCommonJSData} from '../server-utils';
 const fs = BPromise.promisifyAll(fsExtra);
 
 const moveContentToReportDir = async ({from, to}: {from: string, to: string}) => {
-  const files = await fs.readdirAsync(path.resolve(from));
+  const files = await fs.readdir(path.resolve(from));
 
   await BPromise.map(files, async (fileName: string) => {
     if (fileName === 'data.js') {
@@ -19,7 +19,7 @@ const moveContentToReportDir = async ({from, to}: {from: string, to: string}) =>
     const srcFilePath = path.resolve(from, fileName);
     const destFilePath = path.resolve(to, fileName);
 
-    await fs.moveAsync(srcFilePath, destFilePath, {overwrite: true});
+    await fs.move(srcFilePath, destFilePath, {overwrite: true});
   });
 };
 
@@ -68,7 +68,7 @@ export default class ReportBuilder {
       const srcDataPath = path.resolve(from, dataName);
       const destDataPath = path.resolve(to, dataName);
 
-      await fs.moveAsync(srcDataPath, destDataPath);
+      await fs.move(srcDataPath, destDataPath);
     });
   }
 
