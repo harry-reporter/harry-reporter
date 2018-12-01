@@ -1,10 +1,6 @@
 import crypto from 'crypto';
 import _ from 'lodash';
-
-// const { findNode } = require('../../static/modules/utils');
-//
-const findNode = (a: any, b: any) => ({ browsers: [{name: 'a' }] });
-//
+import { findNode } from '../../static/modules/utils';
 
 const formatTestHandler = (browser: any, test: any) => {
   const { suitePath, name } = test;

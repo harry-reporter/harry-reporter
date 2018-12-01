@@ -7,13 +7,12 @@ import EventSource from '../event-source';
 import subscribeOnToolEvents from './report-subscriber';
 import Runner from './runner';
 import { findTestResult, formatId, formatTests, getShortMD5, mkFullTitle } from './utils';
+import { findNode } from '../../static/modules/utils';
 
 // const ReportBuilderFactory = require('../../report-builder-factory');
-// const { findNode } = require('../../../lib/static/modules/utils');
 // const reporterHelper = require('../../reporter-helpers');
 //
 const ReportBuilderFactory: any = {};
-const findNode: any = {};
 const reporterHelper: any = {};
 //
 

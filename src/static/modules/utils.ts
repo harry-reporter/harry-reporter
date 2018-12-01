@@ -9,10 +9,10 @@ const walk = (node: any, cb: any, fn: any = Array.prototype.some) => {
 };
 
 const hasFailedImages = (result: any) => {
-  const {imagesInfo = [], status} = result;
+  const {imagesInfo = [], status: resultStatus } = result;
 
   return imagesInfo.some(({status}: {status: string}) => isErroredStatus(status) || isFailStatus(status))
-    || isErroredStatus(status) || isFailStatus(status);
+    || isErroredStatus(resultStatus) || isFailStatus(resultStatus);
 };
 
 export const hasNoRefImageErrors = ({imagesInfo = []}: {imagesInfo: []}) => (
@@ -70,8 +70,8 @@ export const findNode = (node: any, suitePath: any): any => {
   if (!node.children) {
     node = values(node);
     const tree = {
+      children: node,
       name: 'root',
-      children: node
     };
     return findNode(tree, suitePath);
   }
