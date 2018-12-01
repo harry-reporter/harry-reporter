@@ -156,7 +156,7 @@ export default class DataTree {
         _.isNumber(newAttempt) ? imgPath.replace(/\d+(?=.png$)/, newAttempt) : imgPath,
       );
 
-      await fs.moveAsync(srcImgPath, destImgPath, {overwrite: true});
+      await fs.move(srcImgPath, destImgPath, {overwrite: true});
     });
   }
 
