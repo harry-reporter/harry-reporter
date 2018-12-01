@@ -6,9 +6,6 @@ import fsExtra from 'fs-extra';
 import DataTree from './data-tree';
 import {logger, prepareCommonJSData} from '../server-utils';
 
-// tslint:disable-next-line
-const serverUtils = require('../server-utils');
-
 const fs = BPromise.promisifyAll(fsExtra);
 
 const moveContentToReportDir = async ({from, to}: {from: string, to: string}) => {
@@ -57,7 +54,7 @@ export default class ReportBuilder {
         const srcDataPath = path.resolve(reportPath, 'data');
 
         try {
-          return serverUtils.require(srcDataPath);
+          return require(`../${srcDataPath}`);
         } catch (err) {
           logger.warn(`Not found data file in passed source report path: ${reportPath}`);
           return {skips: [], suites: []};

@@ -5,7 +5,3 @@ export const logError = (e: any) => {
   logger.error(e.stack);
 };
 export const prepareCommonJSData = (data: any) => {};
-
-module.exports = {
-  require,
-};
