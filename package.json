@@ -32,7 +32,13 @@
     "@commitlint/cli": "^7.2.1",
     "@commitlint/config-conventional": "^7.1.2",
     "@commitlint/travis-cli": "^7.2.1",
+    "@types/bluebird": "^3.5.24",
+    "@types/express": "^4.16.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/json-stringify-safe": "^5.0.0",
+    "@types/lodash": "^4.14.118",
     "@types/node": "^10.12.10",
+    "@types/opener": "^1.4.0",
     "app-module-path": "^2.2.0",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
@@ -53,7 +59,13 @@
   },
   "dependencies": {
     "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
+    "express": "^4.16.4",
     "fs-extra": "^7.0.1",
-    "lodash": "^4.17.11"
+    "json-stringify-safe": "^5.0.1",
+    "lodash": "^4.17.11",
+    "opener": "^1.5.1",
+    "signal-exit": "^3.0.2"
   }
 }

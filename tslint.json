@@ -10,6 +10,7 @@
     "no-unsafe-any": false,
     "no-implicit-dependencies": false,
     "missing-jsdoc": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-console": false
   }
 }
