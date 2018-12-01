@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import testStatusesConstants from '../constants/test-statuses';
-
-const {SUCCESS, FAIL, ERROR, SKIPPED, UPDATED, IDLE} = testStatusesConstants;
+import {SUCCESS, FAIL, ERROR, SKIPPED} from '../constants/test-statuses';
 
 const walk = (node: any, cb: any, fn: any) => {
   return node.browsers && fn(node.browsers, cb) || node.children && fn(node.children, cb) || [];
@@ -28,8 +26,15 @@ export const getImagePaths = (node: any, fromFields: any) => {
     .value();
 };
 
-export const getStatNameForStatus = (status: any) => {
-  const statusToStat = {
+export const getStatNameForStatus = (status: string) => {
+  interface IStatusToStat {
+    [SUCCESS]: 'passed';
+    [FAIL]: 'failed';
+    [ERROR]: 'failed';
+    [SKIPPED]: 'skipped';
+    [key: string]: string;
+  }
+  const statusToStat: IStatusToStat = {
     [SUCCESS]: 'passed',
     [FAIL]: 'failed',
     [ERROR]: 'failed',

@@ -10,22 +10,22 @@ import {getDataFrom, getStatNameForStatus, getImagePaths} from './utils';
 const fs = BPromise.promisifyAll(fsExtra);
 
 export default class DataTree {
-  public static create(initialData: any, destPath: any) {
-    return new DataTree(initialData, destPath);
+  public static create(initialData: any, destPath: string) {
+    return new this(initialData, destPath);
   }
 
   private _data: any;
-  private _srcPath: any;
-  private _destPath: any;
+  private _srcPath: string;
+  private _destPath: string;
 
-  constructor(initialData: any, destPath: any) {
+  constructor(initialData: any, destPath: string) {
     this._data = initialData;
     this._destPath = destPath;
   }
 
   public async mergeWith(dataCollection: any) {
     // make it serially in order to perform correct merge/permutation of images and datas
-    await BPromise.each(_.toPairs(dataCollection), async ([srcPath, data]: [any, any]) => {
+    await BPromise.each(_.toPairs(dataCollection), async ([srcPath, data]: [string, any]) => {
       this._srcPath = srcPath;
       this._mergeSkips(data.skips);
 
@@ -163,7 +163,7 @@ export default class DataTree {
   private _changeFieldsWithAttempt(testResult: any, {newAttempt}: {newAttempt: any}) {
     const pathes: any = ['expectedPath', 'actualPath', 'diffPath'];
     const imagesInfo = testResult.imagesInfo.map((imageInfo: any) => {
-      return _.mapValues(imageInfo, (val: any, key: any) => {
+      return _.mapValues(imageInfo, (val: string, key: string) => {
         return pathes.includes(key)
           ? val.replace(/\d+(?=.png)/, newAttempt)
           : val;

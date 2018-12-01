@@ -4,14 +4,17 @@ import BPromise from 'bluebird';
 import fsExtra from 'fs-extra';
 
 import DataTree from './data-tree';
-import {serverRequire, logger, prepareCommonJSData } from '../server-utils';
+import {logger, prepareCommonJSData} from '../server-utils';
+
+// tslint:disable-next-line
+const serverUtils = require('../server-utils');
 
 const fs = BPromise.promisifyAll(fsExtra);
 
-async function moveContentToReportDir({from, to}: {from: any, to: any}) {
+const moveContentToReportDir = async ({from, to}: {from: string, to: string}) => {
   const files = await fs.readdirAsync(path.resolve(from));
 
-  await BPromise.map(files, async (fileName: any) => {
+  await BPromise.map(files, async (fileName: string) => {
     if (fileName === 'data.js') {
       return;
     }
@@ -21,17 +24,17 @@ async function moveContentToReportDir({from, to}: {from: any, to: any}) {
 
     await fs.moveAsync(srcFilePath, destFilePath, {overwrite: true});
   });
-}
+};
 
 export default class ReportBuilder {
-  public static create(srcPaths: any, destPath: any) {
+  public static create(srcPaths: string, destPath: string) {
     return new this(srcPaths, destPath);
   }
 
-  public srcPaths: any;
-  public destPath: any;
+  public srcPaths: string;
+  public destPath: string;
 
-  constructor(srcPaths: any, destPath: any) {
+  constructor(srcPaths: string, destPath: string) {
     this.srcPaths = srcPaths;
     this.destPath = destPath;
   }
@@ -50,11 +53,11 @@ export default class ReportBuilder {
 
   private _loadReportsData() {
     return _(this.srcPaths)
-      .map((reportPath: any) => {
+      .map((reportPath: string) => {
         const srcDataPath = path.resolve(reportPath, 'data');
 
         try {
-          return serverRequire(srcDataPath);
+          return serverUtils.require(srcDataPath);
         } catch (err) {
           logger.warn(`Not found data file in passed source report path: ${reportPath}`);
           return {skips: [], suites: []};
@@ -63,8 +66,8 @@ export default class ReportBuilder {
       .value();
   }
 
-  private async _copyToReportDir(files: any, {from, to}: {from: any, to: any}) {
-    await BPromise.map(files, async (dataName: any) => {
+  private async _copyToReportDir(files: string[], {from, to}: {from: string, to: string}) {
+    await BPromise.map(files, async (dataName: string) => {
       const srcDataPath = path.resolve(from, dataName);
       const destDataPath = path.resolve(to, dataName);
 
