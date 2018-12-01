@@ -100,7 +100,7 @@ export default class TestResult {
   }
 
   // hack which should be removed when html-reporter is able to show all assert view fails for one test
-  private get _firstAssertViewFail() {
+  private get firstAssertViewFail() {
     return _.find(this.testResult.assertViewResults, (result) => result instanceof Error);
   }
 
@@ -137,8 +137,8 @@ export default class TestResult {
   }
 
   get assertViewState() {
-    return this._firstAssertViewFail
-      ? _.get(this._firstAssertViewFail, 'stateName')
+    return this.firstAssertViewFail
+      ? _.get(this.firstAssertViewFail, 'stateName')
       : _.get(this.testResult, 'err.stateName');
   }
 
