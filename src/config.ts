@@ -8,14 +8,7 @@ const option = configParser.option;
 const ENV_PREFIX = 'harry_reporter_';
 const CLI_PREFIX = '--harry-reporter-';
 
-// const { config: configDefaults } = require('./constants/defaults');
-const configDefaults = {
-  baseHost: '',
-  defaultView: 'all',
-  lazyLoadOffset: 800,
-  scaleImages: false,
-};
-//
+import { config as configDefaults } from './constants/defaults';
 
 const assertType = (name: string, validationFn: any, type: string) => {
   return (v: string | number | boolean) => {

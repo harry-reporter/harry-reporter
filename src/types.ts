@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import ReportBuilder from './report-builder/report-builder';
 
 interface IEvents {
   CLI: string;
@@ -11,22 +12,35 @@ interface IEvents {
 }
 
 export interface IPluginOpts {
-  enabled: boolean;
-  path: string;
-  defaultView: 'all' | 'failed';
+  enabled?: boolean;
+  path?: string;
+  defaultView?: 'all' | 'failed';
+  baseHost?: string;
+  scaleImages?: boolean;
+  lazyLoadOffset?: number;
+}
+
+export interface IHermioneConfig {
+  defaultView: string;
   baseHost: string;
   scaleImages: boolean;
   lazyLoadOffset: number;
+  forBrowser: any;
 }
 
 export interface IHermione extends EventEmitter {
-  config: object;
+  config: IHermioneConfig;
   events: IEvents;
   errors: object;
 }
 
-export type prepareDataType = (hermione: IHermione, reportBuilder: any) => any;
-// TODO добавить тип возвращаемого значения
+export type prepareDataType = (
+  hermione: IHermione,
+  reportBuilder: ReportBuilder,
+) => any; // TODO добавить тип возвращаемого значения
 
-export type prepareImagesType = (hermione: IHermione, pluginConfig: IPluginOpts, reportBuilder: any) => any;
-// TODO добавить тип возвращаемого значения
+export type prepareImagesType = (
+  hermione: IHermione,
+  pluginConfig: IPluginOpts,
+  reportBuilder: ReportBuilder,
+) => any; // TODO добавить тип возвращаемого значения

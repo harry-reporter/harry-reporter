@@ -2,10 +2,10 @@ import Promise from 'bluebird';
 import fs from 'fs-extra';
 import path from 'path';
 
-import utils from './server-utils';
-import TestResult from './test-result/test-result';
+import * as utils from './server-utils';
+import Test from './test/test';
 
-const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
+const saveAssertViewImages = (testResult: Test, reportPath: string) => {
   return Promise.map(testResult.assertViewResults, (assertResult: any) => {
     const { stateName } = assertResult;
     const actions = [];
@@ -39,7 +39,7 @@ const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
   });
 };
 
-export const saveTestImages = (testResult: TestResult, reportPath: string) => {
+export const saveTestImages = (testResult: Test, reportPath: string): any => {
   if (testResult.assertViewResults) {
     return saveAssertViewImages(testResult, reportPath);
   }
@@ -64,7 +64,7 @@ export const saveTestImages = (testResult: TestResult, reportPath: string) => {
   return Promise.all(actions);
 };
 
-export const saveTestCurrentImage = (testResult: TestResult, reportPath: string, stateName: string) => {
+export const saveTestCurrentImage = (testResult: Test, reportPath: string, stateName: string) => {
   const src = testResult.getCurrImg(stateName).path || testResult.getErrImg().path;
 
   return src
@@ -72,7 +72,7 @@ export const saveTestCurrentImage = (testResult: TestResult, reportPath: string,
     : Promise.resolve();
 };
 
-export const updateReferenceImage = (testResult: TestResult, reportPath: string, stateName: string) => {
+export const updateReferenceImage = (testResult: Test, reportPath: string, stateName: string) => {
   const currImg = testResult.getCurrImg(stateName);
 
   const src = currImg.path
@@ -85,7 +85,7 @@ export const updateReferenceImage = (testResult: TestResult, reportPath: string,
   ]);
 };
 
-export const saveBase64Screenshot = (testResult: TestResult, reportPath: string) => {
+export const saveBase64Screenshot = (testResult: Test, reportPath: string) => {
   if (!testResult.screenshot) {
     utils.logger.warn('Cannot save screenshot on reject');
 

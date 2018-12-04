@@ -3,25 +3,25 @@ import fs from 'fs-extra';
 import _ from 'lodash';
 import path from 'path';
 
-// const { SUCCESS, FAIL, ERROR, UPDATED } = require('./constants/test-statuses');
-const { SUCCESS, FAIL, ERROR, UPDATED } = { SUCCESS: 'a', FAIL: 'b', ERROR: 'c', UPDATED: 'v' };
+import { ERROR, FAIL, SUCCESS, UPDATED } from './constants/test-statuses';
+import Test from './test/test';
 
 export const getReferencePath = (testResult: any, stateName: string) => createPath('ref', testResult, stateName);
 export const getCurrentPath = (testResult: any, stateName: string) => createPath('current', testResult, stateName);
 export const getDiffPath = (testResult: any, stateName: string) => createPath('diff', testResult, stateName);
 
-export const getReferenceAbsolutePath = (testResult: any, reportDir: string, stateName: string) => {
+export const getReferenceAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
   const referenceImagePath = getReferencePath(testResult, stateName);
   return path.resolve(reportDir, referenceImagePath);
 };
 
-export const getCurrentAbsolutePath = (testResult: any, reportDir: string, stateName: string) => {
+export const getCurrentAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
   const currentImagePath = getCurrentPath(testResult, stateName);
 
   return path.resolve(reportDir, currentImagePath);
 };
 
-export const getDiffAbsolutePath = (testResult: any, reportDir: string, stateName: string) => {
+export const getDiffAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
   const diffImagePath = getDiffPath(testResult, stateName);
 
   return path.resolve(reportDir, diffImagePath);
@@ -90,6 +90,47 @@ export const getPathsFor = (status: string, formattedResult: any, stateName: str
   if (status === ERROR) {
     return {
       actualPath: formattedResult.state ? getCurrentPath(formattedResult, stateName) : '',
+    };
+  }
+
+  return {};
+};
+
+export const getImagesFor = (status: string, formattedResult: Test, stateName?: string) => {
+  const refImg = formattedResult.getRefImg(stateName);
+  const currImg = formattedResult.getCurrImg(stateName);
+  const errImg = formattedResult.getErrImg();
+
+  if (status === SUCCESS || status === UPDATED) {
+    return { expectedImg: { path: getReferencePath(formattedResult, stateName), size: refImg.size } };
+  }
+
+  if (status === FAIL) {
+    return {
+      actualImg: {
+        path: getCurrentPath(formattedResult, stateName),
+        size: currImg.size,
+      },
+      diffImg: {
+        path: getDiffPath(formattedResult, stateName),
+        size: {
+          height: _.max([refImg.size.height, currImg.size.height]),
+          width: _.max([refImg.size.width, currImg.size.width]),
+        },
+      },
+      expectedImg: {
+        path: getReferencePath(formattedResult, stateName),
+        size: refImg.size,
+      },
+    };
+  }
+
+  if (status === ERROR) {
+    return {
+      actualImg: {
+        path: formattedResult.state ? getCurrentPath(formattedResult, stateName) : '',
+        size: currImg.size || errImg.size,
+      },
     };
   }
 

@@ -1,26 +1,27 @@
-import {isArray, find, get, values} from 'lodash';
-import {isSuccessStatus, isFailStatus, isErroredStatus, isSkippedStatus, isUpdatedStatus} from '../../common-utils';
-import {getCommonErrors} from '../../constants/errors';
+import { isArray, find, get, values } from 'lodash';
+import { isSuccessStatus, isFailStatus, isErroredStatus, isSkippedStatus, isUpdatedStatus } from '../../common-utils';
+import { getCommonErrors } from '../../constants/errors';
+import { IImagesInfo } from '../../test/types';
 
-const {NO_REF_IMAGE_ERROR} = getCommonErrors();
+const { NO_REF_IMAGE_ERROR } = getCommonErrors();
 
 const walk = (node: any, cb: any, fn: any = Array.prototype.some) => {
   return node.browsers && fn.call(node.browsers, cb) || node.children && fn.call(node.children, cb);
 };
 
 const hasFailedImages = (result: any) => {
-  const {imagesInfo = [], status: resultStatus } = result;
+  const { imagesInfo = [], status: resultStatus } = result;
 
-  return imagesInfo.some(({status}: {status: string}) => isErroredStatus(status) || isFailStatus(status))
+  return imagesInfo.some(({ status }: { status: string }) => isErroredStatus(status) || isFailStatus(status))
     || isErroredStatus(resultStatus) || isFailStatus(resultStatus);
 };
 
-export const hasNoRefImageErrors = ({imagesInfo = []}: {imagesInfo: []}) => (
-  Boolean(imagesInfo.filter((v) => get(v, 'reason.stack', '').startsWith(NO_REF_IMAGE_ERROR)).length)
+export const hasNoRefImageErrors = ({ imagesInfo = [] }: any) => (
+  Boolean(imagesInfo.filter((v: IImagesInfo) => get(v, 'reason.stack', '').startsWith(NO_REF_IMAGE_ERROR)).length)
 );
 
 export const hasFails = (node: any) => {
-  const {result} = node;
+  const { result } = node;
   const isFailed = result && hasFailedImages(result);
 
   return isFailed || walk(node, hasFails);
@@ -30,7 +31,7 @@ export const isSuiteFailed = (suite: any) => (
   isFailStatus(suite.status) || isErroredStatus(suite.status)
 );
 
-export const isAcceptable = ({status, reason = ''}: {status: string, reason: any}) => {
+export const isAcceptable = ({ status, reason = '' }: { status: string, reason: any }) => {
   const stack = reason && reason.stack;
 
   return isErroredStatus(status) && stack.startsWith(NO_REF_IMAGE_ERROR) || isFailStatus(status);
@@ -43,7 +44,7 @@ export const hasRetries = (node: any) => {
 };
 
 export const allSkipped = (node: any) => {
-  const {result} = node;
+  const { result } = node;
   const isSkipped = result && isSkippedStatus(result.status);
 
   return Boolean(isSkipped || walk(node, allSkipped, Array.prototype.every));
@@ -77,7 +78,7 @@ export const findNode = (node: any, suitePath: any): any => {
   }
 
   const pathPart = suitePath.shift();
-  const child = find(node.children, {name: pathPart});
+  const child = find(node.children, { name: pathPart });
 
   if (!child) {
     return;

@@ -1,53 +1,53 @@
 import _ from 'lodash';
 
 import { ERROR, FAIL, SUCCESS } from '../constants/test-statuses';
-import { getHermioneUtils } from '../plugin-utils';
+import { getSuitePath } from '../plugin-utils';
 import { getImagesFor } from '../server-utils';
-
-const { getSuitePath } = getHermioneUtils();
-
-import { ITestResult } from '../report-builder/types';
-import Suite from '../suite/suite';
+import { IHermioneResult } from '../report-builder/types';
 import { IHermione } from '../types';
+import Suite from '../suite/suite';
+import { IImagesInfo } from './types';
 
-export default class TestResult {
-  private testResult: ITestResult;
+export default class Test {
+  public image: boolean;
+  private testResult: IHermioneResult;
   private hermione: IHermione;
   private errors: any;
-  private suite: Suite;
+  private suiteInternal: Suite;
 
-  constructor(testResult: ITestResult, hermione: IHermione) {
-      this.testResult = testResult;
-      this.hermione = hermione;
-      this.errors = this.hermione.errors;
-      this.suite = new Suite(this.testResult);
+  constructor(testResult: IHermioneResult, hermione: IHermione) {
+    this.testResult = testResult;
+    this.hermione = hermione;
+    this.errors = hermione.errors;
+    this.suiteInternal = new Suite(this.testResult);
   }
 
-  get getSuite(): Suite {
-      return this.suite;
+  get suite(): Suite {
+    return this.suiteInternal;
   }
 
   get sessionId() {
-      return this.testResult.sessionId || 'unknown session id';
+    return this.testResult.sessionId || 'unknown session id';
   }
 
   get browserId() {
-      return this.testResult.browserId;
+    return this.testResult.browserId;
   }
 
   get imagesInfo() {
-      return this.testResult.imagesInfo;
+    return this.testResult.imagesInfo;
   }
 
   set imagesInfo(imagesInfo) {
-      this.testResult.imagesInfo = imagesInfo;
+    this.testResult.imagesInfo = imagesInfo;
   }
 
   public hasDiff() {
-    return this.assertViewResults.some((result: any) => this.isImageDiffError(result));
+    return this.assertViewResults.some((result: any) =>
+      this.isImageDiffError(result));
   }
 
-  get assertViewResults() {
+  get assertViewResults(): any[] { // TODO add type
     return this.testResult.assertViewResults || [];
   }
 
@@ -64,7 +64,7 @@ export default class TestResult {
       return this.imagesInfo;
     }
 
-    this.imagesInfo = this.assertViewResults.map((assertResult: any) => {
+    this.imagesInfo = this.assertViewResults.map((assertResult: any): IImagesInfo => {
       let status: string;
       let reason: Pick<any, 'message' | 'stack'>;
 
@@ -81,15 +81,18 @@ export default class TestResult {
         reason = _.pick(assertResult, ['message', 'stack']);
       }
 
-      const {stateName, refImg} = assertResult;
+      const { stateName, refImg } = assertResult;
 
-      return _.extend({stateName, refImg, status, reason}, getImagesFor(status, this, stateName));
+      return _.extend<IImagesInfo>(
+        { stateName, refImg, status, reason },
+        getImagesFor(status, this, stateName),
+      );
     });
 
     // common screenshot on test fail
     if (this.screenshot) {
-      const errorImage = _.extend(
-        {status: ERROR, reason: this.error},
+      const errorImage = _.extend<IImagesInfo>(
+        { status: ERROR, reason: this.error },
         getImagesFor(ERROR, this),
       );
 
@@ -101,7 +104,10 @@ export default class TestResult {
 
   // hack which should be removed when html-reporter is able to show all assert view fails for one test
   private get firstAssertViewFail() {
-    return _.find(this.testResult.assertViewResults, (result) => result instanceof Error);
+    return _.find(
+      this.testResult.assertViewResults,
+      (result) => result instanceof Error,
+    );
   }
 
   get error() {
@@ -113,7 +119,7 @@ export default class TestResult {
   }
 
   get state() {
-    return {name: this.testResult.title};
+    return { name: this.testResult.title };
   }
 
   get attempt() {
@@ -151,11 +157,25 @@ export default class TestResult {
   }
 
   public getRefImg(stateName?: string) {
-    return _.get(_.find(this.assertViewResults, {stateName}), 'refImg', {});
+    return _.get(
+      _.find(
+        this.assertViewResults,
+        ({ stateName: name }) => name === stateName,
+      ),
+      'refImg',
+      {},
+    );
   }
 
   public getCurrImg(stateName: string) {
-    return _.get(_.find(this.assertViewResults, {stateName}), 'currImg', {});
+    return _.get(
+      _.find(
+        this.assertViewResults,
+        ({ stateName: name }) => name === stateName,
+      ),
+      'currImg',
+      {},
+    );
   }
 
   public getErrImg() {
@@ -166,7 +186,7 @@ export default class TestResult {
     const { title: name, browserId } = this.testResult;
     const suitePath = getSuitePath(this.testResult);
 
-    return {name, suitePath, browserId};
+    return { name, suitePath, browserId };
   }
 
   get multipleTabs() {

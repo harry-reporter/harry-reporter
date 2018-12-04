@@ -6,10 +6,10 @@ import path from 'path';
 import { ERROR, FAIL, IDLE, RUNNING, SKIPPED, SUCCESS, UPDATED } from '../constants/test-statuses';
 import { getImagesFor, hasImage, logger, prepareCommonJSData } from '../server-utils';
 import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../static/modules/utils';
-import TestResult from '../test-result/test-result';
-
+import Test from '../test/test';
 import { IHermione, IPluginOpts } from '../types';
-import { IChild, ISkip, ITestResult, ITree } from './types';
+import { IHermioneStats, ITree, IHermioneResult } from './types';
+import { ISkip, IChild, IResult, IProps } from '../test/types';
 
 const NO_STATE = 'NO_STATE';
 
@@ -21,32 +21,33 @@ export default class ReportBuilder {
   private pluginConfig: IPluginOpts;
   private stats: any;
 
-  constructor(hermone: IHermione, pluginConfig: IPluginOpts) {
-    this.tree = {name: 'root'};
+  constructor(hermione: IHermione, pluginConfig: IPluginOpts) {
+    this.tree = { name: 'root' };
+    this.hermione = hermione;
     this.skips = [];
     this.extraItems = {};
     this.pluginConfig = pluginConfig;
   }
 
-  public format(result: any) {
-    return new TestResult(result, this.hermione);
+  public format(result: IHermioneResult): Test {
+    return new Test(result, this.hermione);
   }
 
-  public addIdle(result: any) {
-    return this.addTestResult(this.format(result), {status: IDLE});
+  public addIdle(result: any) { // TODO add type
+    return this.addTestResult(this.format(result), { status: IDLE });
   }
 
-  public addSkipped(result: any) {
+  public addSkipped(result: IHermioneResult) {
     const formattedResult = this.format(result);
     const {
-      getSuite: {
+      suite: {
         skipComment: comment,
         fullName: suite,
       },
       browserId: browser,
     } = formattedResult;
 
-    this.skips.push({suite, browser, comment});
+    this.skips.push({ suite, browser, comment });
 
     return this.addTestResult(formattedResult, {
       reason: comment,
@@ -54,30 +55,33 @@ export default class ReportBuilder {
     });
   }
 
-  public addSuccess(result: any) {
+  public addSuccess(result: IHermioneResult) {
     return this.addSuccessResult(this.format(result), SUCCESS);
   }
 
-  public addUpdated(result: any) {
+  public addUpdated(result: IHermioneResult) {
     const formattedResult = this.format(result);
 
     formattedResult.imagesInfo = (result.imagesInfo || []).map((imageInfo: any) => {
-      const {stateName} = imageInfo;
+      const { stateName } = imageInfo;
+
       return _.extend(imageInfo, getImagesFor(UPDATED, formattedResult, stateName));
     });
 
     return this.addSuccessResult(formattedResult, UPDATED);
   }
 
-  public addFail(result: any) {
+  public addFail(result: IHermioneResult) {
+    process.stdout.write(`${result}\n`);
+
     return this.addFailResult(this.format(result));
   }
 
-  public addError(result: any) {
+  public addError(result: IHermioneResult) {
     return this.addErrorResult(this.format(result));
   }
 
-  public addRetry(result: any) {
+  public addRetry(result: IHermioneResult) {
     const formattedResult = this.format(result);
 
     if (formattedResult.hasDiff()) {
@@ -87,13 +91,13 @@ export default class ReportBuilder {
     }
   }
 
-  public setStats(stats: any) {
+  public setStats(stats: IHermioneStats) {
     this.stats = stats;
 
     return this;
   }
 
-  public setExtraItems(extraItems: any) {
+  public setExtraItems(extraItems: any) { // TODO add type
     this.extraItems = extraItems;
 
     return this;
@@ -103,7 +107,7 @@ export default class ReportBuilder {
     return this.saveDataFileAsync()
       .then(() => this.copyToReportDir(['index.html', 'report.min.js', 'report.min.css']))
       .then(() => this)
-      .catch((e: any) => logger.warn(e.message || e));
+      .catch((e: Error) => logger.warn(e.message || e));
   }
 
   public saveDataFileAsync() {
@@ -117,12 +121,12 @@ export default class ReportBuilder {
   }
 
   public getResult() {
-    const {defaultView, baseHost, scaleImages, lazyLoadOffset} = this.pluginConfig;
+    const { defaultView, baseHost, scaleImages, lazyLoadOffset } = this.pluginConfig;
 
     this.sortTree();
 
     return _.extend({
-      config: {defaultView, baseHost, scaleImages, lazyLoadOffset},
+      config: { defaultView, baseHost, scaleImages, lazyLoadOffset },
       extraItems: this.extraItems,
       skips: _.uniq(this.skips),
       suites: this.tree.children,
@@ -134,11 +138,11 @@ export default class ReportBuilder {
   }
 
   private addSuccessResult(formattedResult: any, status: any) {
-    return this.addTestResult(formattedResult, {status});
+    return this.addTestResult(formattedResult, { status });
   }
 
   private addFailResult(formattedResult: any) {
-    return this.addTestResult(formattedResult, {status: FAIL});
+    return this.addTestResult(formattedResult, { status: FAIL });
   }
 
   private addErrorResult(formattedResult: any) {
@@ -148,11 +152,25 @@ export default class ReportBuilder {
     });
   }
 
-  private createTestResult(result: any, props: any): ITestResult {
-    const {browserId, suite, sessionId, description, imagesInfo, screenshot, multipleTabs} = result;
-    const {baseHost} = this.pluginConfig;
-    const suiteUrl = suite.getUrl({browserId, baseHost});
-    const metaInfo = _.merge(result.meta, {url: suite.fullUrl, file: suite.file, sessionId});
+  private createTestResult(result: Test, props: IProps): IResult {
+    const {
+      browserId,
+      suite,
+      sessionId,
+      description,
+      imagesInfo,
+      screenshot,
+      multipleTabs,
+    } = result;
+    const { baseHost } = this.pluginConfig;
+    const suiteUrl = suite.getUrl({ baseHost });
+    const metaInfo = _.merge(
+      result.meta,
+      {
+        file: suite.file,
+        sessionId,
+        url: suite.fullUrl,
+      });
     const testResult = {
       description,
       imagesInfo,
@@ -166,13 +184,13 @@ export default class ReportBuilder {
     return { ...testResult, props };
   }
 
-  private addTestResult(formattedResult: any, props: any) {
-    const testResult = this.createTestResult(formattedResult, _.extend(props, {attempt: 0}));
-    const {suite, browserId} = formattedResult;
+  private addTestResult(formattedResult: Test, props: IProps) {
+    const testResult = this.createTestResult(formattedResult, _.extend(props, { attempt: 0 }));
+    const { suite, browserId } = formattedResult;
     const suitePath = suite.path.concat(formattedResult.state ? formattedResult.state.name : NO_STATE);
     const node = findOrCreate(this.tree, suitePath);
     node.browsers = Array.isArray(node.browsers) ? node.browsers : [];
-    const existing = _.findIndex(node.browsers, {name: browserId});
+    const existing = _.findIndex(node.browsers, { name: browserId });
 
     if (existing === -1) {
       formattedResult.attempt = testResult.attempt;
@@ -180,10 +198,10 @@ export default class ReportBuilder {
       extendTestWithImagePaths(testResult, formattedResult);
 
       if (hasNoRefImageErrors(formattedResult)) {
-        testResult.status = FAIL;
+        testResult.props.status = FAIL;
       }
 
-      node.browsers.push({name: browserId, result: testResult, retries: []});
+      node.browsers.push({ name: browserId, result: testResult, retries: [] });
       setStatusForBranch(this.tree, node.suitePath, testResult.status);
 
       return formattedResult;
@@ -207,7 +225,7 @@ export default class ReportBuilder {
     formattedResult.attempt = testResult.attempt;
     formattedResult.image = hasImage(formattedResult);
 
-    const {imagesInfo, status: currentStatus} = stateInBrowser.result;
+    const { imagesInfo, status: currentStatus } = stateInBrowser.result;
     stateInBrowser.result = extendTestWithImagePaths(testResult, formattedResult, imagesInfo);
 
     if (!hasFails(stateInBrowser)) {
@@ -266,7 +284,7 @@ const findOrCreate = (node: any, statePath: any): any => {
     return node;
   }
 
-  let child: IChild = _.find(node.children, {name: pathPart});
+  let child = _.find<IChild>(node.children, { name: pathPart });
 
   if (!child) {
     child = {
@@ -279,8 +297,8 @@ const findOrCreate = (node: any, statePath: any): any => {
   return findOrCreate(child, statePath);
 };
 
-const extendTestWithImagePaths = (test: any, formattedResult: any, oldImagesInfo: any = []) => {
-  const newImagesInfo = formattedResult.getImagesInfo(test.status);
+const extendTestWithImagePaths = (test: IResult, formattedResult: Test, oldImagesInfo: any = []) => {
+  const newImagesInfo = formattedResult.getImagesInfo();
 
   if (test.status !== UPDATED) {
     return _.set(test, 'imagesInfo', newImagesInfo);
@@ -289,8 +307,8 @@ const extendTestWithImagePaths = (test: any, formattedResult: any, oldImagesInfo
   if (oldImagesInfo.length) {
     test.imagesInfo = oldImagesInfo;
     newImagesInfo.forEach((imageInfo: any) => {
-      const {stateName} = imageInfo;
-      const index = _.findIndex(test.imagesInfo, {stateName});
+      const { stateName } = imageInfo;
+      const index = _.findIndex(test.imagesInfo, { stateName });
 
       test.imagesInfo[index >= 0 ? index : _.findLastIndex(test.imagesInfo)] = imageInfo;
     });
