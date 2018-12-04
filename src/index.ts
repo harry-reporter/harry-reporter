@@ -4,6 +4,8 @@ import Plugin from './plugin';
 import ReportBuilder from './report-builder/report-builder';
 import { saveBase64Screenshot, saveTestImages } from './reporter-helpers';
 import { IHermione, IPluginOpts } from './types';
+import { IHermioneResult } from './report-builder/types';
+import Test from './test/test';
 
 module.exports = (hermione: IHermione, opts: IPluginOpts): void => {
   const plugin = new Plugin(hermione, opts);
@@ -17,57 +19,69 @@ module.exports = (hermione: IHermione, opts: IPluginOpts): void => {
     .init(prepareData, prepareImages);
 };
 
-function prepareData(hermione: IHermione, reportBuilder: ReportBuilder) {
-    return new Promise((resolve) => {
-        hermione.on(hermione.events.TEST_PENDING, (testResult) => reportBuilder.addSkipped(testResult));
+const prepareData = (
+  hermione: IHermione,
+  reportBuilder: ReportBuilder,
+) => {
+  const failHandler = (testResult: IHermioneResult): Test => {
+    const formattedResult = reportBuilder.format(testResult);
 
-        hermione.on(hermione.events.TEST_PASS, (testResult) => reportBuilder.addSuccess(testResult));
+    return formattedResult.hasDiff()
+      ? reportBuilder.addFail(testResult)
+      : reportBuilder.addError(testResult);
+  };
 
-        hermione.on(hermione.events.TEST_FAIL, failHandler);
+  return new Promise((resolve) => {
+    // Test is skipped
+    hermione.on(hermione.events.TEST_PENDING, (testResult) =>
+      reportBuilder.addSkipped(testResult));
 
-        hermione.on(hermione.events.RETRY, failHandler);
+    hermione.on(hermione.events.TEST_PASS, (testResult) =>
+      reportBuilder.addSuccess(testResult));
 
-        hermione.on(hermione.events.RUNNER_END, (stats) => resolve(reportBuilder.setStats(stats)));
+    hermione.on(hermione.events.TEST_FAIL, failHandler);
+
+    hermione.on(hermione.events.RETRY, failHandler);
+
+    // Will be triggered after test execution. The handler accepts a stats of tests execution.
+    hermione.on(hermione.events.RUNNER_END, (stats) =>
+      resolve(reportBuilder.setStats(stats)));
+  });
+};
+
+const prepareImages = (
+  hermione: IHermione,
+  pluginConfig: IPluginOpts,
+  reportBuilder: ReportBuilder,
+) => {
+  const { path: reportPath } = pluginConfig;
+
+  const failHandler = (testResult: any) => {
+    const formattedResult = reportBuilder.format(testResult);
+    const actions = [saveTestImages(formattedResult, reportPath)];
+
+    if (formattedResult.screenshot) {
+      actions.push(saveBase64Screenshot(formattedResult, reportPath));
+    }
+
+    return Promise.all(actions);
+  };
+
+  return new Promise((resolve, reject) => {
+    let queue: any = Promise.resolve();
+
+    hermione.on(hermione.events.TEST_PASS, (testResult) => {
+      queue = queue.then(() => saveTestImages(reportBuilder.format(testResult), reportPath));
     });
 
-    function failHandler(testResult: any) {
-        const formattedResult = reportBuilder.format(testResult);
-
-        return formattedResult.hasDiff()
-            ? reportBuilder.addFail(testResult)
-            : reportBuilder.addError(testResult);
-    }
-}
-
-function prepareImages(hermione: IHermione, pluginConfig: IPluginOpts, reportBuilder: ReportBuilder) {
-    const {path: reportPath} = pluginConfig;
-
-    function failHandler(testResult: any) {
-        const formattedResult = reportBuilder.format(testResult);
-        const actions = [saveTestImages(formattedResult, reportPath)];
-
-        if (formattedResult.screenshot) {
-            actions.push(saveBase64Screenshot(formattedResult, reportPath));
-        }
-
-        return Promise.all(actions);
-    }
-
-    return new Promise((resolve, reject) => {
-        let queue: any = Promise.resolve();
-
-        hermione.on(hermione.events.TEST_PASS, (testResult) => {
-            queue = queue.then(() => saveTestImages(reportBuilder.format(testResult), reportPath));
-        });
-
-        hermione.on(hermione.events.RETRY, (testResult) => {
-            queue = queue.then(() => failHandler(testResult));
-        });
-
-        hermione.on(hermione.events.TEST_FAIL, (testResult) => {
-            queue = queue.then(() => failHandler(testResult));
-        });
-
-        hermione.on(hermione.events.RUNNER_END, () => queue.then(resolve, reject));
+    hermione.on(hermione.events.RETRY, (testResult) => {
+      queue = queue.then(() => failHandler(testResult));
     });
-}
+
+    hermione.on(hermione.events.TEST_FAIL, (testResult) => {
+      queue = queue.then(() => failHandler(testResult));
+    });
+
+    hermione.on(hermione.events.RUNNER_END, () => queue.then(resolve, reject));
+  });
+};

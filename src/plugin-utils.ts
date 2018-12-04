@@ -1,7 +1,6 @@
-import { ITestResult } from './report-builder/types';
+import Suite from './suite/suite';
+import { IHermioneResult } from './report-builder/types';
 
-const getSuitePath = (suite: ITestResult): any => {
-  return suite.root ? [] : [].concat(getSuitePath(suite.parent)).concat(suite.title);
-};
-
-export const getHermioneUtils = () => ({ getSuitePath });
+export const getSuitePath = (suite: IHermioneResult): string[] => suite.root
+  ? []
+  : [].concat(getSuitePath(suite.parent)).concat(suite.title);

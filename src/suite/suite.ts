@@ -2,17 +2,15 @@ import _ from 'lodash';
 import path from 'path';
 import Uri from 'urijs';
 import { default as urlLib } from 'url';
-import { getHermioneUtils } from '../plugin-utils';
+import { getSuitePath } from '../plugin-utils';
 
-const { getSuitePath } = getHermioneUtils();
-
-import { ITestResult } from '../report-builder/types';
 import { IPluginOpts } from '../types';
+import { IHermioneResult } from '../report-builder/types';
 
 export default class Suite {
-  private suite: ITestResult;
+  private suite: IHermioneResult;
 
-  constructor(suite: ITestResult) {
+  constructor(suite: IHermioneResult) {
     this.suite = suite;
   }
 
@@ -35,9 +33,10 @@ export default class Suite {
   }
 
   public getUrl(opts?: IPluginOpts) {
-    const url = _.get(this, '_suite.meta.url', '');
+    const url = _.get(this, 'suite.meta.url', '');
+    const baseHost = opts ? opts.baseHost : '';
 
-    return this.configureUrl(url, opts.baseHost);
+    return this.configureUrl(url, baseHost);
   }
 
   get fullUrl() {
@@ -59,7 +58,7 @@ export default class Suite {
   }
 }
 
-const getSkipComment = (suite: ITestResult): string => {
+const getSkipComment = (suite: IHermioneResult): string => {
   return suite.skipReason || suite.parent && getSkipComment(suite.parent);
 };
 

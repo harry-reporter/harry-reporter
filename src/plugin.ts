@@ -1,14 +1,19 @@
 import Promise from 'bluebird';
-import fs from 'fs-extra';
+import fsExtra from 'fs-extra';
 import _ from 'lodash';
 
 import cliCommands from './cli-commands';
 import parseConfig from './config';
 import ReportBuilder from './report-builder/report-builder';
-import utils from './server-utils';
-import { IHermione, IPluginOpts, prepareDataType, prepareImagesType } from './types';
+import * as utils from './server-utils';
+import {
+  IHermione,
+  IPluginOpts,
+  prepareDataType,
+  prepareImagesType,
+} from './types';
 
-Promise.promisifyAll(fs);
+const fs: any = Promise.promisifyAll(fsExtra);
 
 export default class Plugin {
   private hermione: IHermione;
@@ -26,7 +31,9 @@ export default class Plugin {
   public addCliCommands() {
     _.values(cliCommands).forEach((command: string) => {
       this.hermione.on(this.hermione.events.CLI, (commander: any) => {
-        require(`./cli-commands/${command}`)(commander, this.config, this.hermione);
+        import(`./cli-commands/${command}`).then(({ default: fn }) => {
+          fn(commander, this.config, this.hermione);
+        });
         commander.prependListener(`command:${command}`, () => this.run = _.noop);
       });
     });
@@ -48,7 +55,7 @@ export default class Plugin {
         prepareImages(this.hermione, this.config, reportBuilder),
       ])
       .then(() => reportBuilder.save())
-      .then(utils.logPathToHtmlReport)
+      .then(utils.logPathToHtmlReport) // reportBuilder is undefined
       .catch(utils.logError);
 
     this.hermione.on(this.hermione.events.RUNNER_END, () => generateReport);
