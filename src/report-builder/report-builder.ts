@@ -181,7 +181,7 @@ export default class ReportBuilder {
       suiteUrl,
     };
 
-    return { ...testResult, props };
+    return { ...testResult, ...props };
   }
 
   private addTestResult(formattedResult: Test, props: IProps) {
@@ -198,7 +198,7 @@ export default class ReportBuilder {
       extendTestWithImagePaths(testResult, formattedResult);
 
       if (hasNoRefImageErrors(formattedResult)) {
-        testResult.props.status = FAIL;
+        testResult.status = FAIL;
       }
 
       node.browsers.push({ name: browserId, result: testResult, retries: [] });

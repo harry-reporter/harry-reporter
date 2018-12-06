@@ -61,7 +61,6 @@ export interface IResult {
   name: string;
   screenshot: boolean;
   suiteUrl: string;
-  props: IProps;
   attempt?: any;
 }
 
