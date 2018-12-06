@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import { ERROR, FAIL, SUCCESS } from '../constants/test-statuses';
 import { getSuitePath } from '../plugin-utils';
-import { getImagesFor } from '../server-utils';
+import { getPathsFor } from '../server-utils';
 import { IHermioneResult } from '../report-builder/types';
 import { IHermione } from '../types';
 import Suite from '../suite/suite';
 import { IImagesInfo } from './types';
 
-export default class Test {
+export default class TestResult {
   public image: boolean;
   private testResult: IHermioneResult;
   private hermione: IHermione;
@@ -34,21 +34,21 @@ export default class Test {
     return this.testResult.browserId;
   }
 
-  get imagesInfo() {
+  get assertViewResults(): any[] { // TODO add type
+    return this.testResult.assertViewResults || [];
+  }
+
+  get imagesInfo(): IImagesInfo[] {
     return this.testResult.imagesInfo;
   }
 
-  set imagesInfo(imagesInfo) {
+  set imagesInfo(imagesInfo: IImagesInfo[]) {
     this.testResult.imagesInfo = imagesInfo;
   }
 
   public hasDiff() {
     return this.assertViewResults.some((result: any) =>
       this.isImageDiffError(result));
-  }
-
-  get assertViewResults(): any[] { // TODO add type
-    return this.testResult.assertViewResults || [];
   }
 
   public isImageDiffError(assertResult: any) {
@@ -85,7 +85,7 @@ export default class Test {
 
       return _.extend<IImagesInfo>(
         { stateName, refImg, status, reason },
-        getImagesFor(status, this, stateName),
+        getPathsFor(status, this, stateName),
       );
     });
 
@@ -93,7 +93,7 @@ export default class Test {
     if (this.screenshot) {
       const errorImage = _.extend<IImagesInfo>(
         { status: ERROR, reason: this.error },
-        getImagesFor(ERROR, this),
+        getPathsFor(ERROR, this),
       );
 
       this.imagesInfo.push(errorImage);
@@ -128,6 +128,7 @@ export default class Test {
     }
 
     const { retry } = this.hermione.config.forBrowser(this.testResult.browserId);
+
     return this.testResult.retriesLeft >= 0
       ? retry - this.testResult.retriesLeft - 1
       : retry;
@@ -156,30 +157,8 @@ export default class Test {
     return this.testResult.meta;
   }
 
-  public getRefImg(stateName?: string) {
-    return _.get(
-      _.find(
-        this.assertViewResults,
-        ({ stateName: name }) => name === stateName,
-      ),
-      'refImg',
-      {},
-    );
-  }
-
-  public getCurrImg(stateName: string) {
-    return _.get(
-      _.find(
-        this.assertViewResults,
-        ({ stateName: name }) => name === stateName,
-      ),
-      'currImg',
-      {},
-    );
-  }
-
-  public getErrImg() {
-    return this.screenshot || {};
+  public getImagePath(stateName?: string) {
+    return (_.find(this.imagesInfo, { stateName }) || {}).imagePath;
   }
 
   public prepareTestResult() {

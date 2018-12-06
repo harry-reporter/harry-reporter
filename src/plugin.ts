@@ -3,9 +3,10 @@ import fsExtra from 'fs-extra';
 import _ from 'lodash';
 
 import cliCommands from './cli-commands';
+import * as utils from './server-utils';
 import parseConfig from './config';
 import ReportBuilder from './report-builder/report-builder';
-import * as utils from './server-utils';
+
 import {
   IHermione,
   IPluginOpts,
@@ -42,7 +43,10 @@ export default class Plugin {
   }
 
   public init(prepareData: prepareDataType, prepareImages: prepareImagesType) {
-    this.hermione.on(this.hermione.events.INIT, () => this.run(prepareData, prepareImages));
+    this.hermione.on(
+      this.hermione.events.INIT,
+      () => this.run(prepareData, prepareImages),
+    );
 
     return this;
   }
