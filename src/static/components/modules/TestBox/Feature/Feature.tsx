@@ -27,7 +27,7 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
     const { viewData } = this.state;
     this.setState(
       {
-        isOpen: viewData.status === 'fail',
+        isOpen: viewData.status === 'fail' || viewData.status === 'error',
       },
       this.props.measure,
     );

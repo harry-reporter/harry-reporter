@@ -8,7 +8,6 @@ import { BrowserNameStyled } from './styled';
 
 import { StatusProps } from './types';
 import { ColorType } from 'src/components/ui/types';
-import { fail } from 'assert';
 
 export default class Status extends React.PureComponent<StatusProps> {
   public cnStatus = cn(
