@@ -1,0 +1,37 @@
+.BoxContentSwipe {
+  width: 100%;
+}
+.SwipeContainer {
+  position: relative;
+
+  width: 100%;
+}
+
+.ImageContainer__before {
+  position: absolute;
+  left: 0;
+
+  overflow: hidden;
+
+  width: auto;
+  height: auto;
+}
+.ImageContainer__after {
+  position: absolute;
+  right: 0;
+
+  overflow: hidden;
+
+  width: auto;
+  height: auto;
+}
+.Image__after {
+  display: block;
+
+  vertical-align: middle;
+}
+.Image__before {
+  display: block;
+
+  vertical-align: middle;
+}

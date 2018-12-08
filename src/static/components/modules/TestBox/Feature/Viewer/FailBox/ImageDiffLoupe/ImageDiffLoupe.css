@@ -1,0 +1,19 @@
+.ImageDiffLoupe-container {
+  position: relative;
+}
+
+.ImageDiffLoupe__before {
+  padding-right: 0.1rem;
+}
+.ImageDiffLoupe__after {
+  padding-right: 0.1rem;
+}
+.Title {
+  text-align: center;
+}
+.ImageDiffLoupe__beforeImg {
+  width: 100%;
+}
+.ImageDiffLoupe__afterImg {
+  width: 100%;
+}
