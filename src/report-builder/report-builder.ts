@@ -72,6 +72,16 @@ export default class ReportBuilder {
     return this;
   }
 
+  public addRetry(result: IHermioneResult) {
+    const formattedResult = this.format(result);
+
+    if (formattedResult.hasDiff()) {
+      return this.addFailResult(formattedResult);
+    } else {
+      return this.addErrorResult(formattedResult);
+    }
+  }
+
   public save() {
     return this.saveDataFileAsync()
       .then(() => this.copyToReportDir(['index.html', 'report.min.js', 'report.min.css']))

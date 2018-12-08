@@ -9,12 +9,8 @@ import Runner from './runner';
 import { findTestResult, formatId, formatTests, getShortMD5, mkFullTitle } from './utils';
 import { findNode } from '../../static/modules/utils';
 
-// const ReportBuilderFactory = require('../../report-builder-factory');
-// const reporterHelper = require('../../reporter-helpers');
-//
-const ReportBuilderFactory: any = {};
-const reporterHelper: any = {};
-//
+import ReportBuilder from '../../report-builder/report-builder';
+import * as reporterHelper from '../../reporter-helpers';
 
 export default class HermioneRunner {
   public hermione: any;
@@ -39,7 +35,7 @@ export default class HermioneRunner {
     this.reportPath = pluginConfig.path;
 
     this.eventSource = new EventSource();
-    this.reportBuilder = ReportBuilderFactory.create(hermione, pluginConfig);
+    this.reportBuilder = new ReportBuilder(hermione, pluginConfig);
 
     this.tests = {};
   }
@@ -102,6 +98,18 @@ export default class HermioneRunner {
     });
   }
 
+  public finalize() {
+    this.reportBuilder.saveDataFileSync();
+  }
+
+  public addClient(connection: any) {
+    this.eventSource.addConnection(connection);
+  }
+
+  public sendClientEvent(event: any, data: any) {
+    this.eventSource.emit(event, data);
+  }
+
   private handleRunnableCollection() {
     this.collection.eachTest((test: any, browserId: string) => {
       if (test.disabled || test.silentSkip) {
@@ -137,18 +145,6 @@ export default class HermioneRunner {
     });
 
     return _.merge({}, testResult, { imagesInfo, sessionId, attempt, meta: { url }, updated: true });
-  }
-
-  private finalize() {
-    this.reportBuilder.saveDataFileSync();
-  }
-
-  private addClient(connection: any) {
-    this.eventSource.addConnection(connection);
-  }
-
-  private sendClientEvent(event: any, data: any) {
-    this.eventSource.emit(event, data);
   }
 
   private readTests() {

@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import ApiFacade from './ApiFacade';
+import ApiFacade from './api-facade';
 
 export interface IApi {
   initServer: (server: Express) => void;
