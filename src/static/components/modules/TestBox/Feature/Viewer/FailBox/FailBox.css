@@ -1,0 +1,70 @@
+.Box-detail {
+  display: block;
+}
+
+.Box-detail_isHidden {
+  display: none;
+}
+.UnderlineNav-body {
+  margin: 0 auto;
+}
+.Box-row--darkgray {
+  background-color: #e1e4e8;
+}
+.Title {
+  text-align: center;
+}
+.Expected,
+.Actual,
+.Diff {
+  margin: 0.1rem;
+}
+.FailBox-Img {
+  max-width: 100%;
+  max-height: 400px;
+}
+
+.li-active::before {
+  position: absolute;
+  top: -13px;
+  left: 40%;
+
+  content: '▼';
+
+  color: #ddd;
+
+  font-size: 10px;
+}
+
+.modNav-body {
+  display: inline-flex;
+
+  list-style: none;
+}
+.modNav {
+  text-align: center;
+}
+.modNav-item:not(:last-child)::after {
+  display: inline-block;
+
+  margin-right: 0.25rem;
+  margin-left: 0.25rem;
+
+  content: '|';
+
+  color: #959da5;
+}
+
+.modNav-item-link {
+  padding-right: 0.25rem;
+  padding-left: 0.25rem;
+
+  color: rgb(36, 41, 46);
+}
+
+.modNav-item-link.selected {
+  font-weight: bold;
+}
+.BoxContentOnionSkin-range {
+  z-index: 1;
+}

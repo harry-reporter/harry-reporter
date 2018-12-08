@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "strict": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["es5", "es6", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["/"]
+    }
+  },
+  "include": [
+    "./"
+  ],
+  "exclude": [
+    "node_modules",
+    "../**/*.ts"
+  ]
+}
