@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import fsExtra from 'fs-extra';
 import _ from 'lodash';
 
 import cliCommands from './cli-commands';
@@ -13,8 +12,6 @@ import {
   prepareDataType,
   prepareImagesType,
 } from './types';
-
-const fs: any = Promise.promisifyAll(fsExtra);
 
 export default class Plugin {
   private hermione: IHermione;

@@ -1,7 +1,7 @@
 import { SUCCESS, FAIL, ERROR, SKIPPED, UPDATED, IDLE } from './constants/test-statuses';
 import { isArray, find, get, values } from 'lodash';
 import { getCommonErrors } from './constants/errors';
-import { IImagesInfo } from './test-result/types';
+import { IReason, IImagesInfo } from './test-result/types';
 
 const { NO_REF_IMAGE_ERROR } = getCommonErrors();
 
@@ -27,13 +27,13 @@ export const hasFails = (node: any) => {
   return isFailed || walk(node, hasFails);
 };
 
-export const isAcceptable = ({ status, reason = '' }: { status: string, reason: any }) => {
+export const isAcceptable = ({ status, reason }: { status: string, reason: IReason }) => {
   const stack = reason && reason.stack;
 
   return isErroredStatus(status) && stack.startsWith(NO_REF_IMAGE_ERROR) || isFailStatus(status);
 };
 
-export const findNode = (node: any, suitePath: any): any => {
+export const findNode = (node: any, suitePath: string[]): any => {
   suitePath = suitePath.slice();
   if (!node.children) {
     node = values(node);
@@ -58,7 +58,7 @@ export const findNode = (node: any, suitePath: any): any => {
   return findNode(child, suitePath);
 };
 
-export const setStatusForBranch = (nodes: any, suitePath: any, status: string) => {
+export const setStatusForBranch = (nodes: any, suitePath: string[], status: string) => {
   const node = findNode(nodes, suitePath);
   if (!node) {
     return;

@@ -3,30 +3,32 @@ import fs from 'fs-extra';
 import _ from 'lodash';
 import path from 'path';
 
+import TestResult from './test-result/test-result';
+
 import { ERROR, FAIL, SUCCESS, UPDATED } from './constants/test-statuses';
 
-export const getReferencePath = (testResult: any, stateName: string) =>
+export const getReferencePath = (testResult: TestResult, stateName: string) =>
   createPath('ref', testResult, stateName);
 
-export const getCurrentPath = (testResult: any, stateName: string) =>
+export const getCurrentPath = (testResult: TestResult, stateName: string) =>
   createPath('current', testResult, stateName);
 
-export const getDiffPath = (testResult: any, stateName: string) =>
+export const getDiffPath = (testResult: TestResult, stateName: string) =>
   createPath('diff', testResult, stateName);
 
-export const getReferenceAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
+export const getReferenceAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
   const referenceImagePath = getReferencePath(testResult, stateName);
 
   return path.resolve(reportDir, referenceImagePath);
 };
 
-export const getCurrentAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
+export const getCurrentAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
   const currentImagePath = getCurrentPath(testResult, stateName);
 
   return path.resolve(reportDir, currentImagePath);
 };
 
-export const getDiffAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
+export const getDiffAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
   const diffImagePath = getDiffPath(testResult, stateName);
 
   return path.resolve(reportDir, diffImagePath);
@@ -38,7 +40,7 @@ export const getDiffAbsolutePath = (testResult: any, reportDir: string, stateNam
  * @param stateName - имя стэйта для теста
  */
 
-const createPath = (kind: string, result: any, stateName: string) => {
+const createPath = (kind: string, result: TestResult, stateName: string) => {
   const attempt = result.attempt || 0;
   const imageDir = _.compact(['images', result.imageDir, stateName]);
   const components = imageDir.concat(`${result.browserId}~${kind}_${attempt}.png`);
@@ -81,7 +83,7 @@ export const logError = (e: Error) => {
   logger.error(e.stack);
 };
 
-export const getPathsFor = (status: string, formattedResult: any, stateName?: string) => {
+export const getPathsFor = (status: string, formattedResult: TestResult, stateName?: string) => {
   if (status === SUCCESS || status === UPDATED) {
     return { expectedPath: getReferencePath(formattedResult, stateName) };
   }
@@ -101,8 +103,8 @@ export const getPathsFor = (status: string, formattedResult: any, stateName?: st
   return {};
 };
 
-export const hasImage = (formattedResult: any) => {
-  return !!formattedResult.getImagesInfo(ERROR).length
+export const hasImage = (formattedResult: TestResult) => {
+  return !!formattedResult.getImagesInfo().length
     || !!formattedResult.currentPath
     || !!formattedResult.screenshot;
 };

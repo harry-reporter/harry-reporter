@@ -1,25 +1,26 @@
 import path from 'path';
 import _ from 'lodash';
-import BPromise from 'bluebird';
+import Promise from 'bluebird';
 import fsExtra from 'fs-extra';
 
 import DataTree from './data-tree';
+import {IData, IDataCollection} from './types';
 import {logger, prepareCommonJSData} from '../server-utils';
 
-const fs = BPromise.promisifyAll(fsExtra);
+const fs = Promise.promisifyAll(fsExtra);
 
 const moveContentToReportDir = async ({from, to}: {from: string, to: string}) => {
-  const files = await fs.readdir(path.resolve(from));
+  const files: string[] = await fs.readdir(path.resolve(from));
 
-  await BPromise.map(files, async (fileName: string) => {
+  await Promise.map(files, async (fileName: string) => {
     if (fileName === 'data.js') {
       return;
     }
 
-    const srcFilePath = path.resolve(from, fileName);
-    const destFilePath = path.resolve(to, fileName);
+    const srcFilePath: string = path.resolve(from, fileName);
+    const destFilePath: string = path.resolve(to, fileName);
 
-    await fs.move(srcFilePath, destFilePath, {overwrite: true});
+    await fs.copy(srcFilePath, destFilePath, {overwrite: true});
   });
 };
 
@@ -39,11 +40,11 @@ export default class ReportBuilder {
   public async build() {
     await moveContentToReportDir({from: this.srcPaths[0], to: this.destPath});
 
-    const srcReportsData = this.loadReportsData();
-    const dataTree = DataTree.create(srcReportsData[0], this.destPath);
-    const srcDataCollection = _.zipObject(this.srcPaths.slice(1), srcReportsData.slice(1));
+    const srcReportsData: IData[] = this.loadReportsData();
+    const dataTree: DataTree = DataTree.create(srcReportsData[0], this.destPath);
+    const srcDataCollection: IDataCollection = _.zipObject(this.srcPaths.slice(1), srcReportsData.slice(1));
 
-    const mergedData = await dataTree.mergeWith(srcDataCollection);
+    const mergedData: IData = await dataTree.mergeWith(srcDataCollection);
 
     await this.saveDataFile(mergedData);
   }
@@ -51,7 +52,7 @@ export default class ReportBuilder {
   private loadReportsData() {
     return _(this.srcPaths)
       .map((reportPath: string) => {
-        const srcDataPath = path.resolve(reportPath, 'data');
+        const srcDataPath: string = path.resolve(reportPath, 'data');
 
         try {
           return require(`../${srcDataPath}`);
@@ -64,17 +65,17 @@ export default class ReportBuilder {
   }
 
   private async copyToReportDir(files: string[], {from, to}: {from: string, to: string}) {
-    await BPromise.map(files, async (dataName: string) => {
-      const srcDataPath = path.resolve(from, dataName);
-      const destDataPath = path.resolve(to, dataName);
+    await Promise.map(files, async (dataName: string) => {
+      const srcDataPath: string = path.resolve(from, dataName);
+      const destDataPath: string = path.resolve(to, dataName);
 
       await fs.move(srcDataPath, destDataPath);
     });
   }
 
-  private async saveDataFile(data: any) {
-    const formattedData = prepareCommonJSData(data);
-    const destDataPath = path.resolve(this.destPath, 'data.js');
+  private async saveDataFile(data: IData) {
+    const formattedData: string = prepareCommonJSData(data);
+    const destDataPath: string = path.resolve(this.destPath, 'data.js');
 
     await fs.writeFile(destDataPath, formattedData);
   }

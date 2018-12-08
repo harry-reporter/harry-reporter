@@ -70,7 +70,7 @@ const prepareImages = (
   };
 
   return new Promise((resolve, reject) => {
-    let queue: any = Promise.resolve();
+    let queue: Promise<{} | void> = Promise.resolve();
 
     hermione.on(hermione.events.TEST_PASS, (testResult) => {
       queue = queue.then(() => saveTestImages(reportBuilder.format(testResult), reportPath));
