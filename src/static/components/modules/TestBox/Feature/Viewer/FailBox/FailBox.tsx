@@ -7,11 +7,10 @@ import ImageDiffOnionSkin from './ImageDiffOnionSkin/ImageDiffOnionSkin';
 import './types';
 import './FailBox.css';
 import { ImagesInfo } from '../types';
+import { connect } from 'react-redux';
+import { RootStore } from 'store/types/store';
 
-export default class FailBox extends React.PureComponent<
-  ImagesInfo,
-  IFailBoxState
-> {
+class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
   public state = {
     tabId: 0,
     valueSwipe: 0.5,
@@ -85,7 +84,7 @@ export default class FailBox extends React.PureComponent<
     return (
       <li key={key} className='modNav-item'>
         <a
-          href='#url'
+          href=''
           className={`modNav-item-link ${isSelected}`}
           onClick={this.handleClickAtTab(key)}
         >
@@ -170,25 +169,32 @@ export default class FailBox extends React.PureComponent<
 
   public getView() {
     let view: any = null;
-    switch (this.state.tabId) {
-      case 0:
+    const { screenViewMode } = this.props;
+    switch (screenViewMode) {
+      case '3-up':
         view = this.getBoxContent();
+        this.setState({ tabId: 0 });
         break;
-      case 1:
+      case 'onlyDiff':
         view = this.getBoxContentDiff();
+        this.setState({ tabId: 1 });
         break;
-      case 2:
+      case 'loupe':
         view = this.getBoxContentLoupe();
+        this.setState({ tabId: 2 });
         break;
-      case 3:
+      case 'swipe':
         view = this.getBoxContentSwipe();
+        this.setState({ tabId: 3 });
         break;
-      case 4:
+      case 'onionSkin':
         view = this.getBoxContentOnionSkin();
+        this.setState({ tabId: 4 });
         break;
 
       default:
         view = this.getBoxContent();
+        this.setState({ tabId: 0 });
     }
     return view;
   }
@@ -206,3 +212,10 @@ export default class FailBox extends React.PureComponent<
     );
   }
 }
+const mapStateViewMode = ({ app }: RootStore) => {
+  return {
+    screenViewMode: app.screenViewMode,
+  };
+};
+
+export default connect(mapStateViewMode)(FailBox);

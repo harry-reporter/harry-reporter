@@ -31,6 +31,7 @@ export interface ImagesInfo {
   expectedPath?: string;
   diffPath?: string;
   onLoad?: any;
+  screenViewMode?: string;
 }
 
 export interface MetaInfo {
