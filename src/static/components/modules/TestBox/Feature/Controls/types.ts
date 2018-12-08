@@ -6,4 +6,5 @@ export interface ControlsProps {
   handleViewChange: (e: string) => void;
   onToggle: () => any;
   viewType: string;
+  url: string;
 }

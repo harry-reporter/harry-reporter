@@ -13,4 +13,5 @@ export interface HeaderProps {
   pageCount: number;
   pageCurrent: number;
   onToggle: () => any;
+  url: string;
 }

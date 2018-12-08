@@ -3,6 +3,7 @@ import { ResultViewerProps } from './Viewer/types';
 
 export interface FeatureProps {
   data: any;
+  url: string;
 
   measure?: () => any;
 }

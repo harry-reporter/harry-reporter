@@ -5,6 +5,9 @@ import Header from './Header';
 
 import { FeatureProps, FeatureState } from './types';
 import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
+import { appendFile } from 'fs-extra';
+import { RootStore } from 'store/types/store';
+import { connect } from 'react-redux';
 
 // TODO: вынести функциионал по аккордеону в отдельную компоненту
 class Feature extends React.PureComponent<FeatureProps, FeatureState> {
@@ -12,7 +15,8 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
     super(props);
     this.state = {
       isOpen: false,
-      viewType: this.props.data.result.imagesInfo.length > 0 ? 'screenshot' : 'code',
+      viewType:
+        this.props.data.result.imagesInfo.length > 0 ? 'screenshot' : 'code',
       viewData: this.props.data.result,
       pageCount: this.props.data.result.attempt,
       pageCurrent: this.props.data.result.attempt,
@@ -21,13 +25,19 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
 
   public componentDidMount(): void {
     const { viewData } = this.state;
-    this.setState({
-      isOpen: viewData.status === 'fail',
-    }, this.props.measure);
+    this.setState(
+      {
+        isOpen: viewData.status === 'fail',
+      },
+      this.props.measure,
+    );
   }
 
   public toggleFeature = () => {
-    this.setState((prevState) => ({ isOpen: !prevState.isOpen }), this.props.measure);
+    this.setState(
+      (prevState) => ({ isOpen: !prevState.isOpen }),
+      this.props.measure,
+    );
   }
 
   public handleViewChange = (e: string) => {
@@ -43,6 +53,7 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
   }
 
   public render(): JSX.Element {
+    const { url } = this.props;
     const { name } = this.props.data;
     const { status } = this.state.viewData;
     const { viewType, pageCurrent, pageCount, viewData, isOpen } = this.state;
@@ -60,11 +71,15 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
           handleDataChange={this.handleDataChange}
           pageCurrent={pageCurrent}
           pageCount={pageCount}
+          url={url}
         />
         {isOpen && <Viewer type={viewType} {...viewData} />}
       </div>
     );
   }
 }
+const mapStateUrl = ({ app }: RootStore) => ({
+  url: app.url,
+});
 
-export default withMeasurer(Feature);
+export default connect(mapStateUrl)(Feature);
