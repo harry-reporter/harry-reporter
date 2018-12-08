@@ -5,7 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "rm -rf lib",
+    "clean:static": "rm -f -r -d lib/static",
     "dev": "cd src/static && webpack-dev-server --config=webpack.dev.js --progress --colors --hot --inline",
+    "build:static": "npm run clean:static && cd src/static && webpack -p --config=webpack.prod.js",
     "build": "npm run clean && tsc",
     "build:watch": "npm run clean && tsc -w",
     "lint": "npm run lint:styles && npm run lint:ts",
