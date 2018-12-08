@@ -29,6 +29,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getChevron = () => (this.props.isOpenedBox ? ChevronUp : ChevronDown);
 
   public handleRunClick() {
+    // todo: отправлять post-запрос
     console.log('run test-retries');
   }
 
