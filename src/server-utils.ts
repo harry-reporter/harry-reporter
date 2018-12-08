@@ -4,14 +4,19 @@ import _ from 'lodash';
 import path from 'path';
 
 import { ERROR, FAIL, SUCCESS, UPDATED } from './constants/test-statuses';
-import Test from './test/test';
 
-export const getReferencePath = (testResult: any, stateName: string) => createPath('ref', testResult, stateName);
-export const getCurrentPath = (testResult: any, stateName: string) => createPath('current', testResult, stateName);
-export const getDiffPath = (testResult: any, stateName: string) => createPath('diff', testResult, stateName);
+export const getReferencePath = (testResult: any, stateName: string) =>
+  createPath('ref', testResult, stateName);
+
+export const getCurrentPath = (testResult: any, stateName: string) =>
+  createPath('current', testResult, stateName);
+
+export const getDiffPath = (testResult: any, stateName: string) =>
+  createPath('diff', testResult, stateName);
 
 export const getReferenceAbsolutePath = (testResult: any, reportDir: string, stateName?: string) => {
   const referenceImagePath = getReferencePath(testResult, stateName);
+
   return path.resolve(reportDir, referenceImagePath);
 };
 
@@ -76,7 +81,7 @@ export const logError = (e: Error) => {
   logger.error(e.stack);
 };
 
-export const getPathsFor = (status: string, formattedResult: any, stateName: string) => {
+export const getPathsFor = (status: string, formattedResult: any, stateName?: string) => {
   if (status === SUCCESS || status === UPDATED) {
     return { expectedPath: getReferencePath(formattedResult, stateName) };
   }
@@ -90,47 +95,6 @@ export const getPathsFor = (status: string, formattedResult: any, stateName: str
   if (status === ERROR) {
     return {
       actualPath: formattedResult.state ? getCurrentPath(formattedResult, stateName) : '',
-    };
-  }
-
-  return {};
-};
-
-export const getImagesFor = (status: string, formattedResult: Test, stateName?: string) => {
-  const refImg = formattedResult.getRefImg(stateName);
-  const currImg = formattedResult.getCurrImg(stateName);
-  const errImg = formattedResult.getErrImg();
-
-  if (status === SUCCESS || status === UPDATED) {
-    return { expectedImg: { path: getReferencePath(formattedResult, stateName), size: refImg.size } };
-  }
-
-  if (status === FAIL) {
-    return {
-      actualImg: {
-        path: getCurrentPath(formattedResult, stateName),
-        size: currImg.size,
-      },
-      diffImg: {
-        path: getDiffPath(formattedResult, stateName),
-        size: {
-          height: _.max([refImg.size.height, currImg.size.height]),
-          width: _.max([refImg.size.width, currImg.size.width]),
-        },
-      },
-      expectedImg: {
-        path: getReferencePath(formattedResult, stateName),
-        size: refImg.size,
-      },
-    };
-  }
-
-  if (status === ERROR) {
-    return {
-      actualImg: {
-        path: formattedResult.state ? getCurrentPath(formattedResult, stateName) : '',
-        size: currImg.size || errImg.size,
-      },
     };
   }
 

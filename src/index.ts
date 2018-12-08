@@ -1,11 +1,12 @@
 import Promise from 'bluebird';
 
 import Plugin from './plugin';
-import ReportBuilder from './report-builder/report-builder';
 import { saveBase64Screenshot, saveTestImages } from './reporter-helpers';
+
+import ReportBuilder from './report-builder/report-builder';
 import { IHermione, IPluginOpts } from './types';
 import { IHermioneResult } from './report-builder/types';
-import Test from './test/test';
+import TestResult from './test-result/test-result';
 
 module.exports = (hermione: IHermione, opts: IPluginOpts): void => {
   const plugin = new Plugin(hermione, opts);
@@ -23,7 +24,7 @@ const prepareData = (
   hermione: IHermione,
   reportBuilder: ReportBuilder,
 ) => {
-  const failHandler = (testResult: IHermioneResult): Test => {
+  const failHandler = (testResult: IHermioneResult): TestResult => {
     const formattedResult = reportBuilder.format(testResult);
 
     return formattedResult.hasDiff()
@@ -43,7 +44,8 @@ const prepareData = (
 
     hermione.on(hermione.events.RETRY, failHandler);
 
-    // Will be triggered after test execution. The handler accepts a stats of tests execution.
+    // Will be triggered after test execution.
+    // The handler accepts a stats of tests execution.
     hermione.on(hermione.events.RUNNER_END, (stats) =>
       resolve(reportBuilder.setStats(stats)));
   });
@@ -56,7 +58,7 @@ const prepareImages = (
 ) => {
   const { path: reportPath } = pluginConfig;
 
-  const failHandler = (testResult: any) => {
+  const failHandler = (testResult: IHermioneResult) => {
     const formattedResult = reportBuilder.format(testResult);
     const actions = [saveTestImages(formattedResult, reportPath)];
 

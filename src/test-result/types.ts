@@ -39,6 +39,7 @@ export interface IImagesInfo {
   stateName: string;
   refImg: IRefImg;
   expectedImg: IExpectedImg;
+  imagePath: string;
 }
 
 export interface IMetaInfo {
@@ -71,7 +72,6 @@ export interface IRetry {
   name: string;
   screenshot: boolean;
   suiteUrl: string;
-  props: IProps;
 }
 
 export interface IBrowser {

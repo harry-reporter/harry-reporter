@@ -1,4 +1,4 @@
-import { IImagesInfo } from '../test/types';
+import { IImagesInfo } from '../test-result/types';
 
 export interface ITree {
   children?: object[];

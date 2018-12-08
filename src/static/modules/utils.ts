@@ -1,7 +1,7 @@
 import { isArray, find, get, values } from 'lodash';
 import { isSuccessStatus, isFailStatus, isErroredStatus, isSkippedStatus, isUpdatedStatus } from '../../common-utils';
 import { getCommonErrors } from '../../constants/errors';
-import { IImagesInfo } from '../../test/types';
+import { IImagesInfo } from '../../test-result/types';
 
 const { NO_REF_IMAGE_ERROR } = getCommonErrors();
 
