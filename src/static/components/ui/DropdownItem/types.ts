@@ -1,7 +1,7 @@
 export interface DropdownItemProps {
   title: string;
-  url?: string;
+  value: string;
   className?: string;
 
-  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: (e: string) => void;
 }
