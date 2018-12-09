@@ -5,7 +5,7 @@ import path from 'path';
 
 import { ERROR, FAIL, IDLE, RUNNING, SKIPPED, SUCCESS, UPDATED } from '../constants/test-statuses';
 import { hasImage, logger, prepareCommonJSData } from '../server-utils';
-import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../static/modules/utils';
+import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../common-utils';
 import TestResult from '../test-result/test-result';
 
 import { IHermione, IPluginOpts } from '../types';

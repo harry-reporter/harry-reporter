@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import fsExtra from 'fs-extra';
 import _ from 'lodash';
 
-import gui from './cli-commands/gui';
+import cliCommands from './cli-commands';
 import * as utils from './server-utils';
 import parseConfig from './config';
 import ReportBuilder from './report-builder/report-builder';

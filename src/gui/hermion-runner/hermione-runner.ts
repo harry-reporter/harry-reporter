@@ -7,7 +7,7 @@ import EventSource from '../event-source';
 import subscribeOnToolEvents from './report-subscriber';
 import Runner from './runner';
 import { findTestResult, formatId, formatTests, getShortMD5, mkFullTitle } from './utils';
-import { findNode } from '../../static/modules/utils';
+import { findNode } from '../../common-utils';
 
 import ReportBuilder from '../../report-builder/report-builder';
 import * as reporterHelper from '../../reporter-helpers';
