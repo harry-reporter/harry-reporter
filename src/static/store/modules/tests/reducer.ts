@@ -13,11 +13,15 @@ const defaultState: TestsStore = {
   },
 };
 
-const compiledData = getInitialState((window as WindowWithData).data) || defaultState;
+const compiledData = (window as WindowWithData).data;
+
+const initialState = compiledData
+  ? getInitialState(compiledData)
+  : defaultState;
 
 const SET_INIT = 'SET_INIT';
 
-export const reducer = (state: TestsStore = compiledData, action): TestsStore => {
+export const reducer = (state: TestsStore = initialState, action): TestsStore => {
   const { type } = action;
 
   switch (type) {
