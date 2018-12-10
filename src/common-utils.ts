@@ -27,43 +27,10 @@ export const hasFails = (node: any) => {
   return isFailed || walk(node, hasFails);
 };
 
-export const isSuiteFailed = (suite: any) => (
-  isFailStatus(suite.status) || isErroredStatus(suite.status)
-);
-
 export const isAcceptable = ({ status, reason = '' }: { status: string, reason: any }) => {
   const stack = reason && reason.stack;
 
   return isErroredStatus(status) && stack.startsWith(NO_REF_IMAGE_ERROR) || isFailStatus(status);
-};
-
-export const hasRetries = (node: any) => {
-  const isRetried = node.retries && node.retries.length;
-
-  return isRetried || walk(node, hasRetries);
-};
-
-export const allSkipped = (node: any) => {
-  const { result } = node;
-  const isSkipped = result && isSkippedStatus(result.status);
-
-  return Boolean(isSkipped || walk(node, allSkipped, Array.prototype.every));
-};
-
-export const setStatusToAll = (node: any, status: string) => {
-  if (isArray(node)) {
-    node.forEach((n: any) => setStatusToAll(n, status));
-  }
-
-  const currentStatus = get(node, 'result.status', node.status);
-  if (isSkippedStatus(currentStatus)) {
-    return;
-  }
-  node.result
-    ? (node.result.status = status)
-    : node.status = status;
-
-  return walk(node, (n: any) => setStatusToAll(n, status), Array.prototype.forEach);
 };
 
 export const findNode = (node: any, suitePath: any): any => {

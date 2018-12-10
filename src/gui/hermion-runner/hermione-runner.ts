@@ -20,14 +20,14 @@ export default class HermioneRunner {
   public eventSource: any;
   public reportPath: string;
   private testFiles: string[];
-  private treeObj: any;
+  private treeInternal: any;
   private guiOpts: any;
   private tests: any;
 
   constructor(paths: string, hermione: any, { program, pluginConfig, options }: any) {
     this.testFiles = [].concat(paths);
     this.hermione = hermione;
-    this.treeObj = null;
+    this.treeInternal = null;
     this.collection = null;
 
     this.globalOpts = program;
@@ -45,7 +45,7 @@ export default class HermioneRunner {
   }
 
   get tree(): any {
-    return this.tree;
+    return this.treeInternal;
   }
 
   public initialize() {
@@ -69,8 +69,8 @@ export default class HermioneRunner {
   public fillTestsTree() {
     const { autoRun } = this.guiOpts;
 
-    this.treeObj = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
-    this.treeObj.suites = this.applyReuseData(this.treeObj.suites);
+    this.treeInternal = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
+    this.treeInternal.suites = this.applyReuseData(this.treeInternal.suites);
   }
 
   public updateReferenceImage(tests: any) {
