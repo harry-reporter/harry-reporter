@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import * as utils from './server-utils';
 import TestResult from './test-result/test-result';
+import { IImagesInfo } from './test-result/types';
 
 const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
   return Promise.map(testResult.assertViewResults, (assertResult: any) => {
@@ -68,7 +69,7 @@ export const saveTestImages = (testResult: TestResult, reportPath: string): any 
 export const saveTestCurrentImage = (testResult: TestResult, reportPath: string, stateName: string) => {
 
   const src = stateName
-    ? _.find(testResult.assertViewResults, { stateName }).currentImagePath
+    ? _.find<IImagesInfo>(testResult.assertViewResults, { stateName }).currentImagePath
     : testResult.getImagePath() || testResult.currentPath || testResult.screenshot;
 
   return src
