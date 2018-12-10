@@ -14,7 +14,7 @@ const cache = new CellMeasurerCache({
   defaultHeight: 160,
 });
 
-class TestsContainer extends React.PureComponent<TestsContainerProps, TestsContainerState> {
+class TestsContainer extends React.Component<TestsContainerProps, TestsContainerState> {
   private renderMeasurer = (props) => ({ measure }) => (
     <TestBox
       style={props.style}
@@ -55,6 +55,12 @@ class TestsContainer extends React.PureComponent<TestsContainerProps, TestsConta
   )
 
   public render(): JSX.Element {
+    const { tests } = this.props;
+
+    if (tests.length === 0) {
+      return null;
+    }
+
     return (
       <div className={'pt-5'}>
         <WindowScroller>

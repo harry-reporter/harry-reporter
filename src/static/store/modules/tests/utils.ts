@@ -25,10 +25,11 @@ const formatSuitesData = (suites: Suite[]): Suite[] => {
 };
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
-  const { skips, suites, total, passed, failed, skipped, retries } = compiledData;
+  const { skips, suites, total, passed, failed, skipped, retries, gui = false } = compiledData;
   const tests = formatSuitesData(suites);
 
   return {
+    gui,
     skips,
     tests,
     stats: {

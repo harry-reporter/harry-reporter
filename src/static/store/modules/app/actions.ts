@@ -4,20 +4,6 @@ import { filterFailedBrowsers, filterAcceptableBrowsers, formatTests } from '../
 
 export const setTestsType = (type) => ({ type: actionNames.SET_TESTS_TYPE, payload: type });
 
-export const initGui = () => {
-  return async (dispatch) => {
-    try {
-      const appState = await fetch('/init').then((res) => res.json());
-      dispatch({
-        type: actionNames.INIT_GUI,
-        payload: appState,
-      });
-    } catch (e) {
-      // handle error
-    }
-  };
-};
-
 const runTests = ({ tests = [], action = {} } = {}) => {
   return async (dispatch) => {
     try {
