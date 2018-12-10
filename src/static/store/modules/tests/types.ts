@@ -4,6 +4,7 @@ export interface TestsStore {
   tests: Suite[];
   skips: Suite[];
   stats: Stats;
+  gui: boolean;
 }
 
 export interface Stats {
@@ -18,6 +19,7 @@ export interface CompiledData extends Stats {
   skips: Skip[];
   config: Config;
   suites: Suite[];
+  gui?: boolean;
 }
 
 export type Skip = any;
