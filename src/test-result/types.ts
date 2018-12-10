@@ -40,6 +40,7 @@ export interface IImagesInfo {
   refImg: IRefImg;
   expectedImg: IExpectedImg;
   imagePath: string;
+  currentImagePath: string;
 }
 
 export interface IMetaInfo {
