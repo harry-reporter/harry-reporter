@@ -8,12 +8,16 @@ const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plug
 const staticPath = path.resolve(__dirname);
 
 module.exports = {
-    entry: './index.tsx',
+    entry: {
+      report: ['./index.tsx'],
+      gui: ['./index.tsx']
+    },
     context: staticPath,
     output: {
-        filename: 'bundle.js',
+        filename: '[name].min.js',
         path: staticPath
     },
+
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         alias: {
@@ -49,9 +53,5 @@ module.exports = {
             assets: ['data.js'],
             append: false
         })
-        // new BundleAnalyzerPlugin({
-        //     openAnalyzer: false,
-        //     analyzerPort: 8888
-        // })
     ]
 };

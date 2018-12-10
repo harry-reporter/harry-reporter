@@ -1,17 +1,18 @@
 import clientEvents from '../constants/client-events';
 import { findTestResult } from './utils';
 
-// const { RUNNING } = require('../../../constants/test-statuses');
-// const { getSuitePath } = require('../../../plugin-utils').getHermioneUtils();
-// const { saveTestImages, saveBase64Screenshot } = require('../../../reporter-helpers');
-//
-const RUNNING = 'a';
-const getSuitePath = (a: any) => console.log(1);
-const saveTestImages = (a: any, b: any) => Promise.resolve();
-const saveBase64Screenshot = (a: any, b: any) => Promise.resolve();
-//
+import { IHermione } from '../../types';
+import { getSuitePath } from '../../plugin-utils';
+import { RUNNING } from '../../constants/test-statuses';
+import ReportBuilder from '../../report-builder/report-builder';
+import { saveTestImages, saveBase64Screenshot } from '../../reporter-helpers';
 
-export default (hermione: any, reportBuilder: any, client: any, reportPath: string) => {
+export default (
+  hermione: IHermione,
+  reportBuilder: ReportBuilder,
+  client: any,
+  reportPath: string,
+) => {
   function failHandler(testResult: any) {
     const formattedResult = reportBuilder.format(testResult);
     const actions = [saveTestImages(formattedResult, reportPath)];

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import _ from 'lodash';
-import { findNode } from '../../static/modules/utils';
+import { findNode } from '../../common-utils';
 
 const formatTestHandler = (browser: any, test: any) => {
   const { suitePath, name } = test;
@@ -35,10 +35,10 @@ export const findTestResult = (suites: any[] = [], test: any) => {
 export const formatId = (hash: string, browserId: string) => `${hash}/${browserId}`;
 
 export const getShortMD5 = (str: string) => {
-    return crypto.createHash('md5').update(str, 'ascii').digest('hex').substr(0, 7);
+  return crypto.createHash('md5').update(str, 'ascii').digest('hex').substr(0, 7);
 };
 
-export const mkFullTitle = ({suite, state}: any) => {
-    // https://github.com/mochajs/mocha/blob/v2.4.5/lib/runnable.js#L165
-    return `${suite.path.join(' ')} ${state.name}`;
+export const mkFullTitle = ({ suite, state }: any) => {
+  // https://github.com/mochajs/mocha/blob/v2.4.5/lib/runnable.js#L165
+  return `${suite.path.join(' ')} ${state.name}`;
 };

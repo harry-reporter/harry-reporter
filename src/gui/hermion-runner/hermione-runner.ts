@@ -7,14 +7,10 @@ import EventSource from '../event-source';
 import subscribeOnToolEvents from './report-subscriber';
 import Runner from './runner';
 import { findTestResult, formatId, formatTests, getShortMD5, mkFullTitle } from './utils';
-import { findNode } from '../../static/modules/utils';
+import { findNode } from '../../common-utils';
 
-// const ReportBuilderFactory = require('../../report-builder-factory');
-// const reporterHelper = require('../../reporter-helpers');
-//
-const ReportBuilderFactory: any = {};
-const reporterHelper: any = {};
-//
+import ReportBuilder from '../../report-builder/report-builder';
+import * as reporterHelper from '../../reporter-helpers';
 
 export default class HermioneRunner {
   public hermione: any;
@@ -24,14 +20,14 @@ export default class HermioneRunner {
   public eventSource: any;
   public reportPath: string;
   private testFiles: string[];
-  private treeObj: any;
+  private treeInternal: any;
   private guiOpts: any;
   private tests: any;
 
   constructor(paths: string, hermione: any, { program, pluginConfig, options }: any) {
     this.testFiles = [].concat(paths);
     this.hermione = hermione;
-    this.treeObj = null;
+    this.treeInternal = null;
     this.collection = null;
 
     this.globalOpts = program;
@@ -39,7 +35,7 @@ export default class HermioneRunner {
     this.reportPath = pluginConfig.path;
 
     this.eventSource = new EventSource();
-    this.reportBuilder = ReportBuilderFactory.create(hermione, pluginConfig);
+    this.reportBuilder = new ReportBuilder(hermione, pluginConfig);
 
     this.tests = {};
   }
@@ -49,7 +45,7 @@ export default class HermioneRunner {
   }
 
   get tree(): any {
-    return this.tree;
+    return this.treeInternal;
   }
 
   public initialize() {
@@ -73,8 +69,8 @@ export default class HermioneRunner {
   public fillTestsTree() {
     const { autoRun } = this.guiOpts;
 
-    this.treeObj = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
-    this.treeObj.suites = this.applyReuseData(this.treeObj.suites);
+    this.treeInternal = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
+    this.treeInternal.suites = this.applyReuseData(this.treeInternal.suites);
   }
 
   public updateReferenceImage(tests: any) {
@@ -100,6 +96,18 @@ export default class HermioneRunner {
         return findTestResult(reportBuilder.getSuites(), formattedResult.prepareTestResult());
       });
     });
+  }
+
+  public finalize() {
+    this.reportBuilder.saveDataFileSync();
+  }
+
+  public addClient(connection: any) {
+    this.eventSource.addConnection(connection);
+  }
+
+  public sendClientEvent(event: any, data: any) {
+    this.eventSource.emit(event, data);
   }
 
   private handleRunnableCollection() {
@@ -137,18 +145,6 @@ export default class HermioneRunner {
     });
 
     return _.merge({}, testResult, { imagesInfo, sessionId, attempt, meta: { url }, updated: true });
-  }
-
-  private finalize() {
-    this.reportBuilder.saveDataFileSync();
-  }
-
-  private addClient(connection: any) {
-    this.eventSource.addConnection(connection);
-  }
-
-  private sendClientEvent(event: any, data: any) {
-    this.eventSource.emit(event, data);
   }
 
   private readTests() {
