@@ -8,16 +8,13 @@ const path = require('path');
 const commonConfig = require('./webpack.common');
 
 module.exports = merge(commonConfig, {
-  mode: 'production',
   entry: {
     report: ['./index.tsx'],
     gui: ['./index.tsx']
   },
   output: {
-    path: path.resolve(__dirname, '..', '..', 'lib/static')
-  },
-  optimization: {
-    minimize: true
+    path: path.resolve(__dirname, '..', '..', 'lib/static'),
+    filename: '[name].min.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
