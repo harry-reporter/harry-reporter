@@ -84,6 +84,7 @@ export interface IHermioneResult {
   attempt?: any;
   imagesInfo: IImagesInfo[];
   retriesLeft: number;
+  body: string;
 
   // Unexplicit types
   description: string;

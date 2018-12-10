@@ -4,7 +4,16 @@ import { CodeViewerProps } from './types';
 
 export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
   public render() {
-    const { platform, url, file, sessionId, textFile } = this.props.metaInfo;
+    const {
+      metaInfo: {
+        platform,
+        url,
+        file,
+        sessionId,
+      },
+      testBody,
+    } = this.props;
+
     return (
       <>
         <div className='Box-row Box-row--gray Box--condensed pt-2 pb-2'>
@@ -28,7 +37,7 @@ export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
           </p>
         </div>
         <div className='Box-row'>
-          <pre className='pl-3'>it('Hello, Harry!'){textFile}</pre>
+          <pre className='pl-3'>{testBody}</pre>
         </div>
       </>
     );
