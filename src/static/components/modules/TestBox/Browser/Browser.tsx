@@ -3,18 +3,19 @@ import * as React from 'react';
 import Viewer from './Viewer';
 import Header from './Header';
 
-import { FeatureProps, FeatureState } from './types';
+import { BrowserProps, BrowserState } from './types';
 import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
-import { appendFile } from 'fs-extra';
-import { RootStore } from 'store/types/store';
 import { connect } from 'react-redux';
+import { setIsOpenForBrowser } from 'src/store/modules/app/actions';
+import { bindActionCreators } from 'redux';
+import { switchTestViewMod } from '../testsViewMode';
 
 // TODO: вынести функциионал по аккордеону в отдельную компоненту
-class Feature extends React.PureComponent<FeatureProps, FeatureState> {
+
+class Browser extends React.PureComponent<BrowserProps, BrowserState> {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
       viewType:
         this.props.data.result.imagesInfo.length > 0 ? 'screenshot' : 'code',
       viewData: this.props.data.result,
@@ -23,21 +24,12 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
     };
   }
 
-  public componentDidMount(): void {
-    const { viewData } = this.state;
-    this.setState(
-      {
-        isOpen: viewData.status === 'fail' || viewData.status === 'error',
-      },
-      this.props.measure,
-    );
-  }
-
-  public toggleFeature = () => {
-    this.setState(
-      (prevState) => ({ isOpen: !prevState.isOpen }),
-      this.props.measure,
-    );
+  public componentDidUpdate(prevProps): void {
+    if (prevProps) {
+      if (this.props.isOpenedBrowser !== prevProps.isOpenedBrowser) {
+        this.props.measure();
+      }
+    }
   }
 
   public handleViewChange = (e: string) => {
@@ -51,21 +43,27 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
       this.setState({ pageCurrent: e, viewData: this.props.data.retries[e] });
     }
   }
+  public toggleBox = () => {
+    this.props.setIsOpenForBrowser(
+      !this.props.isOpenedBrowser,
+      this.props.data.browsersId,
+    );
+  }
 
   public render(): JSX.Element {
-    const { url } = this.props;
+    const { url, isOpenedBrowser } = this.props;
     const { name } = this.props.data;
     const { status } = this.state.viewData;
-    const { viewType, pageCurrent, pageCount, viewData, isOpen } = this.state;
+    const { viewType, pageCurrent, pageCount, viewData } = this.state;
 
     return (
       <div className={'Box-row p-0'}>
         <Header
           data={viewData}
           title={name}
-          isOpenedFeature={isOpen}
+          isOpenedBrowser={isOpenedBrowser}
           status={status}
-          onToggle={this.toggleFeature}
+          onToggle={this.toggleBox}
           handleViewChange={this.handleViewChange}
           viewType={viewType}
           handleDataChange={this.handleDataChange}
@@ -73,13 +71,28 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
           pageCount={pageCount}
           url={url}
         />
-        {isOpen && <Viewer type={viewType} {...viewData} />}
+        {isOpenedBrowser && <Viewer type={viewType} {...viewData} />}
       </div>
     );
   }
 }
-const mapStateUrl = ({ app }: RootStore) => ({
-  url: app.url,
+
+function mapStateToProps(state, ownProps: BrowserProps) {
+  let isOpenedBrowser = state.app.isOpenPerBrowser[ownProps.data.browsersId];
+  if (isOpenedBrowser === undefined) {
+    isOpenedBrowser = switchTestViewMod(state.app.testsViewMode);
+  }
+  return {
+    isOpenedBrowser,
+    url: state.app.url,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({ setIsOpenForBrowser }, dispatch),
 });
 
-export default connect(mapStateUrl)(Feature);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withMeasurer<BrowserProps>(Browser));

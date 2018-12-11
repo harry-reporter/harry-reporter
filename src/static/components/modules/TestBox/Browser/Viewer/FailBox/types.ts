@@ -1,4 +1,4 @@
-interface IFailBoxState {
+interface FailBoxState {
   tabId: number;
   valueOnionSkin: number;
   valueLoupe: number;

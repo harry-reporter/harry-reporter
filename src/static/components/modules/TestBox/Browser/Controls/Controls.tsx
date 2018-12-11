@@ -7,16 +7,20 @@ import Octicon, {
 } from '@githubprimer/octicons-react';
 import { ButtonIconContainerStyled, ControlsStyled } from '../../Header/styled';
 
-import Button from 'src/components/ui/Button/Button';
-import ButtonsGroup from 'src/components/ui/ButtonGroup/ButtonGroup';
+import Button from '../../../../ui/Button/Button';
+import ButtonsGroup from '../../../../ui/ButtonGroup/ButtonGroup';
 
-import { ControlsProps } from 'src/components/modules/TestBox/Feature/Controls/types';
-import ControlViewers from 'src/components/modules/TestBox/Feature/Controls/ControlViewers/ControlViewers';
-import ButtonEye from 'src/components/ui/ButtonEye/ButtonEye';
+import { ControlsProps } from './../Controls/types';
+import ControlViewers from './ControlViewers/ControlViewers';
+import ButtonEye from './../../../../ui/ButtonEye/ButtonEye';
+
+// import { ControlsProps } from 'src/components/modules/TestBox/Browser/Controls/types';
+// import ControlViewers from 'src/components/modules/TestBox/Browser/Controls/ControlViewers/ControlViewers';
+// import ButtonEye from 'src/components/ui/ButtonEye/ButtonEye';
 
 export default class Controls extends React.PureComponent<ControlsProps> {
-  public getChevron = (isOpenedFeature) =>
-    isOpenedFeature ? ChevronUp : ChevronDown
+  public getChevron = (isOpenedBrowser) =>
+    isOpenedBrowser ? ChevronUp : ChevronDown
 
   public handleViewClick() {
     const path = './';
@@ -25,13 +29,18 @@ export default class Controls extends React.PureComponent<ControlsProps> {
   // TODO: объявить объекты, которые передаются в качестве пропс
   public render() {
     const {
-      isOpenedFeature,
+      isOpenedBrowser,
       onToggle,
       viewType,
       handleViewChange,
       data,
       url,
     } = this.props;
+    const btns = [
+      { title: 'Skip', size: 'sm' },
+      { title: 'Accept', size: 'sm' },
+    ];
+
     return (
       <ControlsStyled>
         <ControlViewers
@@ -39,13 +48,7 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           onChange={handleViewChange}
           viewType={viewType}
         />
-        <ButtonsGroup
-          className={'mr-3'}
-          btns={[
-            { title: 'Skip', size: 'sm' },
-            { title: 'Accept', size: 'sm' },
-          ]}
-        />
+        <ButtonsGroup className={'mr-3'} btns={btns} />
         <Button
           size={'sm'}
           className={'mr-3'}
@@ -56,7 +59,7 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           <ButtonEye url={data.metaInfo.url} host={url} />
         </ButtonIconContainerStyled>
         <ButtonIconContainerStyled role={'button'} onClick={onToggle}>
-          <Octicon icon={this.getChevron(isOpenedFeature)} />
+          <Octicon icon={this.getChevron(isOpenedBrowser)} />
         </ButtonIconContainerStyled>
       </ControlsStyled>
     );

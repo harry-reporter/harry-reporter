@@ -6,7 +6,7 @@ export interface HeaderProps {
   status: TestStatus;
   title: string;
   className?: string;
-  isOpenedFeature: boolean;
+  isOpenedBrowser: boolean;
   handleViewChange: (e: string) => void;
   viewType: string;
   handleDataChange: (e: number) => void;

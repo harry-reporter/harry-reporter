@@ -2,38 +2,46 @@ import * as React from 'react';
 import cn from 'classnames';
 
 import Header from './Header';
-import Feature from './Feature';
 
-import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/TestBox/types';
+import { Measurer, TestBoxProps, TestBoxState } from '../TestBox/types';
+import { connect } from 'react-redux';
+import { setIsOpenForTestBox } from '../../../store/modules/app/actions';
+import { bindActionCreators } from 'redux';
+import Browser from './Browser/Browser';
+import { switchTestViewMod } from './testsViewMode';
 
 export const MeasurerContext = React.createContext<Measurer>({});
 
 class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
   public measurer: Measurer;
-  public state = {
-    isOpen: true,
-  };
 
   constructor(props) {
     super(props);
     this.measurer = { measure: props.measure };
   }
+  public componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.isOpen !== prevProps.isOpen) {
+      this.measurer.measure();
+    }
+  }
 
   public toggleBox = () => {
-    this.setState((prevState) => ({ isOpen: !prevState.isOpen }), this.props.measure);
+    this.props.setIsOpenForTestBox(!this.props.isOpen, this.props.data.uuid);
+    // todo: вместо setstate отправлять action в redux
   }
 
   public getSuite = (suitePath) => suitePath.join(' / ');
 
-  public renderFeatures = (): any => {
+  public renderBrowsers = (): any => {
     const { data } = this.props;
-
-    return data.browsers.map((item, id) => <Feature key={id} data={item} />);
+    return data.browsers.map((item, id) => (
+      <Browser key={id} data={item} {...item} />
+    ));
   }
 
   public render(): JSX.Element {
-    const { data, style, className } = this.props;
-    const { isOpen } = this.state;
+    const { data, style, className, isOpen } = this.props;
 
     const suite = this.getSuite(data.suitePath);
     const cnTestBox = cn('Box mb-3', className);
@@ -48,7 +56,7 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
               isOpenedBox={isOpen}
               onToggle={this.toggleBox}
             />
-            {isOpen && this.renderFeatures()}
+            {isOpen && this.renderBrowsers()}
           </div>
         </div>
       </MeasurerContext.Provider>
@@ -56,4 +64,24 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
   }
 }
 
-export default TestBox;
+function mapStateToProps(state, ownProps: TestBoxProps) {
+  let isOpen = state.app.isOpenPerTestBox[ownProps.data.uuid];
+  if (isOpen === undefined) {
+    // Для данного test box пользователь вручную ещё не определил состояние раскрыто/закрыто
+    // значит нужно установить состояние на основе глокабльной навигационной панели
+    isOpen = switchTestViewMod(state.app.testsViewMode);
+  }
+
+  return {
+    isOpen,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({ setIsOpenForTestBox }, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TestBox);

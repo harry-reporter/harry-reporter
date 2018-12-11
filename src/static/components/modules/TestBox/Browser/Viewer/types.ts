@@ -20,6 +20,8 @@ export interface ResultViewerProps {
   type: 'code' | 'tests' | 'screenshot';
   className?: string;
   measure: () => any;
+  isOpenedScreenView?: boolean;
+  setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;
 }
 
 export interface ImagesInfo {
@@ -32,6 +34,10 @@ export interface ImagesInfo {
   diffPath?: string;
   onLoad?: any;
   screenViewMode?: string;
+  viewId?: string;
+  isOpenedScreenView?: boolean;
+  setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;
+  measure: () => any;
 }
 
 export interface MetaInfo {

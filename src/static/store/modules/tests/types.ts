@@ -22,15 +22,14 @@ export interface CompiledData extends Stats {
 
 export type Skip = any;
 export type SuitePath = string[];
-export interface Config {
-
-}
+export interface Config {}
 export interface Suite {
   name: string;
   suitePath: SuitePath;
   status: TestStatus;
   children?: Suite[];
   browsers?: Browser[];
+  uuid?: string;
 }
 
 export interface Browser {

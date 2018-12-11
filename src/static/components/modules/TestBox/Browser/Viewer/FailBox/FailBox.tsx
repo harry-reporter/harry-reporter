@@ -10,7 +10,7 @@ import { ImagesInfo } from '../types';
 import { connect } from 'react-redux';
 import { RootStore } from 'store/types/store';
 
-class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
+class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   public state = {
     tabId: 0,
     valueSwipe: 0.5,
@@ -20,6 +20,7 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
   public textModItem = ['3-up', 'Only Diff', 'Loupe', 'Swipe', 'Onion Skin'];
   public getBoxContent(): JSX.Element {
     const { expectedPath, actualPath, diffPath } = this.props;
+
     return (
       <>
         {this.getBoxItem('Expected', 'green', expectedPath)}
@@ -31,12 +32,14 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
 
   public getBoxContentDiff(): JSX.Element {
     const { diffPath } = this.props;
+
     return <>{this.getBoxItem('Diff', 'gray', diffPath)}</>;
   }
 
   public getBoxContentSwipe(): JSX.Element {
     const { valueSwipe } = this.state;
     const { expectedPath, actualPath } = this.props;
+
     return (
       <div className='BoxContentSwipe d-flex flex-column'>
         <ImageDiffSwipe
@@ -83,13 +86,12 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
     const isSelected = tabId === key ? 'selected' : '';
     return (
       <li key={key} className='modNav-item'>
-        <a
-          href=''
+        <span
           className={`modNav-item-link ${isSelected}`}
           onClick={this.handleClickAtTab(key)}
         >
           {item}
-        </a>
+        </span>
       </li>
     );
   }
@@ -100,7 +102,9 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
     });
   }
   public handleClickAtTab = (id: number) => {
-    return () => this.setState({ tabId: id });
+    return () => {
+      this.setState({ tabId: id });
+    };
   }
   public getViewMod() {
     return (
@@ -117,6 +121,7 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
   public getBoxContentLoupe() {
     const { expectedPath, actualPath } = this.props;
     const { valueLoupe } = this.state;
+
     return (
       <div className='BoxContentLoupe d-flex flex-column'>
         <ImageDiffLoupe
@@ -169,7 +174,9 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
 
   public getView() {
     let view: any = null;
+    const { tabId } = this.state;
     const { screenViewMode } = this.props;
+
     switch (screenViewMode) {
       case '3-up':
         view = this.getBoxContent();
@@ -212,10 +219,10 @@ class FailBox extends React.PureComponent<ImagesInfo, IFailBoxState> {
     );
   }
 }
-const mapStateViewMode = ({ app }: RootStore) => {
+const mapStateToProps = ({ app }: RootStore) => {
   return {
     screenViewMode: app.screenViewMode,
   };
 };
 
-export default connect(mapStateViewMode)(FailBox);
+export default connect(mapStateToProps)(FailBox);

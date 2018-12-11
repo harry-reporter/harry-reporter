@@ -7,8 +7,25 @@ const formatSuitesData = (suites: Suite[]): Suite[] => {
     let obj;
 
     if (object.children) {
-      object.children.map((elem) => {
+      object.children.map((elem, i) => {
         obj = findChildren(elem);
+
+        // Заполним вспомогательное поле uuid для TestBox - пригодится для обновления сосотояния внутри redux
+        // самый простой способ использовать текущий счётчик длины плоского массива newListTest
+        // todo: подумать над генерацией nanoid или т.п.
+        obj.uuid = newListTest.length;
+        obj.browsers.map((browser, i) => {
+          browser.browsersId = `${obj.uuid}${browser.name}`;
+          browser.result.imagesInfo.map((view, i) => {
+            view.viewId = `${obj.uuid}${browser.name}result${i}`;
+          });
+          browser.retries.map((retry, i) => {
+            retry.imagesInfo.map((view, i) => {
+              view.viewId = `${obj.uuid}${browser.name}retries${i}`;
+            });
+          });
+        });
+        console.log(obj);
         newListTest.push(obj);
       });
       return obj;
@@ -25,14 +42,26 @@ const formatSuitesData = (suites: Suite[]): Suite[] => {
 };
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
-  const { skips, suites, total, passed, failed, skipped, retries } = compiledData;
+  const {
+    skips,
+    suites,
+    total,
+    passed,
+    failed,
+    skipped,
+    retries,
+  } = compiledData;
   const tests = formatSuitesData(suites);
 
   return {
     skips,
     tests,
     stats: {
-      total, passed, failed, skipped, retries,
+      total,
+      passed,
+      failed,
+      skipped,
+      retries,
     },
   };
 };

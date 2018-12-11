@@ -68,3 +68,7 @@
 .BoxContentOnionSkin-range {
   z-index: 1;
 }
+
+.modNav-item-link {
+  cursor: pointer;
+}

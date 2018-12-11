@@ -11,4 +11,7 @@ export interface AppStore {
   url: string;
   screenViewMode: '3-up' | 'onlyDiff' | 'loupe' | 'swipe' | 'onionSkin';
   testsViewMode: 'collapseAll' | 'expandAll' | 'expandErrors' | 'expandRetries';
+  isOpenPerTestBox: { [key: string]: boolean };
+  isOpenPerBrowser: { [key: string]: boolean };
+  isOpenPerView: { [key: string]: boolean };
 }

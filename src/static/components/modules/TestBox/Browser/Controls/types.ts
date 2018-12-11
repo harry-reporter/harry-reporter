@@ -1,7 +1,7 @@
 import { ResultViewerProps } from '../Viewer/types';
 
 export interface ControlsProps {
-  isOpenedFeature: boolean;
+  isOpenedBrowser: boolean;
   data: ResultViewerProps;
   handleViewChange: (e: string) => void;
   onToggle: () => any;

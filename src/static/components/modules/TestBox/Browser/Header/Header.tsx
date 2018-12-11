@@ -26,7 +26,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
       handleDataChange,
       pageCurrent,
       pageCount,
-      isOpenedFeature,
+      isOpenedBrowser,
       onToggle,
       handleViewChange,
       viewType,
@@ -46,7 +46,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
         />
         <Controls
           data={data}
-          isOpenedFeature={isOpenedFeature}
+          isOpenedBrowser={isOpenedBrowser}
           onToggle={onToggle}
           handleViewChange={handleViewChange}
           viewType={viewType}

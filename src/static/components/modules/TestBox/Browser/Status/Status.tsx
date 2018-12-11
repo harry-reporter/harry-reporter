@@ -2,7 +2,7 @@ import * as React from 'react';
 import cn from 'classnames';
 
 import Pagination from 'src/components/ui/Pagination';
-import StatusIcon from 'src/components/modules/TestBox/Feature/Status/Icon';
+import StatusIcon from 'src/components/modules/TestBox/Browser/Status/Icon';
 import Text from 'src/components/ui/Text/Text';
 import { BrowserNameStyled } from './styled';
 

@@ -16,7 +16,6 @@ const Link: React.SFC<ILinkProps> = ({ ...props }) => {
   const getUrl = () => {
     return props.url === '' ? '' : props.url ? props.url : '#';
   };
-
   return (
     <a href={getUrl()} className={cnText} onClick={props.onClick}>
       {props.children}

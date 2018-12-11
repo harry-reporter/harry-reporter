@@ -1,8 +1,15 @@
 import { flatMap, compact } from 'lodash';
 import * as actionNames from './constants';
-import { filterFailedBrowsers, filterAcceptableBrowsers, formatTests } from '../../utils/utils';
+import {
+  filterFailedBrowsers,
+  filterAcceptableBrowsers,
+  formatTests,
+} from '../../utils/utils';
 
-export const setTestsType = (type) => ({ type: actionNames.SET_TESTS_TYPE, payload: type });
+export const setTestsType = (type) => ({
+  type: actionNames.SET_TESTS_TYPE,
+  payload: type,
+});
 
 export const initGui = () => {
   return async (dispatch) => {
@@ -48,10 +55,10 @@ export const acceptAll = (fails) => {
 
   return async (dispatch) => {
     try {
-      const updatedData = await fetch(
-        '/update-reference',
-        { method: 'POST', body: JSON.stringify(compact(formattedFails)) },
-      );
+      const updatedData = await fetch('/update-reference', {
+        method: 'POST',
+        body: JSON.stringify(compact(formattedFails)),
+      });
       dispatch({ type: actionNames.ACCEPT_ALL_REFS, payload: updatedData });
     } catch (e) {
       // handle error
@@ -59,6 +66,33 @@ export const acceptAll = (fails) => {
   };
 };
 
-export const setUrl = (value) => ({ type: actionNames.UPDATE_URL, payload: value });
-export const setScreenViewMode = (value) => ({ type: actionNames.SET_SCREEN_VIEW_MODE, payload: value });
-export const setTestsViewMode = (value) => ({ type: actionNames.SET_TESTS_VIEW_MODE, payload: value });
+export const setUrl = (value) => ({
+  type: actionNames.UPDATE_URL,
+  payload: value,
+});
+export const setScreenViewMode = (value) => ({
+  type: actionNames.SET_SCREEN_VIEW_MODE,
+  payload: value,
+});
+export const setTestsViewMode = (value) => ({
+  type: actionNames.SET_TESTS_VIEW_MODE,
+  payload: value,
+});
+export const setIsOpenForTestBox = (isOpen: boolean, uuid: string) => ({
+  type: actionNames.SET_IS_OPEN_FOR_TEST_BOX,
+  payload: { isOpen, uuid },
+});
+export const setIsOpenForBrowser = (
+  isOpenedBrowser: boolean,
+  browsersId: string,
+) => ({
+  type: actionNames.SET_IS_OPEN_FOR_BROWSER,
+  payload: { isOpenedBrowser, browsersId },
+});
+export const setIsOpenForView = (
+  isOpenScreenView: boolean,
+  screenViewId: string,
+) => ({
+  type: actionNames.SET_IS_OPEN_FOR_VIEW,
+  payload: { isOpenScreenView, screenViewId },
+});

@@ -1,14 +1,13 @@
-import { Browser } from 'src/store/modules/tests/types';
 import { ResultViewerProps } from './Viewer/types';
 
-export interface FeatureProps {
+export interface BrowserProps {
   data: any;
-  url: string;
-
+  url?: string;
+  isOpenedBrowser?: boolean;
+  setIsOpenForBrowser?: (isOpen: boolean, uuid: string) => void;
   measure?: () => any;
 }
-export interface FeatureState {
-  isOpen: boolean;
+export interface BrowserState {
   viewType: string;
   viewData: ResultViewerProps;
   pageCount: number;

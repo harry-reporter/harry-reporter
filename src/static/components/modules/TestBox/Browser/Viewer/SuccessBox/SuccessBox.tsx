@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './SuccessBox.css';
 import { ImagesInfo } from '../types';
+import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
 
 class SuccessBox extends React.PureComponent<ImagesInfo> {
   public render(): JSX.Element {
@@ -23,4 +24,4 @@ class SuccessBox extends React.PureComponent<ImagesInfo> {
   }
 }
 
-export default SuccessBox;
+export default withMeasurer<ImagesInfo>(SuccessBox);
