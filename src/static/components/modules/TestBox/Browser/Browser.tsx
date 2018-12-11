@@ -80,7 +80,10 @@ class Browser extends React.PureComponent<BrowserProps, BrowserState> {
 function mapStateToProps(state, ownProps: BrowserProps) {
   let isOpenedBrowser = state.app.isOpenPerBrowser[ownProps.data.browsersId];
   if (isOpenedBrowser === undefined) {
-    isOpenedBrowser = switchTestViewMod(state.app.testsViewMode);
+    isOpenedBrowser = switchTestViewMod(
+      state.app.testsViewMode,
+      ownProps.data.status,
+    );
   }
   return {
     isOpenedBrowser,

@@ -34,6 +34,10 @@ export interface ImagesInfo {
   diffPath?: string;
   onLoad?: any;
   screenViewMode?: string;
+  setScreenModForView?: (
+    screenViewMod: string,
+    screenViewModId: string,
+  ) => void;
   viewId?: string;
   isOpenedScreenView?: boolean;
   setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;

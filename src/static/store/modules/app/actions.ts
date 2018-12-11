@@ -96,3 +96,11 @@ export const setIsOpenForView = (
   type: actionNames.SET_IS_OPEN_FOR_VIEW,
   payload: { isOpenScreenView, screenViewId },
 });
+
+export const setScreenModForView = (
+  screenViewMod: string,
+  screenViewModId: string,
+) => ({
+  type: actionNames.SET_SCREEN_FOR_VIEW,
+  payload: { screenViewMod, screenViewModId },
+});

@@ -14,4 +14,5 @@ export interface AppStore {
   isOpenPerTestBox: { [key: string]: boolean };
   isOpenPerBrowser: { [key: string]: boolean };
   isOpenPerView: { [key: string]: boolean };
+  screenPerView: { [key: string]: string };
 }

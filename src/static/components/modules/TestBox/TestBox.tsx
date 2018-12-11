@@ -28,7 +28,6 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
 
   public toggleBox = () => {
     this.props.setIsOpenForTestBox(!this.props.isOpen, this.props.data.uuid);
-    // todo: вместо setstate отправлять action в redux
   }
 
   public getSuite = (suitePath) => suitePath.join(' / ');
@@ -69,7 +68,6 @@ function mapStateToProps(state, ownProps: TestBoxProps) {
   if (isOpen === undefined) {
     isOpen = switchTestViewMod(state.app.testsViewMode, ownProps.data.status);
   }
-
   return {
     isOpen,
   };

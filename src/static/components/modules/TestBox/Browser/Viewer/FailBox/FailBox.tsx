@@ -8,16 +8,36 @@ import './types';
 import './FailBox.css';
 import { ImagesInfo } from '../types';
 import { connect } from 'react-redux';
-import { RootStore } from 'store/types/store';
+import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
+
+import { bindActionCreators } from 'redux';
+import { setScreenModForView } from 'src/store/modules/app/actions';
 
 class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   public state = {
-    tabId: 0,
     valueSwipe: 0.5,
     valueOnionSkin: 0.5,
     valueLoupe: 2,
   };
+
+  public componentDidUpdate(prevProps): void {
+    if (prevProps) {
+      if (this.props.screenViewMode !== prevProps.screenViewMode) {
+        this.props.measure();
+      }
+    }
+  }
+
   public textModItem = ['3-up', 'Only Diff', 'Loupe', 'Swipe', 'Onion Skin'];
+
+  public handleInputChange = (e) => {
+    return this.setState({ valueSwipe: parseFloat(e.target.value) });
+  }
+
+  public handleInputChangeOnion = (e) => {
+    return this.setState({ valueOnionSkin: parseFloat(e.target.value) });
+  }
+
   public getBoxContent(): JSX.Element {
     const { expectedPath, actualPath, diffPath } = this.props;
 
@@ -61,13 +81,6 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     );
   }
 
-  public handleInputChange = (e) => {
-    return this.setState({ valueSwipe: parseFloat(e.target.value) });
-  }
-  public handleInputChangeOnion = (e) => {
-    return this.setState({ valueOnionSkin: parseFloat(e.target.value) });
-  }
-
   public getBoxItem(cn: string, color: string, imgPath: string): JSX.Element {
     return (
       <div className={cn}>
@@ -82,13 +95,15 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   }
 
   public getItem(item: string, key: number): JSX.Element {
-    const { tabId } = this.state;
-    const isSelected = tabId === key ? 'selected' : '';
+    const { screenViewMode } = this.props;
+    const isSelected = screenViewMode === item ? 'selected' : '';
     return (
       <li key={key} className='modNav-item'>
         <span
           className={`modNav-item-link ${isSelected}`}
-          onClick={this.handleClickAtTab(key)}
+          onClick={() => {
+            this.handleClickAtTab(item);
+          }}
         >
           {item}
         </span>
@@ -101,10 +116,8 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
       return this.getItem(item, index);
     });
   }
-  public handleClickAtTab = (id: number) => {
-    return () => {
-      this.setState({ tabId: id });
-    };
+  public handleClickAtTab(item: string) {
+    this.props.setScreenModForView(item, this.props.viewId);
   }
   public getViewMod() {
     return (
@@ -118,7 +131,7 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     );
   }
 
-  public getBoxContentLoupe() {
+  public getBoxContentLoupe(): JSX.Element {
     const { expectedPath, actualPath } = this.props;
     const { valueLoupe } = this.state;
 
@@ -147,7 +160,7 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     this.setState({ valueLoupe: parseFloat(e.target.value) });
   }
 
-  public getBoxContentOnionSkin() {
+  public getBoxContentOnionSkin(): JSX.Element {
     const { expectedPath, actualPath } = this.props;
     const { valueOnionSkin } = this.state;
 
@@ -173,35 +186,29 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   }
 
   public getView() {
-    let view: any = null;
-    const { tabId } = this.state;
+    let view = null;
     const { screenViewMode } = this.props;
 
     switch (screenViewMode) {
-      case '3-up':
-        view = this.getBoxContent();
-        this.setState({ tabId: 0 });
-        break;
       case 'onlyDiff':
+      case 'Only Diff':
         view = this.getBoxContentDiff();
-        this.setState({ tabId: 1 });
         break;
       case 'loupe':
+      case 'Loupe':
         view = this.getBoxContentLoupe();
-        this.setState({ tabId: 2 });
         break;
       case 'swipe':
+      case 'Swipe':
         view = this.getBoxContentSwipe();
-        this.setState({ tabId: 3 });
         break;
       case 'onionSkin':
+      case 'Onion Skin':
         view = this.getBoxContentOnionSkin();
-        this.setState({ tabId: 4 });
         break;
-
+      case '3-up':
       default:
         view = this.getBoxContent();
-        this.setState({ tabId: 0 });
     }
     return view;
   }
@@ -219,10 +226,25 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     );
   }
 }
-const mapStateToProps = ({ app }: RootStore) => {
-  return {
-    screenViewMode: app.screenViewMode,
-  };
-};
 
-export default connect(mapStateToProps)(FailBox);
+function mapStateToProps(state, ownProps: ImagesInfo) {
+  let screenViewMode = state.app.screenPerView[ownProps.viewId];
+  console.log(`map to props`);
+  console.log(ownProps);
+  console.log(screenViewMode);
+  console.log(state.app);
+  if (screenViewMode === undefined) {
+    screenViewMode = state.app.screenViewMode;
+  }
+  return {
+    screenViewMode,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({ setScreenModForView }, dispatch),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withMeasurer<ImagesInfo>(FailBox));
