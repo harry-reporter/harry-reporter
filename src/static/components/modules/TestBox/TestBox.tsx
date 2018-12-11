@@ -67,9 +67,7 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
 function mapStateToProps(state, ownProps: TestBoxProps) {
   let isOpen = state.app.isOpenPerTestBox[ownProps.data.uuid];
   if (isOpen === undefined) {
-    // Для данного test box пользователь вручную ещё не определил состояние раскрыто/закрыто
-    // значит нужно установить состояние на основе глокабльной навигационной панели
-    isOpen = switchTestViewMod(state.app.testsViewMode);
+    isOpen = switchTestViewMod(state.app.testsViewMode, ownProps.data.status);
   }
 
   return {

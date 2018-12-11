@@ -1,4 +1,7 @@
-export function switchTestViewMod(testsViewMode: string): boolean {
+export function switchTestViewMod(
+  testsViewMode: string,
+  status?: string,
+): boolean {
   let isOpen = false;
   switch (testsViewMode) {
     case 'collapseAll':
@@ -7,12 +10,13 @@ export function switchTestViewMod(testsViewMode: string): boolean {
     case 'expandAll':
       isOpen = true;
       break;
-    case 'expandErrors':
-      // условие по ошибкам
-      break;
+
     case 'expandRetries':
       isOpen = true;
       break;
+    case 'expandErrors':
+    default:
+      isOpen = status !== 'success';
   }
   return isOpen;
 }
