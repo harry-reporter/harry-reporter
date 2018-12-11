@@ -28,7 +28,7 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
   public renderFeatures = (): any => {
     const { data } = this.props;
 
-    return data.browsers.map((item, id) => <Feature key={id} data={item} />);
+    return data.browsers.map((item) => <Feature key={item.name} data={item} />);
   }
 
   public render(): JSX.Element {

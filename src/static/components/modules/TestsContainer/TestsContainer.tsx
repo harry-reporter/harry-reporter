@@ -15,14 +15,18 @@ const cache = new CellMeasurerCache({
 });
 
 class TestsContainer extends React.Component<TestsContainerProps, TestsContainerState> {
-  private renderMeasurer = (props) => ({ measure }) => (
-    <TestBox
-      style={props.style}
-      key={props.key}
-      data={this.props.tests[props.index]}
-      measure={measure}
-    />
-  )
+  private renderMeasurer = ({ style, index, key }) => ({ measure }) => {
+    const { tests } = this.props;
+
+    return (
+      <TestBox
+        style={style}
+        key={`${tests[index].name}-${key}`}
+        data={tests[index]}
+        measure={measure}
+      />
+    );
+  }
 
   private renderRow = ({ index, isScrolling, key, parent, style }) => (
     <CellMeasurer
@@ -32,11 +36,11 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
       parent={parent}
       rowIndex={index}
     >
-      {this.renderMeasurer({ index, isScrolling, key, parent, style })}
+      {this.renderMeasurer({ style, index, key })}
     </CellMeasurer>
   )
 
-  public renderList = ({ height, width, isScrolling, onChildScroll, scrollTop }) => (
+  public renderList = () => ({ height, width, isScrolling, onChildScroll, scrollTop }) => (
     <ListStyled
       autoHeight={true}
       autoWidth={true}
@@ -60,11 +64,10 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
     if (tests.length === 0) {
       return null;
     }
-
     return (
       <div className={'pt-5'}>
         <WindowScroller>
-          {this.renderList}
+          {this.renderList()}
         </WindowScroller>
       </div>
     );
