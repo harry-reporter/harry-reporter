@@ -101,9 +101,7 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
       <li key={key} className='modNav-item'>
         <span
           className={`modNav-item-link ${isSelected}`}
-          onClick={() => {
-            this.handleClickAtTab(item);
-          }}
+          onClick={this.createHandleClickAtTab(item)}
         >
           {item}
         </span>
@@ -116,9 +114,12 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
       return this.getItem(item, index);
     });
   }
-  public handleClickAtTab(item: string) {
-    this.props.setScreenModForView(item, this.props.viewId);
+  public createHandleClickAtTab(item: string) {
+    return () => {
+      this.props.setScreenModForView(item, this.props.viewId);
+    };
   }
+
   public getViewMod() {
     return (
       <>
@@ -229,10 +230,6 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
 
 function mapStateToProps(state, ownProps: ImagesInfo) {
   let screenViewMode = state.app.screenPerView[ownProps.viewId];
-  console.log(`map to props`);
-  console.log(ownProps);
-  console.log(screenViewMode);
-  console.log(state.app);
   if (screenViewMode === undefined) {
     screenViewMode = state.app.screenViewMode;
   }

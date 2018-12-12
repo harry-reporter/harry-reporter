@@ -10,13 +10,9 @@ import { ButtonIconContainerStyled, ControlsStyled } from '../../Header/styled';
 import Button from '../../../../ui/Button/Button';
 import ButtonsGroup from '../../../../ui/ButtonGroup/ButtonGroup';
 
-import { ControlsProps } from './../Controls/types';
-import ControlViewers from './ControlViewers/ControlViewers';
-import ButtonEye from './../../../../ui/ButtonEye/ButtonEye';
-
-// import { ControlsProps } from 'src/components/modules/TestBox/Browser/Controls/types';
-// import ControlViewers from 'src/components/modules/TestBox/Browser/Controls/ControlViewers/ControlViewers';
-// import ButtonEye from 'src/components/ui/ButtonEye/ButtonEye';
+import { ControlsProps } from 'src/components/modules/TestBox/Browser/Controls/types';
+import ControlViewers from 'src/components/modules/TestBox/Browser/Controls/ControlViewers/ControlViewers';
+import ButtonEye from 'src/components/ui/ButtonEye/ButtonEye';
 
 export default class Controls extends React.PureComponent<ControlsProps> {
   public getChevron = (isOpenedBrowser) =>

@@ -14,16 +14,9 @@ export default class Status extends React.PureComponent<StatusProps> {
     this.props.className,
     'd-flex flex-justify-between flex-items-center',
   );
-  public status = this.props.status;
 
   public isFail = () => {
-    if (this.status === 'fail') {
-      return true;
-    }
-    if (this.status === 'error') {
-      return true;
-    }
-    return false;
+    return ['fail', 'error'].includes(this.props.status);
   }
 
   public statusColor: ColorType = this.isFail() ? 'red' : 'green';

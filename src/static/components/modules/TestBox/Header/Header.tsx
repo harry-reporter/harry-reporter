@@ -4,6 +4,7 @@ import Octicon, {
   ChevronDown,
   ChevronUp,
   Clippy,
+  IssueOpened,
 } from '@githubprimer/octicons-react';
 import Text from 'src/components/ui/Text/Text';
 import {
@@ -22,11 +23,10 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
 
   private getTextColor = (): ColorType => {
     const { status } = this.props;
-
-    return status === 'fail' || status === 'error' ? 'red' : 'green';
+    return ['fail', 'error'].includes(status) ? 'red' : 'green';
   }
 
-  private getChevron = () => (this.props.isOpenedBox ? ChevronUp : ChevronDown);
+  private getChevron = (isOpenedBox) => (isOpenedBox ? ChevronUp : ChevronDown);
 
   public handleRunClick() {
     // todo: отправлять post-запрос
@@ -34,10 +34,9 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
   }
 
   public render(): JSX.Element {
-    const { title } = this.props;
-
+    const { title, isOpenedBox } = this.props;
     const textColor = this.getTextColor();
-    const Chevron = this.getChevron();
+    const Chevron = this.getChevron(isOpenedBox);
 
     return (
       <HeaderContainerStyled

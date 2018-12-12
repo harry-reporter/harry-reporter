@@ -15,12 +15,18 @@ import { switchTestViewMod } from '../testsViewMode';
 class Browser extends React.PureComponent<BrowserProps, BrowserState> {
   constructor(props) {
     super(props);
+    const screenshot = 'screenshot';
+    const code = 'code';
+
+    const {
+      result,
+      result: { attempt, imagesInfo },
+    } = this.props.data;
     this.state = {
-      viewType:
-        this.props.data.result.imagesInfo.length > 0 ? 'screenshot' : 'code',
-      viewData: this.props.data.result,
-      pageCount: this.props.data.result.attempt,
-      pageCurrent: this.props.data.result.attempt,
+      viewType: imagesInfo.length > 0 ? screenshot : code,
+      viewData: result,
+      pageCount: attempt,
+      pageCurrent: attempt,
     };
   }
 
@@ -37,24 +43,36 @@ class Browser extends React.PureComponent<BrowserProps, BrowserState> {
   }
 
   public handleDataChange = (e: number) => {
-    if (e === this.state.pageCount) {
-      this.setState({ pageCurrent: e, viewData: this.props.data.result });
+    const { result, retries } = this.props.data;
+    const { pageCount } = this.state;
+    if (e === pageCount) {
+      this.setState({ pageCurrent: e, viewData: result });
     } else {
-      this.setState({ pageCurrent: e, viewData: this.props.data.retries[e] });
+      this.setState({ pageCurrent: e, viewData: retries[e] });
     }
   }
   public toggleBox = () => {
-    this.props.setIsOpenForBrowser(
-      !this.props.isOpenedBrowser,
-      this.props.data.browsersId,
-    );
+    const {
+      isOpenedBrowser,
+      data: { browsersId },
+    } = this.props;
+    this.props.setIsOpenForBrowser(!isOpenedBrowser, browsersId);
   }
 
   public render(): JSX.Element {
-    const { url, isOpenedBrowser } = this.props;
-    const { name } = this.props.data;
-    const { status } = this.state.viewData;
-    const { viewType, pageCurrent, pageCount, viewData } = this.state;
+    const {
+      url,
+      isOpenedBrowser,
+      data: { name },
+    } = this.props;
+
+    const {
+      viewType,
+      pageCurrent,
+      pageCount,
+      viewData,
+      viewData: { status },
+    } = this.state;
 
     return (
       <div className={'Box-row p-0'}>
