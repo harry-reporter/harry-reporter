@@ -12,7 +12,7 @@ class ScreenshotViewer extends React.PureComponent<ResultViewerProps> {
     if (status === 'success') {
       color = 'green';
     }
-    if (['fail', 'error'].includes(status)) {
+    if (['fail', 'error'].indexOf(status) !== -1) {
       color = 'red';
     }
     return color;

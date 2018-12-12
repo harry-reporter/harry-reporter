@@ -1,5 +1,6 @@
 import { TestsStore, WindowWithData } from './types';
 import { getInitialState } from './utils';
+import { INIT_GUI } from './constants';
 
 const defaultState: TestsStore = {
   tests: [],
@@ -11,18 +12,21 @@ const defaultState: TestsStore = {
     skipped: 0,
     retries: 0,
   },
+  gui: true,
 };
 
-const compiledData = getInitialState((window as WindowWithData).data) || defaultState;
+const compiledData = (window as WindowWithData).data;
 
-const SET_INIT = 'SET_INIT';
+const initialState = compiledData
+  ? getInitialState(compiledData)
+  : defaultState;
 
-export const reducer = (state: TestsStore = compiledData, action): TestsStore => {
-  const { type } = action;
+export const reducer = (state: TestsStore = initialState, action): TestsStore => {
+  const { type, payload } = action;
 
   switch (type) {
-    case `${SET_INIT}`:
-      return { ...state };
+    case `${INIT_GUI}`:
+      return { ...payload };
 
     default:
       return state;

@@ -9,6 +9,8 @@ interface IEvents {
   TEST_PENDING: string;
   RETRY: string;
   RUNNER_END: string;
+  SUITE_BEGIN: string;
+  TEST_BEGIN: string;
 }
 
 export interface IPluginOpts {

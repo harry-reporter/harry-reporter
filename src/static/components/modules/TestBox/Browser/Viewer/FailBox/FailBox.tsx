@@ -28,7 +28,13 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     }
   }
 
-  public textModItem = ['3-up', 'Only Diff', 'Loupe', 'Swipe', 'Onion Skin'];
+  public textModKeyItems = {
+    '3-up': '3-up',
+    onlyDiff: 'Only Diff',
+    loupe: 'Loupe',
+    swipe: 'Swipe',
+    onionSkin: 'Onion Skin',
+  };
 
   public handleInputChange = (e) => {
     return this.setState({ valueSwipe: parseFloat(e.target.value) });
@@ -94,14 +100,14 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     );
   }
 
-  public getItem(item: string, key: number): JSX.Element {
+  public getItem(item: string, key: string): JSX.Element {
     const { screenViewMode } = this.props;
-    const isSelected = screenViewMode === item ? 'selected' : '';
+    const isSelected = screenViewMode === key ? 'selected' : '';
     return (
       <li key={key} className='modNav-item'>
         <span
           className={`modNav-item-link ${isSelected}`}
-          onClick={this.createHandleClickAtTab(item)}
+          onClick={this.createHandleClickAtTab(key)}
         >
           {item}
         </span>
@@ -109,14 +115,14 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     );
   }
 
-  public getViewModItem(textItems: string[]): JSX.Element[] {
-    return textItems.map((item, index) => {
-      return this.getItem(item, index);
+  public getViewModItem(): JSX.Element[] {
+    return Object.keys(this.textModKeyItems).map((key) => {
+      return this.getItem(this.textModKeyItems[key], key);
     });
   }
-  public createHandleClickAtTab(item: string) {
+  public createHandleClickAtTab(key: string) {
     return () => {
-      this.props.setScreenModForView(item, this.props.viewId);
+      this.props.setScreenModForView(key, this.props.viewId);
     };
   }
 
@@ -124,9 +130,7 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
     return (
       <>
         <nav className='modNav m-0 pt-1 pb-1' aria-label='Foo bar'>
-          <ul className='modNav-body'>
-            {this.getViewModItem(this.textModItem)}
-          </ul>
+          <ul className='modNav-body'>{this.getViewModItem()}</ul>
         </nav>
       </>
     );
@@ -192,19 +196,15 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
 
     switch (screenViewMode) {
       case 'onlyDiff':
-      case 'Only Diff':
         view = this.getBoxContentDiff();
         break;
       case 'loupe':
-      case 'Loupe':
         view = this.getBoxContentLoupe();
         break;
       case 'swipe':
-      case 'Swipe':
         view = this.getBoxContentSwipe();
         break;
       case 'onionSkin':
-      case 'Onion Skin':
         view = this.getBoxContentOnionSkin();
         break;
       case '3-up':

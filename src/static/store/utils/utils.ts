@@ -1,10 +1,10 @@
 import { filter, flatMap, set, cloneDeep } from 'lodash';
 // import { isFailStatus, isErroredStatus } from '../../common-utils';
 
-const isErroredStatus = (status) => status === 'ERROR';
-const isFailStatus = (status) => status === 'FAIL';
+const isErroredStatus = (status: any) => status === 'ERROR';
+const isFailStatus = (status: any) => status === 'FAIL';
 
-export const isSuiteFailed = (suite) => {
+export const isSuiteFailed = (suite: any) => {
   return isFailStatus(suite.status) || isErroredStatus(suite.status);
 };
 
@@ -14,8 +14,8 @@ export const isAcceptable = ({status, reason = ''}: any) => {
   return isErroredStatus(status) && stack.startsWith('NoRefImageError') || isFailStatus(status);
 };
 
-export const filterBrowsers = (suites = [], filterFn) => {
-  const modifySuite = (suite) => {
+export const filterBrowsers = (suites: any = [], filterFn: any) => {
+  const modifySuite = (suite: any): any => {
     if (suite.children) {
       return flatMap(suite.children, modifySuite);
     }
@@ -34,7 +34,7 @@ export const filterBrowsers = (suites = [], filterFn) => {
   return flatMap(cloneDeep(suites), modifySuite);
 };
 
-export const formatTests = (test) => {
+export const formatTests = (test: any): any => {
   if (test.children) {
     return flatMap(test.children, formatTests);
   }
@@ -44,10 +44,10 @@ export const formatTests = (test) => {
   }
 
   const { suitePath, name, acceptTestAttempt } = test;
-  const prepareImages = (images, filterCond) => {
+  const prepareImages = (images: any, filterCond: any) => {
     return filter(images, filterCond)
       .filter(isAcceptable)
-      .map(({ actualPath, stateName }) => ({ status: 'updated', actualPath, stateName }));
+      .map(({ actualPath, stateName }: any) => ({ status: 'updated', actualPath, stateName }));
   };
 
   return flatMap(test.browsers, (browser) => {
@@ -70,15 +70,15 @@ export const formatTests = (test) => {
   });
 };
 
-export const filterFailedBrowsers = (suites = []) => {
+export const filterFailedBrowsers = (suites: any = []) => {
   return filterBrowsers(suites, isSuiteFailed);
 };
 
-export const filterAcceptableBrowsers = (suites = []) => {
+export const filterAcceptableBrowsers = (suites: any = []) => {
   return filterBrowsers(suites, isAcceptable);
 };
 
-const getBrowserResultByAttempt = (browser, attempt) => {
+const getBrowserResultByAttempt = (browser: any, attempt: any) => {
   return attempt >= 0
     ? browser.retries.concat(browser.result)[attempt]
     : browser.result;

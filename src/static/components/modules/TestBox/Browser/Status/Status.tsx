@@ -16,7 +16,7 @@ export default class Status extends React.PureComponent<StatusProps> {
   );
 
   public isFail = () => {
-    return ['fail', 'error'].includes(this.props.status);
+    return ['fail', 'error'].indexOf(this.props.status) !== -1;
   }
 
   public statusColor: ColorType = this.isFail() ? 'red' : 'green';

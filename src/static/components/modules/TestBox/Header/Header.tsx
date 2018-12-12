@@ -23,7 +23,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
 
   private getTextColor = (): ColorType => {
     const { status } = this.props;
-    return ['fail', 'error'].includes(status) ? 'red' : 'green';
+    return ['fail', 'error'].indexOf(status) !== -1 ? 'red' : 'green';
   }
 
   private getChevron = (isOpenedBox) => (isOpenedBox ? ChevronUp : ChevronDown);

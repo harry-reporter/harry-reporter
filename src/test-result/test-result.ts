@@ -9,7 +9,10 @@ import Suite from '../suite/suite';
 import { IImagesInfo } from './types';
 
 export default class TestResult {
+  public actualPath: string;
+  public currentPath: string;
   public image: boolean;
+  public referencePath: string;
   private testResult: IHermioneResult;
   private hermione: IHermione;
   private errors: any;
@@ -158,7 +161,7 @@ export default class TestResult {
   }
 
   public getImagePath(stateName?: string) {
-    return (_.find(this.imagesInfo, { stateName }) || {}).imagePath;
+    return _.find(this.imagesInfo, { stateName }).imagePath || undefined;
   }
 
   public prepareTestResult() {

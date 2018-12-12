@@ -1,24 +1,38 @@
 'use strict';
 
-const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 const merge = require('webpack-merge');
+const path = require('path');
 
 const commonConfig = require('./webpack.common');
 
-module.exports = merge(
-    commonConfig,
-    {
-        plugins: [
-            new webpack.optimize.UglifyJsPlugin({
-                uglifyOptions: {
-                    compress: {
-                        warnings: false,
-                        'drop_console': true,
-                        unsafe: true
-                    }
-                }
-            }),
-            new webpack.EnvironmentPlugin(['NODE_ENV'])
-        ]
-    }
-);
+module.exports = merge(commonConfig, {
+  entry: {
+    report: ['./index.tsx'],
+    gui: ['./index.tsx']
+  },
+  output: {
+    path: path.resolve(__dirname, '..', '..', 'lib/static'),
+    filename: '[name].min.js',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'HTML report',
+      filename: 'index.html',
+      template: 'template.html',
+      chunks: ['report']
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Gui report',
+      filename: 'gui.html',
+      template: 'template.html',
+      chunks: ['gui']
+    }),
+    new HtmlWebpackIncludeAssetsPlugin({
+      files: ['index.html'],
+      assets: ['data.js'],
+      append: false
+    })
+  ]
+});

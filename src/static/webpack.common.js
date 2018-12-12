@@ -1,57 +1,42 @@
 'use strict';
 
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const staticPath = path.resolve(__dirname);
 
 module.exports = {
-    entry: './index.tsx',
-    context: staticPath,
-    output: {
-        filename: 'bundle.js',
-        path: staticPath
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
-        alias: {
-            src: staticPath
-        }
-    },
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [{
-                        loader: 'css-loader',
-                        options: {minimize: true}
-                    }]
-                })
-            }
+  context: staticPath,
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      src: staticPath
+    }
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          MiniCssExtractPlugin.loader,
+          "css-loader"
         ]
+      }
+      ]
     },
-    plugins: [
-        new ExtractTextPlugin('[name].min.css'),
-        new HtmlWebpackPlugin({
-            template: 'template.html'
-        }),
-        new HtmlWebpackIncludeAssetsPlugin({
-            files: ['index.html'],
-            assets: ['data.js'],
-            append: false
-        })
-        // new BundleAnalyzerPlugin({
-        //     openAnalyzer: false,
-        //     analyzerPort: 8888
-        // })
-    ]
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].min.css",
+    }),
+    new HtmlWebpackPlugin({
+      template: 'template.html'
+    })
+  ]
 };

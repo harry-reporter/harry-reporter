@@ -31,10 +31,10 @@ export default class Plugin {
 
   public addCliCommands() {
     _.values(cliCommands).forEach((command: string) => {
-      this.hermione.on(this.hermione.events.CLI, (commander: any) => {
-        import(`./cli-commands/${command}`).then(({ default: fn }) => {
-          fn(commander, this.config, this.hermione);
-        });
+      this.hermione.on(this.hermione.events.CLI, (commander: any) => { // Commander type
+        const { default: cmd } = require(`./cli-commands/${command}`);
+
+        cmd(commander, this.config, this.hermione);
         commander.prependListener(`command:${command}`, () => this.run = _.noop);
       });
     });

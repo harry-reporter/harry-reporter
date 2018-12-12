@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as appActions from 'src/store/modules/app/actions';
+import * as testsActions from 'src/store/modules/tests/actions';
 import Dropdown from 'src/components/ui/Dropdown';
+import DropdownItem from 'src/components/ui/DropdownItem';
 import Button from 'src/components/ui/Button';
 import TextInput from 'src/components/ui/TextInput';
 import ControlPanelStyled from './styled';
@@ -11,65 +13,118 @@ import ControlPanelStyled from './styled';
 import { ControlPanelProps } from './types';
 import { RootStore } from 'src/store/types/store';
 
-const ControlPanel: React.SFC<ControlPanelProps> = (props) => {
-  const { setUrl, runAllTests, runFailedTests, acceptAll, setTestsViewMode, setScreenViewMode } = props;
+interface ControlPanelState {}
 
-  const handleInputUrl = (ev) => setUrl(ev.target.value);
+class ControlPanel extends React.Component<
+  ControlPanelProps,
+  ControlPanelState
+> {
+  public componentDidMount() {
+    const { isGui, initGui } = this.props;
 
-  const handleAcceptAll = () => {
-    // get fail tests and pass
-    acceptAll();
-  };
-
-  const handleRunTestsClick = (value: string) => {
-    if (value === 'all') {
-      runAllTests();
-    } else {
-      // get fail tests and pass
-      runFailedTests();
+    if (isGui) {
+      initGui();
     }
-  };
+  }
 
-  const handleScreenViewMode = (value: string) => setScreenViewMode(value);
-  const handleTestsViewMode = (value: string) => setTestsViewMode(value);
+  private handleScreenViewMode = (value: string) => () =>
+    this.props.setScreenViewMode(value)
+  private handleTestsViewMode = (value: string) => () =>
+    this.props.setTestsViewMode(value)
 
-  const runTestItems = [
-    { title: 'Run all tests', value: 'all' },
-    { title: 'Restart failed tests', value: 'failed' },
-  ];
+  private handleRunFail = () => this.props.runFailedTests();
+  private handleAcceptAll = () => this.props.acceptAll();
+  private handleInputUrl = (ev) => this.props.setUrl(ev.target.value);
 
-  const testsViewItems = [
-    { title: 'Collapse all', value: 'collapseAll' },
-    { title: 'Expand all', value: 'expandAll' },
-    { title: 'Expand errors', value: 'expandErrors' },
-    { title: 'Expand retries', value: 'expandRetries' },
-  ];
+  public render(): JSX.Element {
+    const { runAllTests, isGui } = this.props;
 
-  const screenViewItems = [
-    { title: '3-up', value: '3-up' },
-    { title: 'Only Diff', value: 'onlyDiff' },
-    { title: 'Loupe', value: 'loupe' },
-    { title: 'Swipe', value: 'swipe' },
-    { title: 'Onion Skin', value: 'onionSkin' },
-  ];
+    if (!isGui) {
+      return null;
+    }
 
-  return (
-    <ControlPanelStyled>
-      <TextInput placeholder={'Url input'} className={'mr-2 one-fourth'} onChange={handleInputUrl} />
-      <Dropdown className={'mr-2'} title={'Run tests'} items={runTestItems} onChange={handleRunTestsClick} />
-      <Dropdown className={'mr-2'} title={'Show/hide'} items={testsViewItems} onChange={handleTestsViewMode} />
-      <Dropdown className={'mr-2'} title={'View mode'} items={screenViewItems} onChange={handleScreenViewMode} />
-      <Button title={'Accept all'} className={'mr-2'} onClick={handleAcceptAll} />
-    </ControlPanelStyled>
-  );
-};
+    return (
+      <ControlPanelStyled>
+        <TextInput
+          placeholder={'Url input'}
+          className={'mr-2 one-fourth'}
+          onChange={this.handleInputUrl}
+        />
+        <Dropdown className={'mr-2'} title={'Run tests'}>
+          <DropdownItem title={'Run all tests'} onClick={runAllTests} />
+          <DropdownItem
+            title={'Restart failed tests'}
+            onClick={this.handleRunFail}
+          />
+        </Dropdown>
 
-const mapStateToProps = ({ app }: RootStore) => ({
+        <Dropdown className={'mr-2'} title={'Show/hide'}>
+          <DropdownItem
+            title={'Collapse all'}
+            onClick={this.handleTestsViewMode('collapseAll')}
+          />
+          <DropdownItem
+            title={'Expand all'}
+            onClick={this.handleTestsViewMode('expandAll')}
+          />
+          <DropdownItem
+            title={'Expand errors'}
+            onClick={this.handleTestsViewMode('expandErrors')}
+          />
+          <DropdownItem
+            title={'Expand retries'}
+            onClick={this.handleTestsViewMode('expandRetries')}
+          />
+        </Dropdown>
+
+        <Dropdown className={'mr-2'} title={'View mode'}>
+          <DropdownItem
+            title={'3-up'}
+            onClick={this.handleScreenViewMode('3-up')}
+          />
+          <DropdownItem
+            title={'Only Diff'}
+            onClick={this.handleScreenViewMode('onlyDiff')}
+          />
+          <DropdownItem
+            title={'Loupe'}
+            onClick={this.handleScreenViewMode('loupe')}
+          />
+          <DropdownItem
+            title={'Swipe'}
+            onClick={this.handleScreenViewMode('swipe')}
+          />
+          <DropdownItem
+            title={'Onion Skin'}
+            onClick={this.handleScreenViewMode('onionSkin')}
+          />
+        </Dropdown>
+
+        <Button
+          title={'Accept all'}
+          className={'mr-2'}
+          onClick={this.handleAcceptAll}
+        />
+      </ControlPanelStyled>
+    );
+  }
+}
+
+const mapStateToProps = ({ app, tests }: RootStore) => ({
   url: app.url,
+  isGui: tests.gui,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators(appActions, dispatch),
-});
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      ...appActions,
+      ...testsActions,
+    },
+    dispatch,
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ControlPanel);
