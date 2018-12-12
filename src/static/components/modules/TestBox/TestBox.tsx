@@ -34,9 +34,8 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
 
   public renderBrowsers = (): any => {
     const { data } = this.props;
-    return data.browsers.map((item, id) => (
-      <Browser key={id} data={item} {...item} />
-    ));
+
+    return data.browsers.map((item) => <Browser key={item.name} data={item} />);
   }
 
   public render(): JSX.Element {

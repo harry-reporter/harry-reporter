@@ -1,39 +1,49 @@
 import { CompiledData, Suite, TestsStore } from 'src/store/modules/tests/types';
+import Browser from 'src/components/modules/TestBox/Browser/Browser';
 
-const formatSuitesData = (suites: Suite[]): Suite[] => {
-  const newListTest: any[] = [];
+interface FormatSuitesDataArgs {
+  suites: Suite[];
+  filterSuites?: (suite: Suite) => boolean;
+  reduceBrowsers?: (acc: Suite[], suite: Suite) => Suite[];
+}
 
-  function findChildren(object: Suite) {
-    let obj;
-
-    if (object.children) {
-      object.children.map((elem, i) => {
-        obj = findChildren(elem);
-        obj.uuid = newListTest.length;
-        obj.browsers.map((browser, i) => {
-          browser.browsersId = `${obj.uuid}${browser.name}`;
-          browser.result.imagesInfo.map((view, i) => {
-            view.viewId = `${obj.uuid}${browser.name}result${i}`;
-          });
-          browser.retries.map((retry, i) => {
-            retry.imagesInfo.map((view, i) => {
-              view.viewId = `${obj.uuid}${browser.name}retries${i}`;
-            });
-          });
-        });
-        newListTest.push(obj);
-      });
-      return obj;
+export const formatSuitesData = ({
+  suites = [],
+  filterSuites,
+  reduceBrowsers,
+}: FormatSuitesDataArgs) => {
+  let result = suites.reduce<Suite[]>((acc, suite) => {
+    if (suite.children) {
+      let children = filterSuites
+        ? suite.children.filter(filterSuites)
+        : suite.children;
+      if (reduceBrowsers) {
+        children = children.reduce(reduceBrowsers, []);
+      }
+      return [...acc, ...children];
     }
+    return acc;
+  }, []);
+  result = enchanceUuid(result);
+  return result;
+};
 
-    return object;
-  }
-
-  suites.map((elem) => {
-    findChildren(elem);
+const enchanceUuid = (result) => {
+  result.map((test, i) => {
+    test.uuid = i;
+    test.browsers.map((browser) => {
+      browser.browsersId = `${test.uuid}${browser.name}`;
+      browser.result.imagesInfo.map((view, index) => {
+        view.viewId = `${test.uuid}${browser.name}result${index}`;
+      });
+      browser.retries.map((retry) => {
+        retry.imagesInfo.map((view, index) => {
+          view.viewId = `${test.uuid}${browser.name}retries${index}`;
+        });
+      });
+    });
   });
-
-  return newListTest;
+  return result;
 };
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
@@ -45,14 +55,13 @@ export const getInitialState = (compiledData: CompiledData): TestsStore => {
     failed,
     skipped,
     retries,
-    gui = true,
+    gui = false,
   } = compiledData;
-  const tests = formatSuitesData(suites);
 
   return {
     gui,
     skips,
-    tests,
+    tests: suites,
     stats: {
       total,
       passed,

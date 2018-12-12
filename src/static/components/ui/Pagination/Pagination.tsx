@@ -33,26 +33,6 @@ class Pagination extends React.PureComponent<IPaginationProps, PaginationState> 
   }
 
   /**
-   * Рендер элементов из списка
-   *
-   */
-  public renderSubNavByDataList = (): React.ReactNode => {
-    const { dataList } = this.props;
-    const { currentPage } = this.state;
-
-    return dataList.map((item, index) => {
-      const page = index + 1;
-      const cnSubNav = cn('subnav-item', { selected: currentPage === page });
-
-      return (
-        <SubNavStyled data-page={page} onClick={this.handleClick} className={cnSubNav} href={item.href} key={page}>
-          {page}
-        </SubNavStyled>
-      );
-    });
-  }
-
-  /**
    * Рендер элементов по количеству страниц
    *
    */
@@ -75,15 +55,7 @@ class Pagination extends React.PureComponent<IPaginationProps, PaginationState> 
   }
 
   public render(): JSX.Element {
-    const { dataList } = this.props;
-
-    if (!this.props.pageCount && dataList.length === 0) {
-      return null;
-    }
-
-    const subNav: React.ReactNode = this.props.pageCount ? this.renderSubNavByMaxPage() : this.renderSubNavByDataList();
-
-    return <SubNavStyled className={'subnav f6'}>{subNav}</SubNavStyled>;
+    return <SubNavStyled className={'subnav f6'}>{this.renderSubNavByMaxPage()}</SubNavStyled>;
   }
 }
 

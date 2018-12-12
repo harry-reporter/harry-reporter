@@ -18,18 +18,22 @@ const cache = new CellMeasurerCache({
   defaultHeight: 160,
 });
 
-class TestsContainer extends React.Component<
+class TestsContainer extends React.PureComponent<
   TestsContainerProps,
   TestsContainerState
 > {
-  private renderMeasurer = (props) => ({ measure }) => (
-    <TestBox
-      style={props.style}
-      key={props.key}
-      data={this.props.tests[props.index]}
-      measure={measure}
-    />
-  )
+  private renderMeasurer = ({ style, index, key }) => ({ measure }) => {
+    const { tests } = this.props;
+
+    return (
+      <TestBox
+        style={style}
+        key={`${tests[index].name}-${key}`}
+        data={tests[index]}
+        measure={measure}
+      />
+    );
+  }
 
   private renderRow = ({ index, isScrolling, key, parent, style }) => (
     <CellMeasurer
@@ -39,11 +43,11 @@ class TestsContainer extends React.Component<
       parent={parent}
       rowIndex={index}
     >
-      {this.renderMeasurer({ index, isScrolling, key, parent, style })}
+      {this.renderMeasurer({ style, index, key })}
     </CellMeasurer>
   )
 
-  public renderList = ({
+  public renderList = () => ({
     height,
     width,
     isScrolling,
@@ -73,10 +77,9 @@ class TestsContainer extends React.Component<
     if (tests.length === 0) {
       return null;
     }
-
     return (
       <div className={'pt-5'}>
-        <WindowScroller>{this.renderList}</WindowScroller>
+        <WindowScroller>{this.renderList()}</WindowScroller>
       </div>
     );
   }

@@ -6,4 +6,5 @@ export interface CodeViewerProps {
     platform?: string;
     textFile?: string;
   };
+  testBody: string;
 }
