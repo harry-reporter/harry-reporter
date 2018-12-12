@@ -1,37 +1,36 @@
 import { CompiledData, Suite, TestsStore } from 'src/store/modules/tests/types';
 
-const formatSuitesData = (suites: Suite[]): Suite[] => {
-  const newListTest: any[] = [];
+interface FormatSuitesDataArgs {
+  suites: Suite[];
+  filterSuites?: (suite: Suite) => boolean;
+  reduceBrowsers?: (acc: Suite[], suite: Suite) => Suite[];
+}
 
-  function findChildren(object: Suite) {
-    let obj;
+export const formatSuitesData = ({ suites = [], filterSuites, reduceBrowsers }: FormatSuitesDataArgs) => {
+  return suites.reduce<Suite[]>((acc, suite) => {
+    if (suite.children) {
+      let children = filterSuites
+        ? suite.children.filter(filterSuites)
+        : suite.children;
 
-    if (object.children) {
-      object.children.map((elem) => {
-        obj = findChildren(elem);
-        newListTest.push(obj);
-      });
-      return obj;
+      if (reduceBrowsers) {
+        children = children.reduce(reduceBrowsers, []);
+      }
+
+      return [...acc, ...children];
     }
 
-    return object;
-  }
-
-  suites.map((elem) => {
-    findChildren(elem);
-  });
-
-  return newListTest;
+    return acc;
+  }, []);
 };
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
   const { skips, suites, total, passed, failed, skipped, retries, gui = false } = compiledData;
-  const tests = formatSuitesData(suites);
 
   return {
     gui,
     skips,
-    tests,
+    tests: suites,
     stats: {
       total, passed, failed, skipped, retries,
     },

@@ -1,9 +1,4 @@
-export interface SunNav {
-  href?: string;
-}
-
 export interface IPaginationProps {
-  dataList?: SunNav[];
   maxPage?: number;
   hasPreventDefault?: boolean;
   defaultCurrentPage?: number;

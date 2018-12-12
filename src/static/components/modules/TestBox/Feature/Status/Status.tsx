@@ -1,5 +1,6 @@
 import * as React from 'react';
 import cn from 'classnames';
+import { isFailedTest } from 'src/utils';
 
 import Pagination from 'src/components/ui/Pagination';
 import StatusIcon from 'src/components/modules/TestBox/Feature/Status/Icon';
@@ -10,20 +11,19 @@ import { StatusProps } from './types';
 import { ColorType } from 'src/components/ui/types';
 
 export default class Status extends React.PureComponent<StatusProps> {
-  public cnStatus = cn(this.props.className, 'd-flex flex-justify-between flex-items-center');
-  public status = this.props.status;
-
-  public isFail = status === 'fail' || status === 'error';
-  public statusColor: ColorType = this.isFail ? 'red' : 'green';
-  public maxPage = this.props.data.attempt + 1;
-
   public render() {
-    const { onClickAtTitle, pageCount, handleDataChange, pageCurrent, title } = this.props;
+    const { className, onClickAtTitle, pageCount, status, handleDataChange, pageCurrent, title } = this.props;
+
+    const cnStatus = cn(className, 'd-flex flex-justify-between flex-items-center');
+    const isFail = isFailedTest({ status });
+    const statusColor: ColorType = isFail
+      ? 'red'
+      : 'green';
 
     return (
-      <Text as='span' className={this.cnStatus} textColor={this.statusColor} textType='bold'>
-        <StatusIcon mr={2} isFail={this.isFail} />
-        <BrowserNameStyled as='span' textType='bold' textColor={this.statusColor} mr={6} onClick={onClickAtTitle}>
+      <Text as='span' className={cnStatus} textColor={statusColor} textType='bold'>
+        <StatusIcon mr={2} isFail={isFail} />
+        <BrowserNameStyled as='span' textType='bold' textColor={statusColor} mr={6} onClick={onClickAtTitle}>
           {title}
         </BrowserNameStyled>
         <Text as={'span'} textColor={'gray'} mr={2}>
