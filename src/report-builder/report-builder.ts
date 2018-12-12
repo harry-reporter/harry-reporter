@@ -142,6 +142,7 @@ export default class ReportBuilder {
       description,
       imagesInfo,
       screenshot,
+      testBody,
       multipleTabs,
     } = result;
     const { baseHost } = this.pluginConfig;
@@ -161,6 +162,7 @@ export default class ReportBuilder {
       name: browserId,
       screenshot: Boolean(screenshot),
       suiteUrl,
+      testBody,
     };
 
     return { ...testResult, ...props };

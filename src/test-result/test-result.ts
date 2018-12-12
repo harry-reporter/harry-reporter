@@ -41,6 +41,10 @@ export default class TestResult {
     return this.testResult.assertViewResults || [];
   }
 
+  get testBody(): string {
+    return this.testResult.body;
+  }
+
   get imagesInfo(): IImagesInfo[] {
     return this.testResult.imagesInfo;
   }
