@@ -6,6 +6,14 @@ export enum TestsTypeKey {
   retries = 'retries',
 }
 
+export enum TestsViewMode {
+  collapseAll = 'collapseAll',
+  expandAll = 'expandAll',
+  expandErrors = 'expandErrors',
+  expandRetries = 'expandRetries',
+  none = 'none',
+}
+
 export interface AppStore {
   selectedTestsType: TestsTypeKey;
   url: string;
@@ -15,4 +23,3 @@ export interface AppStore {
 }
 
 export type ScreenViewMode = '3-up' | 'onlyDiff' | 'loupe' | 'swipe' | 'onionSkin';
-export type TestsViewMode = 'collapseAll' | 'expandAll' | 'expandErrors' | 'expandRetries';

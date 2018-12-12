@@ -1,8 +1,13 @@
-import { Attempt, Suite, TestStatus } from '../store/modules/tests/types';
+import { Attempt, Browser, Suite, TestStatus } from '../store/modules/tests/types';
 
+export const isSuccessStatus = (status: TestStatus) => status === 'success';
 export const isErroredStatus = (status: TestStatus) => status === 'error';
 export const isFailedStatus = (status: TestStatus) => status === 'fail';
 
 export const isFailedTest = (test: Suite | Attempt | { status: TestStatus }) => {
   return isFailedStatus(test.status) || isErroredStatus(test.status);
+};
+
+export const hasRetries = ({ browsers }: Suite): boolean => {
+  return browsers.some((browser: Browser) => browser.result.attempt > 0);
 };
