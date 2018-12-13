@@ -5,6 +5,9 @@ export interface TestsStore {
   skips: Suite[];
   stats: Stats;
   gui: boolean;
+  suites?: Suites;
+  suiteIds?: SuiteIds;
+  config?: Config;
 }
 
 export interface Stats {
@@ -13,6 +16,10 @@ export interface Stats {
   failed: number;
   skipped: number;
   retries: number;
+}
+
+export interface Suites {
+  [key: string]: Suite;
 }
 
 export interface CompiledData extends Stats {
@@ -24,15 +31,25 @@ export interface CompiledData extends Stats {
 
 export type Skip = any;
 export type SuitePath = string[];
-export interface Config {
 
+export interface Config {
+  defaultView: string;
+  baseHost: string;
+  scaleImages: boolean;
+  lazyLoadOffset: number;
 }
+
 export interface Suite {
   name: string;
   suitePath: SuitePath;
   status: TestStatus;
   children?: Suite[];
   browsers?: Browser[];
+}
+
+export interface SuiteIds {
+  all: string[];
+  failed: string[];
 }
 
 export interface Browser {

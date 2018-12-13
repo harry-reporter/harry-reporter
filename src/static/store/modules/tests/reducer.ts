@@ -1,6 +1,6 @@
 import { TestsStore, WindowWithData } from './types';
-import { getInitialState } from './utils';
-import { INIT_GUI } from './constants';
+import { getInitialState, formatSuitesDataTemp, addTestResult } from './utils';
+import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
   tests: [],
@@ -25,8 +25,14 @@ export const reducer = (state: TestsStore = initialState, action): TestsStore =>
   const { type, payload } = action;
 
   switch (type) {
-    case `${INIT_GUI}`:
-      return { ...payload };
+
+    case actionNames.INIT_GUI: {
+      const { skips, suites, gui, config } = payload;
+      return { ...state, skips, gui, config, ...formatSuitesDataTemp(suites) };
+    }
+
+    case actionNames.ACCEPT_ALL_REFS:
+      return addTestResult(state, action);
 
     default:
       return state;

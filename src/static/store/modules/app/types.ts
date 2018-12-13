@@ -9,6 +9,10 @@ export enum TestsTypeKey {
 export interface AppStore {
   selectedTestsType: TestsTypeKey;
   url: string;
-  screenViewMode: '3-up' | 'onlyDiff' | 'loupe' | 'swipe' | 'onionSkin';
-  testsViewMode: 'collapseAll' | 'expandAll' | 'expandErrors' | 'expandRetries';
+  screenViewMode: ScreenViewMode;
+  testsViewMode: TestsViewMode;
+  running: boolean;
 }
+
+export type ScreenViewMode = '3-up' | 'onlyDiff' | 'loupe' | 'swipe' | 'onionSkin';
+export type TestsViewMode = 'collapseAll' | 'expandAll' | 'expandErrors' | 'expandRetries';
