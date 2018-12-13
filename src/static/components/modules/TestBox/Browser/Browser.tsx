@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { setIsOpenForBrowser } from 'src/store/modules/app/actions';
 import { bindActionCreators } from 'redux';
 import { switchTestViewMod } from '../testsViewMode';
+import { RootStore } from 'src/store/types/store';
 
 // TODO: вынести функциионал по аккордеону в отдельную компоненту
 
@@ -95,17 +96,17 @@ class Browser extends React.PureComponent<BrowserProps, BrowserState> {
   }
 }
 
-function mapStateToProps(state, ownProps: BrowserProps) {
-  let isOpenedBrowser = state.app.isOpenPerBrowser[ownProps.data.browsersId];
+function mapStateToProps({ app }: RootStore, ownProps: BrowserProps) {
+  let isOpenedBrowser = app.isOpenPerBrowser[ownProps.data.browsersId];
   if (isOpenedBrowser === undefined) {
     isOpenedBrowser = switchTestViewMod(
-      state.app.testsViewMode,
+      app.testsViewMode,
       ownProps.data.status,
     );
   }
   return {
     isOpenedBrowser,
-    url: state.app.url,
+    url: app.url,
   };
 }
 

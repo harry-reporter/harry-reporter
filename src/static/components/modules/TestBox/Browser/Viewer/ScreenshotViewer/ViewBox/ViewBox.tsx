@@ -9,6 +9,7 @@ import FailBox from '../../FailBox/FailBox';
 import SuccessBox from '../../SuccessBox/SuccessBox';
 import { setIsOpenForView } from 'src/store/modules/app/actions';
 import { switchTestViewMod } from 'src/components/modules/TestBox/testsViewMode';
+import { RootStore } from 'src/store/types/store';
 
 class ViewBox extends React.PureComponent<ImagesInfo> {
   public componentDidUpdate(prevProps): void {
@@ -81,10 +82,10 @@ class ViewBox extends React.PureComponent<ImagesInfo> {
   }
 }
 
-function mapStateToProps(state, ownProps: ImagesInfo) {
-  let isOpenedScreenView = state.app.isOpenPerView[ownProps.viewId];
+function mapStateToProps({ app }: RootStore, ownProps: ImagesInfo) {
+  let isOpenedScreenView = app.isOpenPerView[ownProps.viewId];
   if (isOpenedScreenView === undefined) {
-    isOpenedScreenView = switchTestViewMod(state.app.testsViewMode);
+    isOpenedScreenView = switchTestViewMod(app.testsViewMode);
   }
 
   return {

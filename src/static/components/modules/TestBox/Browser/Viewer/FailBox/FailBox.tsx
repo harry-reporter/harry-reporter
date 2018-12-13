@@ -12,6 +12,7 @@ import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
 
 import { bindActionCreators } from 'redux';
 import { setScreenModForView } from 'src/store/modules/app/actions';
+import { RootStore } from 'src/store/types/store';
 
 class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   public state = {
@@ -228,10 +229,10 @@ class FailBox extends React.PureComponent<ImagesInfo, FailBoxState> {
   }
 }
 
-function mapStateToProps(state, ownProps: ImagesInfo) {
-  let screenViewMode = state.app.screenPerView[ownProps.viewId];
+function mapStateToProps({ app }: RootStore, ownProps: ImagesInfo) {
+  let screenViewMode = app.screenPerView[ownProps.viewId];
   if (screenViewMode === undefined) {
-    screenViewMode = state.app.screenViewMode;
+    screenViewMode = app.screenViewMode;
   }
   return {
     screenViewMode,

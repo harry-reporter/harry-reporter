@@ -9,6 +9,7 @@ import { setIsOpenForTestBox } from '../../../store/modules/app/actions';
 import { bindActionCreators } from 'redux';
 import Browser from './Browser/Browser';
 import { switchTestViewMod } from './testsViewMode';
+import { RootStore } from 'src/store/types/store';
 
 export const MeasurerContext = React.createContext<Measurer>({});
 
@@ -62,10 +63,10 @@ class TestBox extends React.PureComponent<TestBoxProps, TestBoxState> {
   }
 }
 
-function mapStateToProps(state, ownProps: TestBoxProps) {
-  let isOpen = state.app.isOpenPerTestBox[ownProps.data.uuid];
+function mapStateToProps({ app }: RootStore, ownProps: TestBoxProps) {
+  let isOpen = app.isOpenPerTestBox[ownProps.data.uuid];
   if (isOpen === undefined) {
-    isOpen = switchTestViewMod(state.app.testsViewMode, ownProps.data.status);
+    isOpen = switchTestViewMod(app.testsViewMode, ownProps.data.status);
   }
   return {
     isOpen,
