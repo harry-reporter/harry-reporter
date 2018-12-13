@@ -52,9 +52,9 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
     eventSource.addEventListener(clientEvents.END, () => testsEnd());
   }
 
-  private renderMeasurer = ({ style, index, key }) => ({ measure }) => {
+  private renderMeasurer = ({ style, index }) => ({ measure }) => {
     const { tests } = this.props;
-    const testBoxIndex = `${tests[index].name}-${key}`;
+    const testBoxIndex = `${tests[index].suitePath.join('/')}`;
 
     return (
       <TestBox
@@ -76,7 +76,7 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
       parent={parent}
       rowIndex={index}
     >
-      {this.renderMeasurer({ style, index, key })}
+      {this.renderMeasurer({ style, index })}
     </CellMeasurer>
   )
 

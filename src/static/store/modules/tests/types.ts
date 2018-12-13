@@ -1,7 +1,6 @@
-export type TestStatus = 'error' | 'fail' | 'success';
+export type TestStatus = 'error' | 'fail' | 'success' | 'idle';
 
 export interface TestsStore {
-  tests: Suite[];
   skips: Suite[];
   stats: Stats;
   gui: boolean;

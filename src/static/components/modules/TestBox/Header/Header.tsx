@@ -1,9 +1,10 @@
 import * as React from 'react';
-import Octicon, { ChevronDown, ChevronUp, Clippy } from '@githubprimer/octicons-react';
 
+import Octicon, { Clippy } from '@githubprimer/octicons-react';
 import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
+
 import { HeaderProps, HeaderState } from './types';
-import { getColor, getChevron } from '../common-utils';
+import { getChevron, getColor } from '../common-utils';
 
 import Text from 'src/components/ui/Text/Text';
 import Button from 'src/components/ui/Button/Button';

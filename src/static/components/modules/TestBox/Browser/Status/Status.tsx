@@ -1,14 +1,13 @@
 import * as React from 'react';
 import cn from 'classnames';
-
-import { isFailedTest } from 'src/utils';
-import { StatusProps } from './types';
-import { getColor } from '../../common-utils';
-import { BrowserNameStyled } from './styled';
+import { getColorByStatus } from 'src/utils';
 
 import Pagination from 'src/components/ui/Pagination';
 import StatusIcon from 'src/components/modules/TestBox/Browser/Status/Icon';
 import Text from 'src/components/ui/Text/Text';
+import { BrowserNameStyled } from './styled';
+
+import { StatusProps } from './types';
 
 export default class Status extends React.PureComponent<StatusProps> {
   public render() {
@@ -22,12 +21,8 @@ export default class Status extends React.PureComponent<StatusProps> {
       data: { name },
     } = this.props;
 
-    const cnStatus = cn(
-      className,
-      'd-flex flex-justify-between flex-items-center',
-    );
-    const isFail = isFailedTest({ status });
-    const color = getColor(status);
+    const color = getColorByStatus(status);
+    const cnStatus = cn(className, 'd-flex flex-justify-between flex-items-center');
 
     return (
       <Text
@@ -36,7 +31,7 @@ export default class Status extends React.PureComponent<StatusProps> {
         textColor={color}
         textType='bold'
       >
-        <StatusIcon mr={2} isFail={isFail} />
+        <StatusIcon mr={2} status={status} />
         <BrowserNameStyled
           as='span'
           textType='bold'
