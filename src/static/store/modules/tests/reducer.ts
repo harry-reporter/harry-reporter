@@ -1,5 +1,7 @@
 import { TestsStore, WindowWithData } from './types';
-import { getInitialState, formatSuitesDataTemp, addTestResult } from './utils';
+import { getInitialState, formatSuitesDataTemp, addTestResult, forceUpdateSuiteData } from './utils';
+import { findNode } from '../utils';
+import { clone, assign } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
@@ -13,6 +15,7 @@ const defaultState: TestsStore = {
     retries: 0,
   },
   gui: true,
+  running: false,
 };
 
 const compiledData = (window as WindowWithData).data;
@@ -33,6 +36,43 @@ export const reducer = (state: TestsStore = initialState, action): TestsStore =>
 
     case actionNames.ACCEPT_ALL_REFS:
       return addTestResult(state, action);
+
+    case actionNames.SUITE_BEGIN: {
+      const suites = clone(state.suites);
+      const { suitePath, status } = action.payload;
+      const test = findNode(suites, suitePath);
+      if (test) {
+        test.status = status;
+        forceUpdateSuiteData(suites, test);
+      }
+
+      return assign({}, state, { suites });
+    }
+
+    case actionNames.TEST_BEGIN: {
+      const suites = clone(state.suites);
+      const { suitePath, status, browserId } = action.payload;
+      const test = findNode(suites, suitePath);
+      if (test) {
+        test.status = status;
+        test.browsers.forEach((b) => {
+          if (b.name === browserId) {
+            b.result.status = status;
+          }
+        });
+        forceUpdateSuiteData(suites, test);
+      }
+
+      return assign({}, state, { suites });
+    }
+
+    case actionNames.TESTS_END: {
+      return assign({}, state, {running: false});
+    }
+
+    case actionNames.TEST_RESULT: {
+      return addTestResult(state, action);
+    }
 
     default:
       return state;

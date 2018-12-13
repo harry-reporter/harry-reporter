@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { TestsStore, Suite, SuiteIds } from './types';
+import { TestsStore, SuiteIds } from 'src/store/modules/tests/types';
 import { values, pick } from 'lodash';
 
 const suitesSelector = (store: TestsStore) => store.suites;

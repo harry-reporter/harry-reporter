@@ -19,7 +19,6 @@ export interface AppStore {
   url: string;
   screenViewMode: ScreenViewMode;
   testsViewMode: TestsViewMode;
-  running: boolean;
 }
 
 export type ScreenViewMode = '3-up' | 'onlyDiff' | 'loupe' | 'swipe' | 'onionSkin';
