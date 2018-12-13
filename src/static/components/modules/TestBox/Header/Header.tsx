@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import Octicon, { ChevronDown, ChevronUp, Clippy } from '@githubprimer/octicons-react';
 import Text from 'src/components/ui/Text/Text';
-import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled, HeaderContainerStyled } from './styled';
+import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
 
 import { HeaderProps, HeaderState } from './types';
 import { ColorType } from 'src/components/ui/types';
+import { isFailedTest } from 'src/utils';
 
 class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
@@ -13,7 +14,9 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTextColor = (): ColorType => {
     const { status } = this.props;
 
-    return status === 'fail' || status === 'error' ? 'red' : 'green';
+    return isFailedTest({ status })
+      ? 'red'
+      : 'green';
   }
 
   private getChevron = () => this.props.isOpenedBox ? ChevronUp : ChevronDown;
@@ -25,7 +28,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
     const Chevron = this.getChevron();
 
     return (
-      <HeaderContainerStyled className={'Box-header d-flex flex-justify-between flex-items-center p-3'}>
+      <div className={'Box-row d-flex flex-justify-between flex-items-center p-3'}>
         <Text as={'span'} textColor={textColor} textType={'bold'}>
           {title}
         </Text>
@@ -37,7 +40,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
             <Octicon icon={Chevron} />
           </ButtonIconContainerStyled>
         </ControlsStyled>
-      </HeaderContainerStyled>
+      </div>
     );
   }
 }

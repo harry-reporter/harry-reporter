@@ -8,7 +8,7 @@ import Dropdown from 'src/components/ui/Dropdown';
 import Button from 'src/components/ui/Button';
 import TextInput from 'src/components/ui/TextInput';
 import ControlPanelStyled from './styled';
-import { failedSuitesSelector } from '../../../store/modules/tests/selectors';
+import { failedSuitesSelector } from 'src/store/modules/tests/selectors';
 
 import { ControlPanelProps } from './types';
 import { RootStore } from 'src/store/types/store';

@@ -1,4 +1,4 @@
-import { NavItemId } from 'src/components/ui/Navigation/types';
+import { setTestsType } from 'src/store/modules/app/actions';
 
 export interface NavigationPanelProps {
   total: number;
@@ -7,5 +7,5 @@ export interface NavigationPanelProps {
   skipped: number;
   retries: number;
 
-  setTestsType: any;
+  setTestsType: typeof setTestsType;
 }
