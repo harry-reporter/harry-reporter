@@ -8,17 +8,12 @@
     "module": "commonjs",
     "target": "es5",
     "jsx": "react",
-    "lib": ["es5", "es6", "dom"],
+    "lib": ["es5", "es6", "dom", "es2017"],
     "baseUrl": ".",
     "paths": {
       "src/*": ["*"]
     }
   },
-  "include": [
-    "./"
-  ],
-  "exclude": [
-    "node_modules",
-    "../**/*.ts"
-  ]
+  "include": ["./"],
+  "exclude": ["node_modules", "../**/*.ts"]
 }
