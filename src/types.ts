@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import { EventEmitter } from 'events';
 import ReportBuilder from './report-builder/report-builder';
 
@@ -36,13 +37,17 @@ export interface IHermione extends EventEmitter {
   errors: object;
 }
 
+export interface ICommonErrors {
+  [key: string]: string;
+}
+
 export type prepareDataType = (
   hermione: IHermione,
   reportBuilder: ReportBuilder,
-) => any; // TODO добавить тип возвращаемого значения
+) => Promise<{}>;
 
 export type prepareImagesType = (
   hermione: IHermione,
   pluginConfig: IPluginOpts,
   reportBuilder: ReportBuilder,
-) => any; // TODO добавить тип возвращаемого значения
+) => Promise<{}>;

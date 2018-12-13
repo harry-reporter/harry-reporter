@@ -1,12 +1,16 @@
 import _ from 'lodash';
 
+import {ISuite} from './types';
 import {SUCCESS, FAIL, ERROR, SKIPPED} from '../constants/test-statuses';
 
-const walk = (node: any, cb: any, fn: any) => {
+const walk = (node: ISuite, cb: (n: ISuite) => {}, fn: any) => {
   return node.browsers && fn(node.browsers, cb) || node.children && fn(node.children, cb) || [];
 };
 
-export const getDataFrom = (node: any, {fieldName, fromFields}: {fieldName: any, fromFields: any}) => {
+export const getDataFrom = (
+  node: any,
+  {fieldName, fromFields}: {fieldName: string, fromFields: (string | string[])},
+): any => {
   if (!fromFields) {
     return [].concat(_.get(node, fieldName, []));
   }
@@ -18,7 +22,7 @@ export const getDataFrom = (node: any, {fieldName, fromFields}: {fieldName: any,
     : [].concat(_.get(result, fieldName, []), _.flatMap(retries, fieldName));
 };
 
-export const getImagePaths = (node: any, fromFields: any) => {
+export const getImagePaths = (node: any, fromFields: string[]) => {
   return _(getDataFrom(node, {fieldName: 'imagesInfo', fromFields}))
     .map((imageInfo: any) => _.pick(imageInfo, ['expectedPath', 'actualPath', 'diffPath']))
     .reject(_.isEmpty)

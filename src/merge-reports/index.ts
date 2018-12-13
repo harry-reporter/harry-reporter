@@ -13,7 +13,7 @@ const validateOpts = (srcPaths: string, destPath: string) => {
 export default async (srcPaths: string, {destination: destPath}: {destination: string}) => {
   validateOpts(srcPaths, destPath);
 
-  const reportBuilder = ReportBuilder.create(srcPaths, destPath);
+  const reportBuilder: ReportBuilder = ReportBuilder.create(srcPaths, destPath);
 
   await reportBuilder.build();
 };

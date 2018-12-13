@@ -9,11 +9,12 @@ const ENV_PREFIX = 'harry_reporter_';
 const CLI_PREFIX = '--harry-reporter-';
 
 import { config as configDefaults } from './constants/defaults';
+import { IPluginOpts } from './types';
 
-const assertType = (name: string, validationFn: any, type: string) => {
-  return (v: string | number | boolean) => {
-    if (!validationFn(v)) {
-      throw new Error(`"${name}" option must be ${type}, but got ${typeof v}`);
+const assertType = (name: string, validationFn: <T>(value: T) => boolean, type: string) => {
+  return (value: string | number | boolean): void | Error => {
+    if (!validationFn(value)) {
+      throw new Error(`"${name}" option must be ${type}, but got ${typeof value}`);
     }
   };
 };
@@ -55,7 +56,7 @@ const getParser = () => {
   }), { envPrefix: ENV_PREFIX, cliPrefix: CLI_PREFIX });
 };
 
-export default (options: any) => {
+export default (options: IPluginOpts) => {
   const env = process.env;
   const argv = process.argv;
 
