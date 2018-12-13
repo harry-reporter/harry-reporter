@@ -1,16 +1,16 @@
-import { AppStore, TestsTypeKey } from './types';
+import { AppStore, TestsTypeKey, TestsViewMode } from './types';
 import * as actionNames from './constants';
 
 const defaultState: AppStore = {
   selectedTestsType: TestsTypeKey.total,
   url: '',
   screenViewMode: '3-up',
-  testsViewMode: 'expandErrors',
 
   isOpenPerTestBox: {},
   isOpenPerBrowser: {},
   isOpenPerView: {},
   screenPerView: {},
+  testsViewMode: TestsViewMode.expandErrors,
   running: false,
 };
 

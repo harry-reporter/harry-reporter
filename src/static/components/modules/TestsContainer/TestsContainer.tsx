@@ -12,11 +12,13 @@ import { ListStyled } from './styled';
 
 import { RootStore } from '../../../store/types/store';
 import { TestsContainerProps, TestsContainerState } from './types';
+import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
-const cache = new CellMeasurerCache({
+const measurerCache = new CellMeasurerCache({
   fixedWidth: true,
   defaultHeight: 160,
 });
+const testBoxesCache = new TestBoxesCache();
 
 class TestsContainer extends React.PureComponent<
   TestsContainerProps,
@@ -24,11 +26,14 @@ class TestsContainer extends React.PureComponent<
 > {
   private renderMeasurer = ({ style, index, key }) => ({ measure }) => {
     const { tests } = this.props;
+    const testBoxIndex = `${tests[index].name}-${key}`;
 
     return (
       <TestBox
+        cache={testBoxesCache}
         style={style}
-        key={`${tests[index].name}-${key}`}
+        index={testBoxIndex}
+        key={testBoxIndex}
         data={tests[index]}
         measure={measure}
       />
@@ -37,7 +42,7 @@ class TestsContainer extends React.PureComponent<
 
   private renderRow = ({ index, isScrolling, key, parent, style }) => (
     <CellMeasurer
-      cache={cache}
+      cache={measurerCache}
       columnIndex={0}
       key={key}
       parent={parent}
@@ -47,7 +52,7 @@ class TestsContainer extends React.PureComponent<
     </CellMeasurer>
   )
 
-  public renderList = () => ({
+  private renderList = () => ({
     height,
     width,
     isScrolling,
@@ -61,10 +66,10 @@ class TestsContainer extends React.PureComponent<
       scrollToAlignment={'center'}
       height={height}
       width={width}
-      rowHeight={cache.rowHeight}
+      rowHeight={measurerCache.rowHeight}
       rowCount={this.props.tests.length}
       rowRenderer={this.renderRow}
-      deferredMeasurementCache={cache}
+      deferredMeasurementCache={measurerCache}
       overscanRowCount={10}
       scrollTop={scrollTop}
       onScroll={onChildScroll}
@@ -85,6 +90,6 @@ class TestsContainer extends React.PureComponent<
   }
 }
 
-export default connect(({ tests, app }: RootStore) => ({
-  tests: getTestsByType(tests.tests, tests.skips, app.selectedTestsType),
+export default connect((state: RootStore) => ({
+  tests: getTestsByType(state),
 }))(TestsContainer);
