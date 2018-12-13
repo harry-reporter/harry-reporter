@@ -63,13 +63,20 @@ class ControlPanel extends React.Component<ControlPanelProps> {
   private handleTestsViewMode = (value: string) => this.props.setTestsViewMode(value);
 
   public render(): JSX.Element {
+    const { isGui } = this.props;
     return (
       <ControlPanelStyled>
         <TextInput placeholder={'Url input'} className={'mr-2 one-fourth'} onChange={this.handleInputUrl} />
+        {
+          isGui &&
         <Dropdown className={'mr-2'} title={'Run tests'} items={runTestItems} onChange={this.handleRunTestsClick} />
+        }
         <Dropdown className={'mr-2'} title={'Show/hide'} items={testsViewItems} onChange={this.handleTestsViewMode} />
         <Dropdown className={'mr-2'} title={'View mode'} items={screenViewItems} onChange={this.handleScreenViewMode} />
-        <Button title={'Accept all'} className={'mr-2'} onClick={this.handleAcceptAllClick} />
+        {
+          isGui &&
+          <Button title={'Accept all'} className={'mr-2'} onClick={this.handleAcceptAllClick} />
+        }
       </ControlPanelStyled>
     );
   }
