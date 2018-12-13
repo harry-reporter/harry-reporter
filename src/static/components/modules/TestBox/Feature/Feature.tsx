@@ -31,7 +31,7 @@ class Feature extends React.PureComponent<FeatureProps, FeatureState> {
   }
 
   public handleViewChange = (e: string) => {
-    this.setState({ viewType: e });
+    this.setState({ viewType: e }, this.props.measure);
   }
 
   public handleDataChange = (e: number) => {
