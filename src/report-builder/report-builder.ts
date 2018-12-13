@@ -4,7 +4,7 @@ import _ from 'lodash';
 import path from 'path';
 
 import { ERROR, FAIL, IDLE, RUNNING, SKIPPED, SUCCESS, UPDATED } from '../constants/test-statuses';
-import { hasImage, logger, prepareCommonJSData } from '../server-utils';
+import { getPathsFor, hasImage, logger, prepareCommonJSData } from '../server-utils';
 import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../common-utils';
 import TestResult from '../test-result/test-result';
 
@@ -101,6 +101,17 @@ export default class ReportBuilder {
 
   public getSuites() {
     return this.tree.children;
+  }
+
+  public addUpdated(result: IHermioneResult) {
+    const formattedResult = this.format(result);
+
+    formattedResult.imagesInfo = (result.imagesInfo || []).map((imageInfo) => {
+      const { stateName } = imageInfo;
+      return _.extend(imageInfo, getPathsFor(UPDATED, formattedResult, stateName));
+    });
+
+    return this.addSuccessResult(formattedResult, UPDATED);
   }
 
   get reportPath() {
