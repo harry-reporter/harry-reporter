@@ -72,8 +72,10 @@ export default (
     failHandler(data);
   });
 
-  hermione.on(hermione.events.RUNNER_END, () => {
-    return reportBuilder.save()
+  hermione.on(hermione.events.RUNNER_END, (stats) => {
+    return reportBuilder
+      .setStats(stats)
+      .save()
       .then(() => client.emit(clientEvents.END));
   });
 };
