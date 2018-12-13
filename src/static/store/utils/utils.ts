@@ -1,8 +1,5 @@
-import { filter, flatMap, set, cloneDeep } from 'lodash';
-// import { isFailStatus, isErroredStatus } from '../../common-utils';
-
-const isErroredStatus = (status: any) => status === 'ERROR';
-const isFailStatus = (status: any) => status === 'FAIL';
+import { filter, flatMap, set, cloneDeep, reduce, map } from 'lodash';
+import { isFailStatus, isErroredStatus } from '../../../common-utils';
 
 export const isSuiteFailed = (suite: any) => {
   return isFailStatus(suite.status) || isErroredStatus(suite.status);

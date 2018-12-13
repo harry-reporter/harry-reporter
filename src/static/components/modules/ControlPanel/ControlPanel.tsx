@@ -5,20 +5,35 @@ import { bindActionCreators } from 'redux';
 import * as appActions from 'src/store/modules/app/actions';
 import * as testsActions from 'src/store/modules/tests/actions';
 import Dropdown from 'src/components/ui/Dropdown';
-import DropdownItem from 'src/components/ui/DropdownItem';
 import Button from 'src/components/ui/Button';
 import TextInput from 'src/components/ui/TextInput';
 import ControlPanelStyled from './styled';
+import { failedSuitesSelector } from '../../../store/modules/tests/selectors';
 
 import { ControlPanelProps } from './types';
 import { RootStore } from 'src/store/types/store';
 
-interface ControlPanelState {}
+const runTestItems = [
+  { value: 'all', title: 'Run all tests' },
+  { value: 'failed', title: 'Restart failed tests' },
+];
 
-class ControlPanel extends React.Component<
-  ControlPanelProps,
-  ControlPanelState
-> {
+const testsViewItems = [
+  { value: 'collapseAll', title: 'Collapse all' },
+  { value: 'expandAll', title: 'Expand all' },
+  { value: 'expandErrors', title: 'Expand errors' },
+  { value: 'expandRetries', title: 'Expand retries' },
+];
+
+const screenViewItems = [
+  { value: '3-up', title: '3-up' },
+  { value: 'onlyDiff', title: 'Only Diff' },
+  { value: 'loupe', title: 'Loupe' },
+  { value: 'swipe', title: 'Swipe' },
+  { value: 'onionSkin', title: 'Onion Skin' },
+];
+
+class ControlPanel extends React.Component<ControlPanelProps> {
   public componentDidMount() {
     const { isGui, initGui } = this.props;
 
@@ -27,22 +42,28 @@ class ControlPanel extends React.Component<
     }
   }
 
-  private handleScreenViewMode = (value: string) => () =>
-    this.props.setScreenViewMode(value)
-  private handleTestsViewMode = (value: string) => () =>
-    this.props.setTestsViewMode(value)
-
-  private handleRunFail = () => this.props.runFailedTests();
-  private handleAcceptAll = () => this.props.acceptAll();
   private handleInputUrl = (ev) => this.props.setUrl(ev.target.value);
 
-  public render(): JSX.Element {
-    const { runAllTests, isGui } = this.props;
+  private handleAcceptAllClick = () => {
+    const { failed, acceptAll } = this.props;
+    acceptAll(failed);
+  }
 
-    if (!isGui) {
-      return null;
+  private handleRunTestsClick = (value: string) => {
+    const { runAllTests, runFailedTests, failed } = this.props;
+    if (value === 'all') {
+      runAllTests();
+    } else {
+      runFailedTests(failed);
     }
+  }
 
+  private handleScreenViewMode = (value: string) =>
+    this.props.setScreenViewMode(value)
+  private handleTestsViewMode = (value: string) =>
+    this.props.setTestsViewMode(value)
+
+  public render(): JSX.Element {
     return (
       <ControlPanelStyled>
         <TextInput
@@ -50,60 +71,28 @@ class ControlPanel extends React.Component<
           className={'mr-2 one-fourth'}
           onChange={this.handleInputUrl}
         />
-        <Dropdown className={'mr-2'} title={'Run tests'}>
-          <DropdownItem title={'Run all tests'} onClick={runAllTests} />
-          <DropdownItem
-            title={'Restart failed tests'}
-            onClick={this.handleRunFail}
-          />
-        </Dropdown>
-
-        <Dropdown className={'mr-2'} title={'Show/hide'}>
-          <DropdownItem
-            title={'Collapse all'}
-            onClick={this.handleTestsViewMode('collapseAll')}
-          />
-          <DropdownItem
-            title={'Expand all'}
-            onClick={this.handleTestsViewMode('expandAll')}
-          />
-          <DropdownItem
-            title={'Expand errors'}
-            onClick={this.handleTestsViewMode('expandErrors')}
-          />
-          <DropdownItem
-            title={'Expand retries'}
-            onClick={this.handleTestsViewMode('expandRetries')}
-          />
-        </Dropdown>
-
-        <Dropdown className={'mr-2'} title={'View mode'}>
-          <DropdownItem
-            title={'3-up'}
-            onClick={this.handleScreenViewMode('3-up')}
-          />
-          <DropdownItem
-            title={'Only Diff'}
-            onClick={this.handleScreenViewMode('onlyDiff')}
-          />
-          <DropdownItem
-            title={'Loupe'}
-            onClick={this.handleScreenViewMode('loupe')}
-          />
-          <DropdownItem
-            title={'Swipe'}
-            onClick={this.handleScreenViewMode('swipe')}
-          />
-          <DropdownItem
-            title={'Onion Skin'}
-            onClick={this.handleScreenViewMode('onionSkin')}
-          />
-        </Dropdown>
-
+        <Dropdown
+          className={'mr-2'}
+          title={'Run tests'}
+          items={runTestItems}
+          onChange={this.handleRunTestsClick}
+        />
+        <Dropdown
+          className={'mr-2'}
+          title={'Show/hide'}
+          items={testsViewItems}
+          onChange={this.handleTestsViewMode}
+        />
+        <Dropdown
+          className={'mr-2'}
+          title={'View mode'}
+          items={screenViewItems}
+          onChange={this.handleScreenViewMode}
+        />
         <Button
           title={'Accept all'}
           className={'mr-2'}
-          onClick={this.handleAcceptAll}
+          onClick={this.handleAcceptAllClick}
         />
       </ControlPanelStyled>
     );
@@ -113,6 +102,7 @@ class ControlPanel extends React.Component<
 const mapStateToProps = ({ app, tests }: RootStore) => ({
   url: app.url,
   isGui: tests.gui,
+  failed: failedSuitesSelector(tests),
 });
 
 const mapDispatchToProps = (dispatch) =>
