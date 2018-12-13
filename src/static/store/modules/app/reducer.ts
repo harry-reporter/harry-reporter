@@ -6,7 +6,6 @@ const defaultState: AppStore = {
   url: '',
   screenViewMode: '3-up',
   testsViewMode: TestsViewMode.expandErrors,
-  running: false,
 };
 
 export const reducer = (state: AppStore = defaultState, action): AppStore => {

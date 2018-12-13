@@ -27,10 +27,11 @@ export const formatSuitesData = ({ suites = [], filterSuites, reduceBrowsers }: 
 };
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
-  const { skips, suites, total, passed, failed, skipped, retries, gui = false } = compiledData;
+  const { skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
 
   return {
     gui,
+    running,
     skips,
     tests: suites,
     stats: {
@@ -90,7 +91,7 @@ export const addTestResult = (state: TestsStore, action): TestsStore => {
   return assign({}, state, {suiteIds, suites});
 };
 
-const forceUpdateSuiteData = (suites, test) => {
+export const forceUpdateSuiteData = (suites, test) => {
   const id = getSuiteId(test);
   suites[id] = cloneDeep(suites[id]);
 };
