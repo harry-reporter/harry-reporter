@@ -24,11 +24,13 @@ const initialState = compiledData
   ? getInitialState(compiledData)
   : defaultState;
 
-export const reducer = (state: TestsStore = initialState, action): TestsStore => {
+export const reducer = (
+  state: TestsStore = initialState,
+  action,
+): TestsStore => {
   const { type, payload } = action;
 
   switch (type) {
-
     case actionNames.INIT_GUI: {
       const { skips, suites, gui, config } = payload;
       return { ...state, skips, gui, config, ...formatSuitesDataTemp(suites) };

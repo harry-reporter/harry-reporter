@@ -7,6 +7,9 @@ export interface TestBoxProps {
   data: Suite;
   style?: React.CSSProperties;
   className?: string;
+  isOpen?: boolean;
+  uuid?: string;
+  setIsOpenForTestBox?: (isOpen: boolean, uuid: string) => void;
   cache: TestBoxesCache;
   index: string;
   testsViewMode?: TestsViewMode;
