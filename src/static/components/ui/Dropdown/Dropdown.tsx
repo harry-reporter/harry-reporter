@@ -19,11 +19,11 @@ class Dropdown extends React.PureComponent<DropdownProps> {
 
   public toggleOpen = (ev) => {
     ev.preventDefault();
-    this.setState((prevState: DropdownState) => ({ isOpen: !prevState.isOpen }));
+    this.setState(({ isOpen }: DropdownState) => ({ isOpen: !isOpen }));
   }
 
   public handleClickAtItem = (value: string) => {
-    this.setState({ value, isOpen: false }, () => this.props.onChange(value));
+    this.setState({ value }, () => this.props.onChange(value));
   }
 
   public renderItems() {
