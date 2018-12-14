@@ -21,6 +21,7 @@ export interface IPluginOpts {
   baseHost?: string;
   scaleImages?: boolean;
   lazyLoadOffset?: number;
+  gitUrl?: string;
 }
 
 export interface IHermioneConfig {
@@ -29,6 +30,7 @@ export interface IHermioneConfig {
   scaleImages: boolean;
   lazyLoadOffset: number;
   forBrowser: any;
+  gitUrl?: string;
 }
 
 export interface IHermione extends EventEmitter {

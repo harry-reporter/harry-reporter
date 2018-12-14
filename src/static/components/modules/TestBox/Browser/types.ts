@@ -1,4 +1,10 @@
-import { Browser, Attempt, TypeView, Suite, TestStatus } from 'src/store/modules/tests/types';
+import {
+  Browser,
+  Attempt,
+  TypeView,
+  Suite,
+  TestStatus,
+} from 'src/store/modules/tests/types';
 import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
 export interface BrowserProps {
@@ -14,6 +20,7 @@ export interface BrowserProps {
   suiteData?: Suite;
   index: number;
   onAccept: (browserId, attempt, stateName?) => void;
+  gitUrl?: string;
 }
 export interface BrowserState {
   viewType: TypeView;

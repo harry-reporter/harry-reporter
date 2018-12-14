@@ -8,6 +8,7 @@ export interface HeaderProps {
 
   onToggle: () => any;
   retryHandler?: () => void;
+  gitUrl?: string;
 }
 
 export interface HeaderState {}
