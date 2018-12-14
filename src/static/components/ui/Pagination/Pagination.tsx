@@ -3,21 +3,12 @@ import cn from 'classnames';
 
 import { SubNavStyled, SubNavItemStyled } from './styled';
 
-import { IPaginationProps, PaginationState } from './types';
+import { IPaginationProps } from './types';
 
-class Pagination extends React.PureComponent<IPaginationProps, PaginationState> {
+class Pagination extends React.PureComponent<IPaginationProps, {}> {
   private static defaultProps = {
     hasPreventDefault: false,
-    dataList: [],
   };
-
-  public state = {
-    currentPage: 1,
-  };
-
-  public componentDidMount(): void {
-    this.setState({ currentPage: this.props.pageCount });
-  }
 
   public handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const { hasPreventDefault } = this.props;
@@ -26,10 +17,8 @@ class Pagination extends React.PureComponent<IPaginationProps, PaginationState> 
       e.preventDefault();
     }
 
-    // TODO: убрать any
     const { dataset } = e.target as any;
     this.props.handleDataChange(Number(dataset.page));
-    this.setState({ currentPage: Number(dataset.page) });
   }
 
   /**
@@ -37,12 +26,12 @@ class Pagination extends React.PureComponent<IPaginationProps, PaginationState> 
    *
    */
   public renderSubNavByMaxPage = (): React.ReactNode => {
-    const { currentPage } = this.state;
+    const { pageCurrent } = this.props;
 
     const subNavList: React.ReactNode[] = [];
 
     for (let i = 0; i < this.props.pageCount + 1; i++) {
-      const cnSubNav = cn('subnav-item', { selected: currentPage === i });
+      const cnSubNav = cn('subnav-item', { selected: pageCurrent === i });
 
       subNavList.push(
         <SubNavItemStyled key={i} className={cnSubNav} data-page={i} href={'#'} onClick={this.handleClick}>

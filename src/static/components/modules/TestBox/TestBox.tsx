@@ -46,12 +46,19 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
   constructor(props) {
     super(props);
-    this.measurer = { measure: props.measure };
+    this.measurer = {
+      measure: props.measure,
+      cache: props.cache,
+      suiteData: props.data,
+    };
   }
 
   public componentDidUpdate(prevProps: TestBoxProps): void {
-    const { isOpen, measure } = this.props;
+    const { isOpen, measure, selectedTestsType } = this.props;
     if (isOpen !== prevProps.isOpen) {
+      measure();
+    }
+    if (selectedTestsType !== prevProps.selectedTestsType) {
       measure();
     }
   }
@@ -83,11 +90,12 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   private renderBrowsers = (): any => {
     const { data, isGui } = this.props;
 
-    return data.browsers.map((item) => (
+    return data.browsers.map((item, id) => (
       <Browser
         key={item.name}
         isGui={isGui}
         data={item}
+        index={id}
         onAccept={this.acceptTest}
       />
     ));
@@ -118,6 +126,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
 const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
   isOpen: testBoxSelector(store, ownProps),
+  selectedTestsType: store.app.selectedTestsType,
 });
 
 const mapDispatchToProps = (dispatch) => ({
