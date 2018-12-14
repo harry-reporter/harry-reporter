@@ -1,16 +1,26 @@
 import * as React from 'react';
 
-import Octicon, { Check, Icon, X } from '@githubprimer/octicons-react';
+import Octicon, { Check, X } from '@githubprimer/octicons-react';
 import { withMargin } from 'src/components/hoc/withMargin';
 
 import { IconProps } from './types';
 
-const Icon: React.SFC<IconProps> = ({ isFail, className }) => {
-  const OcticonIcon: Icon = isFail ? X : Check;
+const Icon: React.SFC<IconProps> = ({ status, className }) => {
+
+  const getIcon = () => {
+    switch (status) {
+      case 'error': return X;
+      case 'success': return Check;
+
+      default: return null;
+    }
+  }
+
+  const icon = getIcon();
 
   return (
     <span className={className}>
-      <Octicon icon={OcticonIcon} />
+      {icon && <Octicon icon={icon} />}
     </span>
   );
 };

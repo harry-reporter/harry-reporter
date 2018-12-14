@@ -20,7 +20,7 @@ const App: React.SFC<AppProps> = () => {
       <ThemeProvider theme={theme}>
         <>
           <Header pt={5} pl={3} pr={3}>
-            <Title as={'h1'}>Harry report</Title>
+            <Title as={'h1'}>Harry reporter</Title>
           </Header>
           <Main pl={3} pr={3}>
             <NavigationPanel />

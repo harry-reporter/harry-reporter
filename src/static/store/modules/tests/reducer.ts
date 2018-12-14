@@ -5,7 +5,11 @@ import { clone, assign } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
-  tests: [],
+  suiteIds: {
+    all: [],
+    failed: [],
+  },
+  suites: {},
   skips: [],
   stats: {
     total: 0,
