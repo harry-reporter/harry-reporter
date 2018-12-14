@@ -1,5 +1,5 @@
 import { Suite } from 'src/store/modules/tests/types';
-import { TestsViewMode } from 'src/store/modules/app/types';
+import { TestsTypeKey, TestsViewMode } from 'src/store/modules/app/types';
 import { setTestsViewMode } from 'src/store/modules/app/actions';
 import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
@@ -14,6 +14,7 @@ export interface TestBoxProps {
   cache: TestBoxesCache;
   index: string;
   testsViewMode?: TestsViewMode;
+  selectedTestsType: TestsTypeKey;
 
   measure?: () => any;
   setTestsViewMode?: typeof setTestsViewMode;
@@ -26,4 +27,6 @@ export interface TestBoxState {
 
 export interface Measurer {
   measure?: () => any;
+  cache?: TestBoxesCache;
+  suiteData?: Suite;
 }

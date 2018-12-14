@@ -45,7 +45,7 @@ export default class Status extends React.PureComponent<StatusProps> {
           <i>Attempts:</i>{' '}
         </Text>
         <Pagination
-          defaultCurrentPage={pageCount}
+          defaultCurrentPage={pageCurrent}
           hasPreventDefault={true}
           pageCount={pageCount}
           handleDataChange={handleDataChange}

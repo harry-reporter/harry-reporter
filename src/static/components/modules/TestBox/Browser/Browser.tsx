@@ -24,6 +24,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     const { result, result: { attempt } } = this.props.data;
 
     this.state = {
+      isOpen: false,
       viewData: result,
       viewType: this.screenshot,
       pageCount: attempt,
@@ -35,11 +36,48 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     if (!this.isScreenShot()) {
       this.setState({ viewType: this.code });
     }
+
+    this.initStateFromCache();
   }
 
   public componentDidUpdate(prevProps): void {
     if (this.props.isOpenedBrowser !== prevProps.isOpenedBrowser) {
       this.props.measure();
+    }
+  }
+
+  public componentWillUnmount(): void {
+    this.cacheState();
+  }
+
+  private cacheState = () => {
+    const { cache, suiteData } = this.props;
+    const { isOpen, viewData, viewType, pageCurrent } = this.state;
+
+    const suiteIndex = suiteData.suitePath.join('/');
+
+    cache.set(
+      `browser-${viewData.name}`,
+      suiteIndex,
+      { isOpen, viewType, pageCurrent },
+    );
+  }
+
+  private initStateFromCache = () => {
+    const { cache, suiteData, measure } = this.props;
+    const { viewData } = this.state;
+    const cacheTest = cache.data[suiteData.suitePath.join('/')];
+
+    if (cacheTest) {
+      const key = `browser-${viewData.name}`;
+
+      if (cacheTest[key]) {
+        this.setState({
+          isOpen: cacheTest[key].isOpen,
+          viewType: cacheTest[key].viewType,
+          pageCurrent: cacheTest[key].pageCurrent,
+        }, measure);
+      }
     }
   }
 
@@ -49,20 +87,19 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   private handleViewChange = (viewType: TypeView): void => {
-    this.setState({ viewType });
+    this.setState({ viewType }, this.props.measure);
   }
 
   private handleDataChange = (pageNumber: number): void => {
     const { result, retries } = this.props.data;
     const { pageCount } = this.state;
     const resultPage = pageNumber === pageCount ? result : retries[pageNumber];
+
     this.setState({ pageCurrent: pageNumber, viewData: resultPage });
   }
 
   private toggleBox = () => {
-    const { isOpenedBrowser } = this.props;
-    const browsersId = this.props.data.browserId;
-    this.props.setIsOpenForBrowser(!isOpenedBrowser, browsersId);
+    this.setState((prevState: BrowserState) => ({ isOpen: !prevState.isOpen }), this.props.measure);
   }
 
   private acceptBrowser = () => {
@@ -88,14 +125,15 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public render(): JSX.Element {
-    const { isGui, url, isOpenedBrowser } = this.props;
-    const { viewType, pageCurrent, pageCount, viewData } = this.state;
+    const { isGui, url } = this.props;
+    const { viewType, pageCurrent, pageCount, viewData, isOpen } = this.state;
+
     return (
       <div className={'Box-row p-0'}>
         <Header
           isGui={isGui}
           data={viewData}
-          isOpenedBrowser={isOpenedBrowser}
+          isOpenedBrowser={isOpen}
           onToggle={this.toggleBox}
           onAccept={this.acceptBrowser}
           handleViewChange={this.handleViewChange}
@@ -105,7 +143,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
           pageCount={pageCount}
           url={url}
         />
-        {isOpenedBrowser && this.renderViewer()}
+        {isOpen && this.renderViewer()}
       </div>
     );
   }

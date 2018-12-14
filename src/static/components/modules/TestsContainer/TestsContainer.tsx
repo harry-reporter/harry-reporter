@@ -52,35 +52,6 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
     eventSource.addEventListener(clientEvents.END, () => testsEnd());
   }
 
-  private renderMeasurer = ({ style, index }) => ({ measure }) => {
-    const { tests, gui } = this.props;
-    const testBoxIndex = `${tests[index].suitePath.join('/')}`;
-
-    return (
-      <TestBox
-        isGui={gui}
-        cache={testBoxesCache}
-        style={style}
-        index={testBoxIndex}
-        key={testBoxIndex}
-        data={tests[index]}
-        measure={measure}
-      />
-    );
-  }
-
-  private renderRow = ({ index, isScrolling, key, parent, style }) => (
-    <CellMeasurer
-      cache={measurerCache}
-      columnIndex={0}
-      key={key}
-      parent={parent}
-      rowIndex={index}
-    >
-      {this.renderMeasurer({ style, index })}
-    </CellMeasurer>
-  )
-
   private renderList = () => ({ height, width, isScrolling, onChildScroll, scrollTop }) => (
     <ListStyled
       autoHeight={true}
@@ -91,7 +62,33 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
       width={width}
       rowHeight={measurerCache.rowHeight}
       rowCount={this.props.tests.length}
-      rowRenderer={this.renderRow}
+      rowRenderer={({ index, key, parent, style }) => (
+        <CellMeasurer
+          cache={measurerCache}
+          columnIndex={0}
+          key={key}
+          parent={parent}
+          rowIndex={index}
+        >
+          {({ measure }) => {
+            const { tests, selectedTestsType, gui } = this.props;
+            const testBoxIndex = `${tests[index].suitePath.join('/')}`;
+
+            return (
+              <TestBox
+                isGui={gui}
+                cache={testBoxesCache}
+                style={style}
+                index={testBoxIndex}
+                key={testBoxIndex}
+                data={tests[index]}
+                measure={measure}
+                selectedTestsType={selectedTestsType}
+              />
+            );
+          }}
+        </CellMeasurer>
+      )}
       deferredMeasurementCache={measurerCache}
       overscanRowCount={10}
       scrollTop={scrollTop}
@@ -121,5 +118,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 export default connect((state: RootStore) => ({
   tests: getTestsByType(state),
+  selectedTestsType: state.app.selectedTestsType,
   gui: state.tests.gui,
 }), mapDispatchToProps)(TestsContainer);
