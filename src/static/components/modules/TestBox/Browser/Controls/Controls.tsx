@@ -19,12 +19,12 @@ export default class Controls extends React.PureComponent<ControlsProps> {
 
   private btns = [
     { title: 'Skip', size: 'sm' },
-    { title: 'Accept', size: 'sm' },
+    { title: 'Accept', size: 'sm', onClick: this.props.onAccept },
   ];
 
   // TODO: объявить объекты, которые передаются в качестве пропс
   public render() {
-    const { isOpenedBrowser, onToggle, viewType, handleViewChange, data, url } = this.props;
+    const { isGui, isOpenedBrowser, onToggle, viewType, handleViewChange, data, url } = this.props;
     return (
       <ControlsStyled>
         <ControlViewers
@@ -32,7 +32,9 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           onChange={handleViewChange}
           viewType={viewType}
         />
-        <ButtonsGroup className={'mr-3'} btns={this.btns} />
+        { isGui && data.status === 'fail' && (
+          <ButtonsGroup className={'mr-3'} btns={this.btns} />
+        ) }
         <Button
           size={'sm'}
           className={'mr-3'}

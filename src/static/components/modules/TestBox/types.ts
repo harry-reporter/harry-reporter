@@ -4,6 +4,7 @@ import { setTestsViewMode } from 'src/store/modules/app/actions';
 import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
 export interface TestBoxProps {
+  isGui: boolean;
   data: Suite;
   style?: React.CSSProperties;
   className?: string;
@@ -16,6 +17,7 @@ export interface TestBoxProps {
 
   measure?: () => any;
   setTestsViewMode?: typeof setTestsViewMode;
+  acceptTest?: (suite, browserId, attempt, stateName) => void;
 }
 
 export interface TestBoxState {

@@ -20,7 +20,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
 
   public render() {
     const {
-      data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser, onToggle, handleViewChange, viewType, url,
+      isGui, data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser, onToggle, onAccept, handleViewChange, viewType, url,
     } = this.props;
 
     return (
@@ -33,9 +33,11 @@ export default class Header extends React.PureComponent<HeaderProps> {
           pageCount={pageCount}
         />
         <Controls
+          isGui={isGui}
           data={data}
           isOpenedBrowser={isOpenedBrowser}
           onToggle={onToggle}
+          onAccept={onAccept}
           handleViewChange={handleViewChange}
           viewType={viewType}
           url={url}

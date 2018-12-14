@@ -65,6 +65,11 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     this.props.setIsOpenForBrowser(!isOpenedBrowser, browsersId);
   }
 
+  private acceptBrowser = () => {
+    const { viewData, pageCurrent } = this.state;
+    this.props.onAccept(viewData.name, pageCurrent);
+  }
+
   private renderViewer(): JSX.Element {
     let ViewerWrapper = null;
     const { viewType, viewData } = this.state;
@@ -83,14 +88,16 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public render(): JSX.Element {
-    const { url, isOpenedBrowser } = this.props;
+    const { isGui, url, isOpenedBrowser } = this.props;
     const { viewType, pageCurrent, pageCount, viewData } = this.state;
     return (
       <div className={'Box-row p-0'}>
         <Header
+          isGui={isGui}
           data={viewData}
           isOpenedBrowser={isOpenedBrowser}
           onToggle={this.toggleBox}
+          onAccept={this.acceptBrowser}
           handleViewChange={this.handleViewChange}
           viewType={viewType}
           handleDataChange={this.handleDataChange}

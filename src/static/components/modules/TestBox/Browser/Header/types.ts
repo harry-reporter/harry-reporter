@@ -1,6 +1,7 @@
 import { TestStatus, Attempt, TypeView } from 'src/store/modules/tests/types';
 
 export interface HeaderProps {
+  isGui: boolean;
   data: Attempt;
   className?: string;
   isOpenedBrowser: boolean;
@@ -10,5 +11,6 @@ export interface HeaderProps {
   pageCount: number;
   pageCurrent: number;
   onToggle: () => any;
+  onAccept: () => any;
   url: string;
 }

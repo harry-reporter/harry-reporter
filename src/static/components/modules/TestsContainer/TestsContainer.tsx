@@ -53,11 +53,12 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
   }
 
   private renderMeasurer = ({ style, index }) => ({ measure }) => {
-    const { tests } = this.props;
+    const { tests, gui } = this.props;
     const testBoxIndex = `${tests[index].suitePath.join('/')}`;
 
     return (
       <TestBox
+        isGui={gui}
         cache={testBoxesCache}
         style={style}
         index={testBoxIndex}

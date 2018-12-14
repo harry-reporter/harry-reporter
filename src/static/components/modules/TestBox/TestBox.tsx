@@ -9,6 +9,7 @@ import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/Tes
 import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
 import { setIsOpenForTestBox } from 'src/store/modules/app/actions';
+import { acceptTest } from 'src/store/modules/tests/actions';
 
 import Header from './Header';
 import Browser from './Browser/Browser';
@@ -74,9 +75,22 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
     this.props.setIsOpenForTestBox(!this.props.isOpen, this.props.data.uuid);
   }
 
+  private acceptTest = (browserId, attempt, stateName) => {
+    const { data, acceptTest } = this.props;
+    acceptTest(data, browserId, attempt, stateName);
+  }
+
   private renderBrowsers = (): any => {
-    const { data } = this.props;
-    return data.browsers.map((item) => <Browser key={item.name} data={item} />);
+    const { data, isGui } = this.props;
+
+    return data.browsers.map((item) => (
+      <Browser
+        key={item.name}
+        isGui={isGui}
+        data={item}
+        onAccept={this.acceptTest}
+      />
+    ));
   }
 
   public render(): JSX.Element {
@@ -107,7 +121,10 @@ const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({ setIsOpenForTestBox }, dispatch),
+  ...bindActionCreators({
+    setIsOpenForTestBox,
+    acceptTest,
+  }, dispatch),
 });
 
 export default connect(

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { flatMap, compact } from 'lodash';
+import { assign, flatMap, compact } from 'lodash';
+
 import { filterFailedBrowsers, filterAcceptableBrowsers, formatTests } from '../utils';
 import * as actionNames from './constants';
 
@@ -57,6 +58,9 @@ export const acceptAll = (fails) => {
     }
   };
 };
+
+export const acceptTest = (suite, browserId, attempt, stateName) =>
+  acceptAll(assign({ browserId, stateName }, suite, { acceptTestAttempt: attempt }));
 
 export const suiteBegin = (suite) => ({type: actionNames.SUITE_BEGIN, payload: suite});
 export const testBegin = (test) => ({type: actionNames.TEST_BEGIN, payload: test});
