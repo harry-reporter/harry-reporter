@@ -1,5 +1,6 @@
-import { reduce, filter, map, assign, clone, cloneDeep, omit } from 'lodash';
-import { isSuiteFailed, findNode, setStatusForBranch } from '../utils';
+import { reduce, filter, map, assign, clone, cloneDeep, omit, isArray, get } from 'lodash';
+import { isSuiteFailed, findNode, setStatusForBranch, walk } from '../utils';
+import { isSkippedStatus } from '../../../../common-utils';
 import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs } from 'src/store/modules/tests/types';
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
@@ -132,4 +133,20 @@ export const addTestResult = (state: TestsStore, action): TestsStore => {
 export const forceUpdateSuiteData = (suites, test) => {
   const id = getSuiteId(test);
   suites[id] = cloneDeep(suites[id]);
+};
+
+export const setStatusToAll = (node, status) => {
+  if (isArray(node)) {
+      node.forEach((n) => setStatusToAll(n, status));
+  }
+
+  const currentStatus = get(node, 'result.status', node.status);
+  if (isSkippedStatus(currentStatus)) {
+      return;
+  }
+  node.result
+      ? (node.result.status = status)
+      : node.status = status;
+
+  return walk(node, (n) => setStatusToAll(n, status), Array.prototype.forEach);
 };

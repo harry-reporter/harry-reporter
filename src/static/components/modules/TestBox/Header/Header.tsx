@@ -12,12 +12,8 @@ import Button from 'src/components/ui/Button/Button';
 class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
 
-  public handleRunClick() {
-    // todo: отправлять post-запрос
-  }
-
   public render(): JSX.Element {
-    const { title, isOpenedBox, status } = this.props;
+    const { title, isOpenedBox, status, retryHandler } = this.props;
     const textColor = getColor(status);
     const Chevron = getChevron(isOpenedBox);
 
@@ -33,7 +29,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
             size={'sm'}
             className={'mr-3'}
             title={'Run'}
-            onClick={this.handleRunClick}
+            onClick={retryHandler}
           />
           <ClipboardStyled component='div' option-text={this.getTitle}>
             <Octicon icon={Clippy} />

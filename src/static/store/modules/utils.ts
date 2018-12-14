@@ -1,6 +1,7 @@
 import { filter, flatMap, set, cloneDeep, values, find } from 'lodash';
 import { isFailStatus, isErroredStatus, isUpdatedStatus, isSuccessStatus } from '../../../common-utils';
 import { Suite, Browser } from './tests/types';
+import * as status from '../../../constants/test-statuses';
 
 export const isSuiteFailed = (suite: Suite) => {
   return isFailStatus(suite.status) || isErroredStatus(suite.status);
@@ -45,7 +46,7 @@ export const formatTests = (test) => {
   const prepareImages = (images, filterCond) => {
     return filter(images, filterCond)
       .filter(isAcceptable)
-      .map(({ actualPath, stateName }: any) => ({ status: 'updated', actualPath, stateName }));
+      .map(({ actualPath, stateName }: any) => ({ status: status.UPDATED, actualPath, stateName }));
   };
 
   return flatMap(test.browsers, (browser) => {
@@ -129,7 +130,7 @@ const hasFails = (node) => {
   return isFailed || walk(node, hasFails);
 };
 
-const walk = (node, cb, fn = Array.prototype.some) => {
+export const walk = (node, cb, fn: any = Array.prototype.some) => {
   return node.browsers && fn.call(node.browsers, cb) || node.children && fn.call(node.children, cb);
 };
 
