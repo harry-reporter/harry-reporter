@@ -5,7 +5,7 @@ export interface TestsStore {
   skips: Suite[];
   stats: Stats;
   gui: boolean;
-  running: boolean;
+  running?: boolean;
   suites?: Suites;
   suiteIds?: SuiteIds;
   config?: Config;
@@ -47,6 +47,7 @@ export interface Suite {
   status: TestStatus;
   children?: Suite[];
   browsers?: Browser[];
+  uuid?: string;
 }
 
 export interface SuiteIds {
@@ -58,6 +59,7 @@ export interface Browser {
   name: string;
   result: Attempt;
   retries: Attempt[];
+  browserId: string;
 }
 
 export interface Attempt {
@@ -69,6 +71,13 @@ export interface Attempt {
   multipleTabs: boolean;
   status: TestStatus;
   attempt: number;
+
+  reason?: ReasonProps;
+  type?: TypeView;
+  className?: string;
+  measure?: () => any;
+  isOpenedScreenView?: boolean;
+  setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;
 }
 
 export interface MetaInfo {
@@ -79,12 +88,34 @@ export interface MetaInfo {
 
 export interface ImageInfo {
   stateName: string;
-  status: string;
-  actualPath: string;
+  status: TestStatus;
+  actualPath?: string;
   imagePath: string;
-  expectedPath: string;
+  expectedPath?: string;
+  reason?: ReasonProps;
+  refImagePath?: string;
+  diffPath?: string;
+  onLoad?: any;
+  screenViewMode?: string;
+  setScreenModForView?: (
+    screenViewMod: string,
+    screenViewModId: string,
+  ) => void;
+  viewId?: string;
+  isOpenedScreenView?: boolean;
+  isOpen?: boolean;
+  setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;
+  measure?: () => any;
+
 }
 
 export interface WindowWithData extends Window {
   data: CompiledData;
+}
+
+export type TypeView = 'code' | 'tests' | 'screenshot';
+
+export interface ReasonProps {
+  message: string;
+  stack: string;
 }

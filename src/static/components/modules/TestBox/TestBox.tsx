@@ -2,15 +2,16 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import cn from 'classnames';
-import * as appActions from 'src/store/modules/app/actions';
+
 import { hasRetries, isFailedTest } from 'src/utils';
-
-import Header from './Header';
-import Feature from './Feature';
-
+import { testBoxSelector } from '../TestBox/selector';
 import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/TestBox/types';
 import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
+import { setIsOpenForTestBox } from '../../../store/modules/app/actions';
+
+import Header from './Header';
+import Browser from './Browser/Browser';
 
 export const MeasurerContext = React.createContext<Measurer>({});
 
@@ -20,7 +21,10 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
     isOpen: true,
   };
 
-  public static getDerivedStateFromProps({ testsViewMode, data }: TestBoxProps) {
+  public static getDerivedStateFromProps({
+    testsViewMode,
+    data,
+  }: TestBoxProps) {
     switch (testsViewMode) {
       case TestsViewMode.expandAll:
         return { isOpen: true };
@@ -34,7 +38,8 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
       case TestsViewMode.expandRetries:
         return { isOpen: hasRetries(data) };
 
-      default: return null;
+      default:
+        return null;
     }
   }
 
@@ -43,20 +48,18 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
     this.measurer = { measure: props.measure };
   }
 
-  public componentDidMount(): void {
-    const { cache, index, measure } = this.props;
-    const cacheTest = cache.data[index];
-
-    if (cacheTest) {
-      this.setState({ isOpen: cacheTest.isOpen }, measure);
+  public componentDidUpdate(prevProps: TestBoxProps): void {
+    const { isOpen, measure } = this.props;
+    if (isOpen !== prevProps.isOpen) {
+      measure();
     }
   }
 
-  public componentDidUpdate(prevProps: TestBoxProps): void {
-    const { testsViewMode, measure } = this.props;
-
-    if (testsViewMode !== prevProps.testsViewMode) {
-      measure();
+  public componentDidMount(): void {
+    const { cache, index, measure } = this.props;
+    const cacheTest = cache.data[index];
+    if (cacheTest) {
+      this.setState({ isOpen: cacheTest.isOpen }, measure);
     }
   }
 
@@ -68,24 +71,17 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   private toggleBox = () => {
-    const { testsViewMode, measure, setTestsViewMode } = this.props;
+    this.props.setIsOpenForTestBox(!this.props.isOpen, this.props.data.uuid);
 
-    this.setState((prevState) => ({ isOpen: !prevState.isOpen }), measure);
-    if (testsViewMode !== TestsViewMode.none) {
-      setTestsViewMode(TestsViewMode.none);
-    }
   }
 
-  private renderFeatures = (): any => {
+  private renderBrowsers = (): any => {
     const { data } = this.props;
-
-    return data.browsers.map((item) => <Feature key={item.name} data={item} />);
+    return data.browsers.map((item) => <Browser key={item.name} data={item} />);
   }
 
   public render(): JSX.Element {
-    const { data, style, className } = this.props;
-    const { isOpen } = this.state;
-
+    const { data, style, className, isOpen } = this.props;
     const suite = data.suitePath.join(' / ');
     const cnTestBox = cn('Box mb-3 mt-1', className);
 
@@ -99,7 +95,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
               isOpenedBox={isOpen}
               onToggle={this.toggleBox}
             />
-            {isOpen && this.renderFeatures()}
+            {isOpen && this.renderBrowsers()}
           </div>
         </div>
       </MeasurerContext.Provider>
@@ -107,12 +103,15 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 }
 
-const mapStateToProps = ({ app }: RootStore) => ({
-  testsViewMode: app.testsViewMode,
-});
+const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => {
+  return testBoxSelector(store, ownProps);
+};
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators(appActions, dispatch),
+  ...bindActionCreators({ setIsOpenForTestBox }, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TestBox);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TestBox);
