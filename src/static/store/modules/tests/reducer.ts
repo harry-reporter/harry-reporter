@@ -7,6 +7,11 @@ import * as actionNames from './constants';
 const defaultState: TestsStore = {
   tests: [],
   skips: [],
+  suites: {},
+  suiteIds: {
+    all: [],
+    failed: [],
+  },
   stats: {
     total: 0,
     passed: 0,
