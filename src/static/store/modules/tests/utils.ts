@@ -1,34 +1,63 @@
-import { reduce, filter, map, assign, clone, cloneDeep } from 'lodash';
+import { reduce, filter, map, assign, clone, cloneDeep, omit } from 'lodash';
 import { isSuiteFailed, findNode, setStatusForBranch } from '../utils';
-import { CompiledData, Suite, Suites, TestsStore } from 'src/store/modules/tests/types';
+import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs } from 'src/store/modules/tests/types';
 
-interface FormatSuitesDataArgs {
-  suites: Suites;
-  suiteIds: string[];
-  filterSuites?: (suite: Suite) => boolean;
-  reduceBrowsers?: (acc: Suite[], suite: Suite) => Suite[];
-}
+export const getInitialState = (compiledData: CompiledData): TestsStore => {
+  const { skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
 
-export const formatSuitesData = ({suites = {}, suiteIds = [], filterSuites, reduceBrowsers }: FormatSuitesDataArgs) => {
-  let result = suiteIds.reduce<Suite[]>((acc, suiteId) => {
-    const suite = suites[suiteId];
+  return {
+    gui,
+    running,
+    skips,
+    ...formatSuitesDataTemp(suites),
+    stats: {
+      total,
+      passed,
+      failed,
+      skipped,
+      retries,
+    },
+  };
+};
 
-    if (suite.children) {
-      let children = filterSuites
-        ? suite.children.filter(filterSuites)
-        : suite.children;
+export const flatSuites = ({ suites = {}, filterSuites, filterBrowsers }: FormatSuitesDataArgs) => {
+  const suiteList = [];
 
-      if (reduceBrowsers) {
-        children = children.reduce(reduceBrowsers, []);
-      }
-
-      return [...acc, ...children];
+  for (const key in suites) {
+    if (!suites.hasOwnProperty(key)) {
+      continue;
     }
 
-    return acc;
-  }, []);
-  result = enchanceUuid(result);
-  return result;
+    let suite = suites[key];
+
+    if (suite.children) {
+      const children = flatSuites({ suites: suite.children, filterSuites, filterBrowsers });
+      suiteList.push(...children);
+
+      continue;
+    }
+
+    if (filterBrowsers) {
+      const filteredBrowsers = suite.browsers.filter(filterBrowsers);
+      if (filteredBrowsers.length === 0) {
+        continue;
+      }
+
+      suite = { ...suite, browsers: filteredBrowsers };
+    }
+
+    if (filterSuites) {
+      if (filterSuites(suite)) {
+        suiteList.push(omit<Suite>(suite, ['children']));
+      }
+
+      continue;
+    }
+
+    suiteList.push(omit<Suite>(suite, ['children']));
+  }
+
+  return enchanceUuid(suiteList);
 };
 
 const enchanceUuid = (result) => {
@@ -47,24 +76,6 @@ const enchanceUuid = (result) => {
     });
   });
   return result;
-};
-
-export const getInitialState = (compiledData: CompiledData): TestsStore => {
-  const { skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
-
-  return {
-    gui,
-    running,
-    skips,
-    ...formatSuitesDataTemp(suites),
-    stats: {
-      total,
-      passed,
-      failed,
-      skipped,
-      retries,
-    },
-  };
 };
 
 export const formatSuitesDataTemp = (suites: Suite[] = []) => {

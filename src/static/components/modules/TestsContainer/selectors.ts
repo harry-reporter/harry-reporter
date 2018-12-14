@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect';
+import { pick } from 'lodash';
 import { TestsTypeKey } from 'src/store/modules/app/types';
-import { formatSuitesData } from 'src/store/modules/tests/utils';
+import { flatSuites } from 'src/store/modules/tests/utils';
 import { isFailedTest, isSuccessStatus } from 'src/utils';
 
-import { Skip, Suite, SuiteIds, Suites } from 'src/store/modules/tests/types';
+import { Browser, Skip, Suite, SuiteIds, Suites } from 'src/store/modules/tests/types';
 import { RootStore } from 'src/store/types/store';
 
 export const getSuites = ({ tests }: RootStore) => tests.suites;
@@ -17,19 +18,17 @@ export const getTestsByType = createSelector(
 
     switch (type) {
       case 'total':
-        return formatSuitesData({ suites, suiteIds: suiteIds.all });
+        return flatSuites({ suites });
 
       case 'passed':
-        return formatSuitesData({
-          suites,
-          suiteIds: suiteIds.all,
+        return flatSuites({
+          suites: pick(suites, suiteIds.all),
           filterSuites: (suite) => isSuccessStatus(suite.status),
         });
 
       case 'failed':
-        return formatSuitesData({
-          suites,
-          suiteIds: suiteIds.failed,
+        return flatSuites({
+          suites: pick(suites, suiteIds.failed),
           filterSuites: (suite: Suite) => isFailedTest(suite),
         });
 
@@ -37,16 +36,12 @@ export const getTestsByType = createSelector(
         return skips;
 
       case 'retries':
-        return formatSuitesData({
-          suites,
-          suiteIds: suiteIds.all,
-          reduceBrowsers: (acc: Suite[], suite) => {
-            const browsers = suite.browsers.filter((browser) => browser.result.attempt > 0);
-            return [...acc, { ...suite, browsers }];
-          },
+        return flatSuites({
+          suites: pick(suites, suiteIds.all),
+          filterBrowsers: (browser: Browser) => browser.result.attempt > 0,
         });
 
-      default: return formatSuitesData({ suites, suiteIds: suiteIds.all });
+      default: return flatSuites({ suites });
     }
   },
 );

@@ -118,3 +118,9 @@ export interface ReasonProps {
   message: string;
   stack: string;
 }
+
+export interface FormatSuitesDataArgs {
+  suites: Suites | Suite[];
+  filterSuites?: (suite: Suite) => boolean;
+  filterBrowsers?: (browser: Browser) => boolean;
+}

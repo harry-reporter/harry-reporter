@@ -9,9 +9,7 @@ export const testBoxSelector = createSelector(
   appSelector,
   getProps,
   (app, propsData) => {
-    return {
-      isOpen: isOpen(app, propsData.uuid, propsData.status),
-    };
+    return isOpen(app, propsData.uuid, propsData.status);
   },
 );
 

@@ -8,7 +8,7 @@ import { testBoxSelector } from '../TestBox/selector';
 import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/TestBox/types';
 import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
-import { setIsOpenForTestBox } from '../../../store/modules/app/actions';
+import { setIsOpenForTestBox } from 'src/store/modules/app/actions';
 
 import Header from './Header';
 import Browser from './Browser/Browser';
@@ -72,7 +72,6 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
   private toggleBox = () => {
     this.props.setIsOpenForTestBox(!this.props.isOpen, this.props.data.uuid);
-
   }
 
   private renderBrowsers = (): any => {
@@ -103,9 +102,9 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 }
 
-const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => {
-  return testBoxSelector(store, ownProps);
-};
+const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
+  isOpen: testBoxSelector(store, ownProps),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({ setIsOpenForTestBox }, dispatch),
