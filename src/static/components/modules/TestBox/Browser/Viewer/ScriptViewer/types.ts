@@ -1,3 +1,3 @@
 export interface IScriptViewerProps {
-  textTest: string;
+  scenario: string;
 }

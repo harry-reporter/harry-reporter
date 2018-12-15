@@ -23,8 +23,14 @@ export interface IScreenshot {
   size: ISize;
 }
 
+export interface ITestPalm {
+  steps: string;
+  url: string;
+}
+
 export interface IHermioneCtx {
   assertViewResults: any;
+  testpalm: ITestPalm;
 }
 
 export interface IMeta {
