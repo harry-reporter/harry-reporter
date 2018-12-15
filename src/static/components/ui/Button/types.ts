@@ -7,6 +7,7 @@ export interface ButtonProps {
   title?: string;
   isSelected?: boolean;
   size?: 'sm';
+  disabled?: boolean;
 
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => any;
 }

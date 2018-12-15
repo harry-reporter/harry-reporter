@@ -4,6 +4,7 @@ import { Suite } from '../../../store/modules/tests/types';
 export interface ControlPanelProps {
   url: string;
   isGui: boolean;
+  isRunning: boolean;
   failed?: Suite[];
 
   setUrl: (value: string) => {type: string, payload: string};

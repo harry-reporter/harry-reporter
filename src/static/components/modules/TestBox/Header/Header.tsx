@@ -13,7 +13,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
 
   public render(): JSX.Element {
-    const { title, isOpenedBox, status, retryHandler } = this.props;
+    const { title, isOpenedBox, status, retryHandler, isRunning } = this.props;
     const textColor = getColor(status);
     const Chevron = getChevron(isOpenedBox);
 
@@ -30,6 +30,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
             className={'mr-3'}
             title={'Run'}
             onClick={retryHandler}
+            disabled={isRunning}
           />
           <ClipboardStyled component='div' option-text={this.getTitle}>
             <Octicon icon={Clippy} />
