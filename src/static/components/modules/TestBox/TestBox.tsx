@@ -125,6 +125,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
               isOpenedBox={isOpen}
               onToggle={this.toggleBox}
               retryHandler={this.runTest}
+              isRunning={isRunning}
             />
             {isOpen && this.renderBrowsers()}
           </div>

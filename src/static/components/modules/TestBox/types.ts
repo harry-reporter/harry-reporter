@@ -17,7 +17,7 @@ export interface TestBoxProps {
   index: string;
   testsViewMode?: TestsViewMode;
   selectedTestsType: TestsTypeKey;
-  running?: boolean;
+  isRunning?: boolean;
 
   measure?: () => any;
   setTestsViewMode?: typeof setTestsViewMode;

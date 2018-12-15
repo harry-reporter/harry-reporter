@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel dev:core dev:static",
     "dev:core": "tsc -w",
-    "dev:static": "cd src/static && cross-env GUI=true webpack-dev-server -d --config=webpack.dev.js",
+    "dev:static": "cd src/static && cross-env GUI=fasle webpack-dev-server -d --config=webpack.dev.js",
     "build": "rm -rf lib && npm run build:core && npm run build:static",
     "build:core": "rm -rf lib && tsc",
     "build:static": "cd src/static && webpack -p --config=webpack.prod.js",

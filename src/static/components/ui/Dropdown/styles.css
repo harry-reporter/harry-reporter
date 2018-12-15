@@ -184,3 +184,11 @@
   .dropdown-menu-se::after {
     top: -14px;
     left: 10px; }
+
+  .dropdown .disabled {
+    color: rgba(36,41,46,0.4);
+    background-color: #eff3f6;
+    background-image: none;
+    border-color: rgba(27,31,35,0.2);
+    box-shadow: none;
+    cursor: default; }
