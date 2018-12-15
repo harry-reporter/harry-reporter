@@ -6,6 +6,7 @@ import { retryTest } from 'src/store/modules/tests/actions';
 
 export interface TestBoxProps {
   isGui: boolean;
+  isRunning?: boolean;
   data: Suite;
   style?: React.CSSProperties;
   className?: string;

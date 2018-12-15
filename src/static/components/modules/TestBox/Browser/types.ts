@@ -3,6 +3,7 @@ import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
 export interface BrowserProps {
   isGui: boolean;
+  isRunning: boolean;
   data: Browser;
   url?: string;
   isOpenedBrowser?: boolean;

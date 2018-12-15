@@ -20,7 +20,8 @@ export default class Header extends React.PureComponent<HeaderProps> {
 
   public render() {
     const {
-      isGui, data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser, onToggle, onAccept, handleViewChange, viewType, url,
+      isGui, data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser,
+      onToggle, onAccept, handleViewChange, viewType, url,
     } = this.props;
 
     return (

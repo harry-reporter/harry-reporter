@@ -54,16 +54,16 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   public componentDidUpdate(prevProps: TestBoxProps): void {
-    const { isOpen, measure, selectedTestsType, running } = this.props;
-    if (isOpen !== prevProps.isOpen) {
+    const { isOpen, measure, selectedTestsType, isRunning } = this.props;
+
+    const conditionOpen = (isOpen !== prevProps.isOpen);
+    const conditionTestsType =  (selectedTestsType !== prevProps.selectedTestsType);
+    const conditionRunning =  (prevProps.isRunning && !isRunning);
+
+    if (conditionOpen || conditionTestsType || conditionRunning) {
       measure();
     }
-    if (selectedTestsType !== prevProps.selectedTestsType) {
-      measure();
-    }
-    if (prevProps.running && !running) {
-      measure();
-    }
+
   }
 
   public componentDidMount(): void {
@@ -96,7 +96,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   private renderBrowsers = (): any => {
-    const { data, isGui } = this.props;
+    const { data, isGui, isRunning } = this.props;
 
     return data.browsers.map((item, id) => (
       <Browser
@@ -104,13 +104,14 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
         isGui={isGui}
         data={item}
         index={id}
+        isRunning={isRunning}
         onAccept={this.acceptTest}
       />
     ));
   }
 
   public render(): JSX.Element {
-    const { data, style, className, isOpen } = this.props;
+    const { data, style, className, isOpen, isRunning } = this.props;
     const suite = data.suitePath.join(' / ');
     const cnTestBox = cn('Box mb-3 mt-1', className);
 
@@ -135,8 +136,8 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
 const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
   isOpen: testBoxSelector(store, ownProps),
+  isRunning: store.tests.running,
   selectedTestsType: store.app.selectedTestsType,
-  running: store.tests.running,
 });
 
 const mapDispatchToProps = (dispatch) => ({
