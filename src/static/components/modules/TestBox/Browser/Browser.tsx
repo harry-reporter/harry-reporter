@@ -63,7 +63,8 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
 
     let pageCount = attempt;
 
-    if ((attempt === 0) && (status === 'idle')) {
+    // TODO: описать условие нормально
+    if ((attempt === 0) && ((status === 'idle') || (status === 'skipped') || (status === 'running'))) {
       pageCount = -1;
     }
 
@@ -145,7 +146,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public render(): JSX.Element {
-    const { isGui, url } = this.props;
+    const { isGui, url, status } = this.props;
     const { viewType, pageCurrent, pageCount, viewData, isOpen } = this.state;
 
     return (
@@ -153,6 +154,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
         <Header
           isGui={isGui}
           data={viewData}
+          status={status}
           isOpenedBrowser={isOpen}
           onToggle={this.toggleBox}
           onAccept={this.acceptBrowser}

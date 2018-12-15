@@ -13,4 +13,5 @@ export interface HeaderProps {
   onToggle: () => any;
   onAccept: () => any;
   url: string;
+  status: TestStatus;
 }
