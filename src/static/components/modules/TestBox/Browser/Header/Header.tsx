@@ -21,13 +21,14 @@ export default class Header extends React.PureComponent<HeaderProps> {
   public render() {
     const {
       isGui, data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser,
-      onToggle, onAccept, handleViewChange, viewType, url,
+      onToggle, onAccept, handleViewChange, viewType, url, status,
     } = this.props;
 
     return (
       <div className={this.cnHeader} onClick={this.handleClickAtHeader}>
         <Status
           data={data}
+          status={status}
           onClickAtTitle={this.handleClickAtHeader}
           handleDataChange={handleDataChange}
           pageCurrent={pageCurrent}

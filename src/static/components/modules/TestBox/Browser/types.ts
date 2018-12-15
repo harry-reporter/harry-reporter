@@ -1,9 +1,10 @@
-import { Browser, Attempt, TypeView, Suite } from 'src/store/modules/tests/types';
+import { Browser, Attempt, TypeView, Suite, TestStatus } from 'src/store/modules/tests/types';
 import { TestBoxesCache } from 'src/components/modules/TestBox/utils';
 
 export interface BrowserProps {
   isGui: boolean;
   isRunning: boolean;
+  status: TestStatus;
   data: Browser;
   url?: string;
   isOpenedBrowser?: boolean;

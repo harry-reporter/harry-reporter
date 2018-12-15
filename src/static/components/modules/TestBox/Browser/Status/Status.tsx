@@ -15,7 +15,7 @@ export default class Status extends React.PureComponent<StatusProps> {
       className,
       onClickAtTitle,
       pageCount,
-      data: { status },
+      status,
       handleDataChange,
       pageCurrent,
       data: { name },

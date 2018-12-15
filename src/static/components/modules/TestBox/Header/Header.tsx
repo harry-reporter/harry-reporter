@@ -4,17 +4,18 @@ import Octicon, { Clippy, Sync } from '@githubprimer/octicons-react';
 import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
 
 import { HeaderProps, HeaderState } from './types';
-import { getChevron, getColor } from '../common-utils';
+import { getChevron } from '../common-utils';
 
 import Text from 'src/components/ui/Text/Text';
 import Button from 'src/components/ui/Button/Button';
+import { getColorByStatus } from 'src/utils';
 
 class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
 
   public render(): JSX.Element {
     const { title, isOpenedBox, status, retryHandler, isRunning } = this.props;
-    const textColor = getColor(status);
+    const textColor = getColorByStatus(status);
     const Chevron = getChevron(isOpenedBox);
 
     return (

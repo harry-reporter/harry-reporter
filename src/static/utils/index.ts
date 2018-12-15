@@ -16,7 +16,12 @@ export const hasRetries = ({ browsers }: Suite): boolean => {
 export const getColorByStatus = (status: TestStatus) => {
   switch (status) {
     case 'success': return 'green';
-    case 'fail': return 'red';
+
+    case 'fail':
+    case 'error': return 'red';
+
+    case 'running':
+    case 'skipped': return 'orange-light';
 
     default: return 'gray';
   }

@@ -105,6 +105,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
         data={item}
         index={id}
         isRunning={isRunning}
+        status={item.result.status}
         onAccept={this.acceptTest}
       />
     ));
