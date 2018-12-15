@@ -6,16 +6,11 @@ import { ButtonProps } from 'src/components/ui/Button/types';
 import { ControlViewersProps, ControlViewersState } from './types';
 
 export default class ControlViewers extends React.PureComponent<ControlViewersProps, ControlViewersState> {
-  public state = {
-    selectedId: -1,
-  };
-
   private handleClickAtButton = (viewType: string) => () => {
     this.props.onChange(viewType);
   }
 
   public render(): JSX.Element {
-    const { selectedId } = this.state;
     const { viewType } = this.props;
 
     const buttonOptions: ButtonProps[] = [
