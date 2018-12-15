@@ -11,6 +11,9 @@ import { clone, merge } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
+  config: {
+    gitUrl: '',
+  },
   suiteIds: {
     all: [],
     failed: [],
