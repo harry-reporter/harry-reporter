@@ -37,7 +37,13 @@ export const reducer = (
   switch (type) {
     case actionNames.INIT_GUI: {
       const { skips, suites, gui, config, total, passed, failed, skipped, retries } = payload;
-      return { ...state, skips, gui, config, ...formatSuitesDataTemp(suites), stats: { total, passed, failed, skipped, retries } };
+      return {
+        ...state,
+        skips,
+        gui,
+        config,
+        ...formatSuitesDataTemp(suites),
+        stats: { total, passed, failed, skipped, retries } };
     }
 
     case actionNames.ACCEPT_ALL_REFS:

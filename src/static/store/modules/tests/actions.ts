@@ -15,8 +15,9 @@ export const initGui = () => {
         type: actionNames.INIT_GUI,
         payload: appState,
       });
-    } catch (e) {
-      // handle error
+    } catch (err) {
+      // tslint:disable-next-line no-console
+      console.error('Error while getting initial data:', err);
     }
   };
 };
@@ -26,8 +27,9 @@ const runTests = ({ tests = [], action = {} } = {}) => {
     try {
       await axios.post('/run', tests);
       dispatch(action);
-    } catch (e) {
-      // handle error
+    } catch (err) {
+      // tslint:disable-next-line no-console
+      console.error('Error while running tests:', err);
     }
   };
 };
@@ -53,8 +55,9 @@ export const acceptAll = (fails) => {
     try {
       const { data: updatedData } = await axios.post('/update-reference', compact(formattedFails));
       dispatch({ type: actionNames.ACCEPT_ALL_REFS, payload: updatedData });
-    } catch (e) {
-      // handle error
+    } catch (err) {
+      // tslint:disable-next-line no-console
+      console.error('Error while updating references of failed tests:', err);
     }
   };
 };
