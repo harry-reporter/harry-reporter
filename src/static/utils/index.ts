@@ -4,6 +4,7 @@ export const isSuccessStatus = (status: TestStatus) => status === 'success';
 export const isErroredStatus = (status: TestStatus) => status === 'error';
 export const isFailedStatus = (status: TestStatus) => status === 'fail';
 export const isIdleStatus = (status: TestStatus) => status === 'idle';
+export const isSkippedStatus = (status: TestStatus) => status === 'skipped';
 
 export const isFailedTest = (test: Suite | Attempt | { status: TestStatus }) => {
   return isFailedStatus(test.status) || isErroredStatus(test.status);

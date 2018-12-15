@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { pick } from 'lodash';
 import { TestsTypeKey } from 'src/store/modules/app/types';
 import { flatSuites } from 'src/store/modules/tests/utils';
-import { isFailedTest, isSuccessStatus } from 'src/utils';
+import { isFailedTest, isSuccessStatus, isSkippedStatus } from 'src/utils';
 
 import { Browser, Skip, Suite, SuiteIds, Suites } from 'src/store/modules/tests/types';
 import { RootStore } from 'src/store/types/store';
@@ -33,7 +33,10 @@ export const getTestsByType = createSelector(
         });
 
       case 'skipped':
-        return skips;
+        return flatSuites({
+          suites: pick(suites, suiteIds.all),
+          filterBrowsers: (browser: Browser) => isSkippedStatus(browser.result.status),
+        });
 
       case 'retries':
         return flatSuites({
