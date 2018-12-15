@@ -41,3 +41,7 @@
   width: 100%;
   max-height: 25rem;
 }
+
+.modNav-item {
+    cursor: pointer;
+}

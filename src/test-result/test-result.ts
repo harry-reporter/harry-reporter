@@ -45,6 +45,16 @@ export default class TestResult {
     return this.testResult.body;
   }
 
+  get scenario(): any {
+    const { hermioneCtx } = this.testResult;
+
+    if (hermioneCtx && hermioneCtx.testpalm) {
+      return hermioneCtx.testpalm.steps;
+    }
+
+    return null;
+  }
+
   get imagesInfo(): IImagesInfo[] {
     return this.testResult.imagesInfo;
   }

@@ -15,7 +15,7 @@ export default class Status extends React.PureComponent<StatusProps> {
       className,
       onClickAtTitle,
       pageCount,
-      data: { status },
+      status,
       handleDataChange,
       pageCurrent,
       data: { name },
@@ -41,16 +41,21 @@ export default class Status extends React.PureComponent<StatusProps> {
         >
           {name}
         </BrowserNameStyled>
-        <Text as={'span'} textColor={'gray'} mr={2}>
-          <i>Attempts:</i>{' '}
-        </Text>
-        <Pagination
-          defaultCurrentPage={pageCurrent}
-          hasPreventDefault={true}
-          pageCount={pageCount}
-          handleDataChange={handleDataChange}
-          pageCurrent={pageCurrent}
-        />
+        {
+          pageCount >= 0 &&
+          <>
+            <Text as={'span'} textColor={'gray'} mr={2}>
+              <i>Attempts:</i>{' '}
+            </Text>
+            <Pagination
+              defaultCurrentPage={pageCurrent}
+              hasPreventDefault={true}
+              pageCount={pageCount}
+              handleDataChange={handleDataChange}
+              pageCurrent={pageCurrent}
+            />
+          </>
+        }
       </Text>
     );
   }

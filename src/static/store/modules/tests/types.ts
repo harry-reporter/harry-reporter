@@ -1,4 +1,4 @@
-export type TestStatus = 'error' | 'fail' | 'success' | 'idle';
+export type TestStatus = 'error' | 'fail' | 'success' | 'idle' | 'running' | 'skipped';
 
 export interface TestsStore {
   skips: Suite[];
@@ -38,6 +38,7 @@ export interface Config {
   baseHost: string;
   scaleImages: boolean;
   lazyLoadOffset: number;
+  gitUrl?: string;
 }
 
 export interface Suite {
@@ -105,7 +106,6 @@ export interface ImageInfo {
   isOpen?: boolean;
   setIsOpenForView?: (isOpenScreenView: boolean, screenViewId: string) => void;
   measure?: () => any;
-
 }
 
 export interface WindowWithData extends Window {

@@ -9,4 +9,5 @@ export interface ControlsProps {
   onAccept: () => any;
   viewType: string;
   url: string;
+  gitUrl?: string;
 }

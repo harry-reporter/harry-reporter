@@ -1,7 +1,13 @@
 import { TestsStore, WindowWithData } from './types';
-import { getInitialState, formatSuitesDataTemp, addTestResult, forceUpdateSuiteData } from './utils';
+import {
+  getInitialState,
+  formatSuitesDataTemp,
+  addTestResult,
+  forceUpdateSuiteData,
+  setStatusToAll,
+} from './utils';
 import { findNode } from '../utils';
-import { clone, assign } from 'lodash';
+import { clone, merge } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
@@ -36,12 +42,35 @@ export const reducer = (
 
   switch (type) {
     case actionNames.INIT_GUI: {
-      const { skips, suites, gui, config, total, passed, failed, skipped, retries } = payload;
-      return { ...state, skips, gui, config, ...formatSuitesDataTemp(suites), stats: { total, passed, failed, skipped, retries } };
+      const {
+        skips,
+        suites,
+        gui,
+        config,
+        total,
+        passed,
+        failed,
+        skipped,
+        retries,
+      } = payload;
+      return {
+        ...state,
+        skips,
+        gui,
+        config,
+        ...formatSuitesDataTemp(suites),
+        stats: { total, passed, failed, skipped, retries },
+      };
     }
 
     case actionNames.ACCEPT_ALL_REFS:
       return addTestResult(state, action);
+
+    case actionNames.RUN_ALL: {
+      const suites = { ...state.suites };
+      // setStatusToAll(suites, action.payload.status); // TODO: fix error
+      return { ...state, suites, running: true };
+    }
 
     case actionNames.SUITE_BEGIN: {
       const suites = clone(state.suites);
@@ -51,8 +80,7 @@ export const reducer = (
         test.status = status;
         forceUpdateSuiteData(suites, test);
       }
-
-      return assign({}, state, { suites });
+      return { ...state, suites };
     }
 
     case actionNames.TEST_BEGIN: {
@@ -68,12 +96,17 @@ export const reducer = (
         });
         forceUpdateSuiteData(suites, test);
       }
+      return { ...state, suites };
+    }
 
-      return assign({}, state, { suites });
+    case actionNames.RUN_FAILED:
+    case actionNames.RETRY_SUITE:
+    case actionNames.RETRY_TEST: {
+      return { ...state, running: true };
     }
 
     case actionNames.TESTS_END: {
-      return assign({}, state, {running: false});
+      return { ...state, running: false };
     }
 
     case actionNames.TEST_RESULT: {

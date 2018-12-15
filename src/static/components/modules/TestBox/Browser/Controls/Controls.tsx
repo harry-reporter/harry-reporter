@@ -11,19 +11,42 @@ import ControlViewers from 'src/components/modules/TestBox/Browser/Controls/Cont
 import ButtonEye from 'src/components/ui/ButtonEye/ButtonEye';
 
 export default class Controls extends React.PureComponent<ControlsProps> {
+  constructor(props) {
+    super(props);
+    this.handleViewClick = this.handleViewClick.bind(this);
+  }
 
   private handleViewClick() {
-    const path = './';
-    window.open(path, '_blank');
+    const pathGit = this.props.gitUrl;
+    const pathFile = this.props.data.metaInfo.file;
+    if (pathGit) {
+      const url = `${pathGit}/blob/master/${pathFile}`;
+      window.open(url, '_blank');
+    }
   }
 
   private btns = [
-    { title: 'Accept', size: 'sm', onClick: this.props.onAccept },
+    {
+      title: 'Accept',
+      size: 'sm',
+      disabled: this.props.data.status !== 'fail',
+      onClick: this.props.onAccept,
+    },
   ];
 
   // TODO: объявить объекты, которые передаются в качестве пропс
   public render() {
-    const { isGui, isOpenedBrowser, onToggle, viewType, handleViewChange, data, url } = this.props;
+    const {
+      isGui,
+      isOpenedBrowser,
+      onToggle,
+      viewType,
+      handleViewChange,
+      data,
+      url,
+      gitUrl,
+    } = this.props;
+    const disabled: boolean = !gitUrl || gitUrl === '';
     return (
       <ControlsStyled>
         <ControlViewers
@@ -31,12 +54,11 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           onChange={handleViewChange}
           viewType={viewType}
         />
-        { isGui && data.status === 'fail' && (
-          <ButtonsGroup className={'mr-3'} btns={this.btns} />
-        ) }
+        {isGui && <ButtonsGroup className={'mr-3'} btns={this.btns} />}
         <Button
           size={'sm'}
           className={'mr-3'}
+          disabled={disabled}
           title={'View'}
           onClick={this.handleViewClick}
         />

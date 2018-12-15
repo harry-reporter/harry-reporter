@@ -12,5 +12,7 @@ export interface HeaderProps {
   pageCurrent: number;
   onToggle: () => any;
   onAccept: () => any;
-  url: string;
+  status: TestStatus;
+  url?: string;
+  gitUrl?: string;
 }

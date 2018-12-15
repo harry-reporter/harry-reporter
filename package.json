@@ -1,12 +1,12 @@
 {
   "name": "harry-reporter",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Reporter plugin for hermione",
   "main": "lib/index.js",
   "scripts": {
     "dev": "npm-run-all --parallel dev:core dev:static",
     "dev:core": "tsc -w",
-    "dev:static": "cd src/static && cross-env GUI=false webpack-dev-server -d --config=webpack.dev.js",
+    "dev:static": "cd src/static && cross-env GUI=true webpack-dev-server -d --config=webpack.dev.js",
     "build": "rm -rf lib && npm run build:core && npm run build:static",
     "build:core": "rm -rf lib && tsc",
     "build:static": "cd src/static && webpack -p --config=webpack.prod.js",
@@ -100,6 +100,7 @@
     "react-virtualized": "^9.21.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "remote-origin-url": "^2.0.0",
     "reselect": "^4.0.0",
     "signal-exit": "^3.0.2",
     "styled-components": "^4.1.2",

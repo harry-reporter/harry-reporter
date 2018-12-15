@@ -3,14 +3,37 @@ import fs from 'fs-extra';
 import _ from 'lodash';
 import path from 'path';
 
-import { ERROR, FAIL, IDLE, RUNNING, SKIPPED, SUCCESS, UPDATED } from '../constants/test-statuses';
-import { getPathsFor, hasImage, logger, prepareCommonJSData } from '../server-utils';
-import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../common-utils';
+import {
+  ERROR,
+  FAIL,
+  IDLE,
+  RUNNING,
+  SKIPPED,
+  SUCCESS,
+  UPDATED,
+} from '../constants/test-statuses';
+import {
+  getPathsFor,
+  hasImage,
+  logger,
+  prepareCommonJSData,
+} from '../server-utils';
+import {
+  hasFails,
+  hasNoRefImageErrors,
+  setStatusForBranch,
+} from '../common-utils';
 import TestResult from '../test-result/test-result';
 
 import { IHermione, IPluginOpts } from '../types';
 import { IHermioneStats, ITree, IHermioneResult } from './types';
-import { ISkip, IChild, IResult, IProps, IImagesInfo } from '../test-result/types';
+import {
+  ISkip,
+  IChild,
+  IResult,
+  IProps,
+  IImagesInfo,
+} from '../test-result/types';
 
 const NO_STATE = 'NO_STATE';
 
@@ -46,10 +69,7 @@ export default class ReportBuilder {
   public addSkipped(result: IHermioneResult) {
     const formattedResult = this.format(result);
     const {
-      suite: {
-        skipComment: comment,
-        fullName: suite,
-      },
+      suite: { skipComment: comment, fullName: suite },
       browserId: browser,
     } = formattedResult;
 
@@ -91,13 +111,16 @@ export default class ReportBuilder {
 
   public save() {
     return this.saveDataFileAsync()
-      .then(() => this.copyToReportDir(['index.html', 'report.min.js', 'report.min.css']))
+      .then(() =>
+        this.copyToReportDir(['index.html', 'report.min.js', 'report.min.css']),
+      )
       .then(() => this)
       .catch((e: Error) => logger.warn(e.message || e));
   }
 
   public saveDataFileAsync() {
-    return fs.mkdirs(this.pluginConfig.path)
+    return fs
+      .mkdirs(this.pluginConfig.path)
       .then(() => this.saveDataFile(fs.writeFile));
   }
 
@@ -115,7 +138,10 @@ export default class ReportBuilder {
 
     formattedResult.imagesInfo = (result.imagesInfo || []).map((imageInfo) => {
       const { stateName } = imageInfo;
-      return _.extend(imageInfo, getPathsFor(UPDATED, formattedResult, stateName));
+      return _.extend(
+        imageInfo,
+        getPathsFor(UPDATED, formattedResult, stateName),
+      );
     });
 
     return this.addSuccessResult(formattedResult, UPDATED);
@@ -126,13 +152,20 @@ export default class ReportBuilder {
   }
 
   private getResult() {
-    const { defaultView, baseHost, scaleImages, lazyLoadOffset } = this.pluginConfig;
+    const {
+      defaultView,
+      baseHost,
+      scaleImages,
+      lazyLoadOffset,
+      gitUrl,
+    } = this.pluginConfig;
 
     this.sortTree();
 
     return _.extend({
-      config: { defaultView, baseHost, scaleImages, lazyLoadOffset },
+      config: { defaultView, baseHost, scaleImages, lazyLoadOffset, gitUrl },
       skips: _.uniq(this.skips),
+      stats: this.stats,
       suites: this.tree.children,
     }, this.stats);
   }
@@ -159,25 +192,25 @@ export default class ReportBuilder {
       sessionId,
       description,
       imagesInfo,
+      scenario,
       screenshot,
       testBody,
       multipleTabs,
     } = result;
     const { baseHost } = this.pluginConfig;
     const suiteUrl = suite.getUrl({ baseHost });
-    const metaInfo = _.merge(
-      result.meta,
-      {
-        file: suite.file,
-        sessionId,
-        url: suite.fullUrl,
-      });
+    const metaInfo = _.merge(result.meta, {
+      file: suite.file,
+      sessionId,
+      url: suite.fullUrl,
+    });
     const testResult = {
       description,
       imagesInfo,
       metaInfo,
       multipleTabs,
       name: browserId,
+      scenario,
       screenshot: Boolean(screenshot),
       suiteUrl,
       testBody,
@@ -192,9 +225,8 @@ export default class ReportBuilder {
       _.extend(props, { attempt: 0 }),
     );
     const { suite, browserId } = formattedResult;
-    const suitePath = suite.path.concat(formattedResult.state
-      ? formattedResult.state.name
-      : NO_STATE,
+    const suitePath = suite.path.concat(
+      formattedResult.state ? formattedResult.state.name : NO_STATE,
     );
     const node = findOrCreate(this.tree, suitePath);
     node.browsers = Array.isArray(node.browsers) ? node.browsers : [];
@@ -221,9 +253,10 @@ export default class ReportBuilder {
     const statuses: string[] = [SKIPPED, RUNNING, IDLE];
 
     if (!statuses.includes(previousResult.status)) {
-      testResult.attempt = testResult.status === UPDATED
-        ? formattedResult.attempt
-        : previousResult.attempt + 1;
+      testResult.attempt =
+        testResult.status === UPDATED
+          ? formattedResult.attempt
+          : previousResult.attempt + 1;
 
       if (testResult.status !== UPDATED) {
         stateInBrowser.retries.push(previousResult);
@@ -234,7 +267,11 @@ export default class ReportBuilder {
     formattedResult.image = hasImage(formattedResult);
 
     const { imagesInfo, status: currentStatus } = stateInBrowser.result;
-    stateInBrowser.result = extendTestWithImagePaths(testResult, formattedResult, imagesInfo);
+    stateInBrowser.result = extendTestWithImagePaths(
+      testResult,
+      formattedResult,
+      imagesInfo,
+    );
 
     if (!hasFails(stateInBrowser)) {
       stateInBrowser.result.status = SUCCESS;
@@ -301,7 +338,11 @@ const findOrCreate = (node: any, statePath: any): any => {
   return findOrCreate(child, statePath);
 };
 
-const extendTestWithImagePaths = (test: IResult, formattedResult: TestResult, oldImagesInfo: any = []) => {
+const extendTestWithImagePaths = (
+  test: IResult,
+  formattedResult: TestResult,
+  oldImagesInfo: any = [],
+) => {
   const newImagesInfo = formattedResult.getImagesInfo();
 
   if (test.status !== UPDATED) {
@@ -314,7 +355,9 @@ const extendTestWithImagePaths = (test: IResult, formattedResult: TestResult, ol
       const { stateName } = imageInfo;
       const index = _.findIndex(test.imagesInfo, { stateName });
 
-      test.imagesInfo[index >= 0 ? index : _.findLastIndex(test.imagesInfo)] = imageInfo;
+      test.imagesInfo[
+        index >= 0 ? index : _.findLastIndex(test.imagesInfo)
+      ] = imageInfo;
     });
   }
 

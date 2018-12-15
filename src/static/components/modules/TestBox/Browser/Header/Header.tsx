@@ -20,13 +20,25 @@ export default class Header extends React.PureComponent<HeaderProps> {
 
   public render() {
     const {
-      isGui, data, handleDataChange, pageCurrent, pageCount, isOpenedBrowser, onToggle, onAccept, handleViewChange, viewType, url,
+      isGui,
+      data,
+      handleDataChange,
+      pageCurrent,
+      pageCount,
+      isOpenedBrowser,
+      onToggle,
+      onAccept,
+      handleViewChange,
+      viewType,
+      url,
+      status,
+      gitUrl,
     } = this.props;
-
     return (
       <div className={this.cnHeader} onClick={this.handleClickAtHeader}>
         <Status
           data={data}
+          status={status}
           onClickAtTitle={this.handleClickAtHeader}
           handleDataChange={handleDataChange}
           pageCurrent={pageCurrent}
@@ -41,6 +53,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
           handleViewChange={handleViewChange}
           viewType={viewType}
           url={url}
+          gitUrl={gitUrl}
         />
       </div>
     );

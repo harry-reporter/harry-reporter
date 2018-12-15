@@ -5,11 +5,15 @@ import cn from 'classnames';
 
 import { hasRetries, isFailedTest } from 'src/utils';
 import { testBoxSelector } from '../TestBox/selector';
-import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/TestBox/types';
+import {
+  Measurer,
+  TestBoxProps,
+  TestBoxState,
+} from 'src/components/modules/TestBox/types';
 import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
 import { setIsOpenForTestBox } from 'src/store/modules/app/actions';
-import { acceptTest } from 'src/store/modules/tests/actions';
+import { acceptTest, retryTest } from 'src/store/modules/tests/actions';
 
 import Header from './Header';
 import Browser from './Browser/Browser';
@@ -54,11 +58,14 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   public componentDidUpdate(prevProps: TestBoxProps): void {
-    const { isOpen, measure, selectedTestsType } = this.props;
-    if (isOpen !== prevProps.isOpen) {
-      measure();
-    }
-    if (selectedTestsType !== prevProps.selectedTestsType) {
+    const { isOpen, measure, selectedTestsType, isRunning } = this.props;
+
+    const conditionOpen = isOpen !== prevProps.isOpen;
+    const conditionTestsType =
+      selectedTestsType !== prevProps.selectedTestsType;
+    const conditionRunning = prevProps.isRunning && !isRunning;
+
+    if (conditionOpen || conditionTestsType || conditionRunning) {
       measure();
     }
   }
@@ -83,26 +90,33 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   private acceptTest = (browserId, attempt, stateName) => {
-    const { data, acceptTest } = this.props;
-    acceptTest(data, browserId, attempt, stateName);
+    const { data, acceptTest: accept } = this.props;
+    accept(data, browserId, attempt, stateName);
+  }
+
+  private runTest = () => {
+    const { data, retryTest: retry } = this.props;
+    retry(data);
   }
 
   private renderBrowsers = (): any => {
-    const { data, isGui } = this.props;
-
+    const { data, isGui, isRunning, gitUrl } = this.props;
     return data.browsers.map((item, id) => (
       <Browser
         key={item.name}
         isGui={isGui}
         data={item}
         index={id}
+        isRunning={isRunning}
+        status={item.result.status}
         onAccept={this.acceptTest}
+        gitUrl={gitUrl}
       />
     ));
   }
 
   public render(): JSX.Element {
-    const { data, style, className, isOpen } = this.props;
+    const { data, style, className, isOpen, isRunning } = this.props;
     const suite = data.suitePath.join(' / ');
     const cnTestBox = cn('Box mb-3 mt-1', className);
 
@@ -115,6 +129,8 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
               status={data.status}
               isOpenedBox={isOpen}
               onToggle={this.toggleBox}
+              retryHandler={this.runTest}
+              isRunning={isRunning}
             />
             {isOpen && this.renderBrowsers()}
           </div>
@@ -126,14 +142,20 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
 const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
   isOpen: testBoxSelector(store, ownProps),
+  isRunning: store.tests.running,
   selectedTestsType: store.app.selectedTestsType,
+  gitUrl: store.tests.config.gitUrl,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    setIsOpenForTestBox,
-    acceptTest,
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      setIsOpenForTestBox,
+      acceptTest,
+      retryTest,
+    },
+    dispatch,
+  ),
 });
 
 export default connect(

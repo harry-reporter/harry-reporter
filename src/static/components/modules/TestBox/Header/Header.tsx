@@ -1,24 +1,21 @@
 import * as React from 'react';
 
-import Octicon, { Clippy } from '@githubprimer/octicons-react';
+import Octicon, { Clippy, Sync } from '@githubprimer/octicons-react';
 import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
 
 import { HeaderProps, HeaderState } from './types';
-import { getChevron, getColor } from '../common-utils';
+import { getChevron } from '../common-utils';
 
 import Text from 'src/components/ui/Text/Text';
 import Button from 'src/components/ui/Button/Button';
+import { getColorByStatus } from 'src/utils';
 
 class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
 
-  public handleRunClick() {
-    // todo: отправлять post-запрос
-  }
-
   public render(): JSX.Element {
-    const { title, isOpenedBox, status } = this.props;
-    const textColor = getColor(status);
+    const { title, isOpenedBox, status, retryHandler, isRunning } = this.props;
+    const textColor = getColorByStatus(status);
     const Chevron = getChevron(isOpenedBox);
 
     return (
@@ -29,11 +26,17 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
           {title}
         </Text>
         <ControlsStyled>
+          { status === 'running' && (
+            <div className={'d-inline-flex flex-items-center mr-3 anim-pulse'}>
+              <Octicon icon={Sync} />
+            </div>
+          ) }
           <Button
             size={'sm'}
             className={'mr-3'}
             title={'Run'}
-            onClick={this.handleRunClick}
+            onClick={retryHandler}
+            disabled={isRunning}
           />
           <ClipboardStyled component='div' option-text={this.getTitle}>
             <Octicon icon={Clippy} />

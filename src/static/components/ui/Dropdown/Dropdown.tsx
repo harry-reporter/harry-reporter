@@ -19,7 +19,11 @@ class Dropdown extends React.PureComponent<DropdownProps> {
 
   public toggleOpen = (ev) => {
     ev.preventDefault();
-    this.setState(({ isOpen }: DropdownState) => ({ isOpen: !isOpen }));
+    if (this.props.disabled) {
+      return;
+    } else {
+      this.setState(({ isOpen }: DropdownState) => ({ isOpen: !isOpen }));
+    }
   }
 
   public handleClickAtItem = (value: string) => {
@@ -34,13 +38,14 @@ class Dropdown extends React.PureComponent<DropdownProps> {
   }
 
   public render() {
-    const { className, title } = this.props;
+    const { className, title, disabled = false } = this.props;
     const { isOpen } = this.state;
     const cnDropdownItem = cn('dropdown details-reset details-overlay d-inline-block', className);
+    const cnBtn = cn('btn', { disabled });
 
     return (
       <details className={cnDropdownItem} onClick={this.toggleOpen} open={isOpen}>
-        <summary className='btn' aria-haspopup='true'>
+        <summary className={cnBtn} aria-haspopup='true'>
           {title}
           <div className='dropdown-caret' />
         </summary>

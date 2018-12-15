@@ -26,11 +26,11 @@ const NavigationPanel: React.SFC<NavigationPanelProps> = (props) => {
     },
     {
       name: 'skipped',
-      component: <Status mr={3} name={'Skipped'} value={skipped} color={'gray'} />,
+      component: <Status mr={3} name={'Skipped'} value={skipped} color={'orange-light'} />,
     },
     {
       name: 'retries',
-      component: <Status mr={3} name={'Retries'} value={retries} color={'orange-light'} />,
+      component: <Status mr={3} name={'Retries'} value={retries} color={'gray'} />,
     },
   ];
 
