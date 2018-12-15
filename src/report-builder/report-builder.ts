@@ -165,7 +165,6 @@ export default class ReportBuilder {
     return _.extend({
       config: { defaultView, baseHost, scaleImages, lazyLoadOffset, gitUrl },
       skips: _.uniq(this.skips),
-      stats: this.stats,
       suites: this.tree.children,
     }, this.stats);
   }
