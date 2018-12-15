@@ -42,7 +42,7 @@ class ViewBox extends React.Component<ImageInfo> {
     };
 
     // todo: не могу использовать isFailedTest - принимает suite, а в этом контексте ImageInfo
-    const Box: JSX.Element = status === 'fail' ?
+    const Box: JSX.Element = status !== 'fail' ?
       <SuccessBox {...boxAttr}{...this.props} /> : <FailBox {...boxAttr}{...this.props} />;
 
     return (Box);

@@ -80,6 +80,7 @@ class FailBox extends React.Component<ImageInfo, FailBoxState> {
           src={imgPath}
           alt={`${cn}-Img`}
           className={`FailBox-Img border border-${color}`}
+          onLoad={this.props.measure}
         />
       </div>
     );

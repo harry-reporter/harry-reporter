@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import './types';
 import './ImageDiffSwipe.css';
+import { withMeasurer } from 'src/components/modules/TestBox/withMeasurer';
 
-export default class ImageDiffSwipe extends React.Component<IImageDiffSwipeProps, IImageDiffSwipeState> {
+class ImageDiffSwipe extends React.Component<IImageDiffSwipeProps, IImageDiffSwipeState> {
   public containerRef;
   constructor(props) {
     super(props);
@@ -25,6 +26,7 @@ export default class ImageDiffSwipe extends React.Component<IImageDiffSwipeProps
     }
     const imgHeight = e.target.clientHeight;
     this.setState(({ maxHeight }) => ({ maxHeight: Math.max(maxHeight, imgHeight) }));
+    this.props.measure();
   }
 
   public render() {
@@ -59,3 +61,5 @@ export default class ImageDiffSwipe extends React.Component<IImageDiffSwipeProps
     );
   }
 }
+
+export default withMeasurer(ImageDiffSwipe);

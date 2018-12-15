@@ -5,6 +5,7 @@ interface IImageDiffSwipeProps {
   before: string;
   value: number;
   className?: string;
+  measure?: any;
 }
 
 interface IImageDiffSwipeState {
