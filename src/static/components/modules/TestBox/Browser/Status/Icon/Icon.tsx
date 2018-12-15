@@ -9,12 +9,13 @@ const Icon: React.SFC<IconProps> = ({ status, className }) => {
 
   const getIcon = () => {
     switch (status) {
+      case 'fail':
       case 'error': return X;
       case 'success': return Check;
 
       default: return null;
     }
-  }
+  };
 
   const icon = getIcon();
 

@@ -38,16 +38,36 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     this.initStateFromCache();
+    this.setPageCount();
   }
 
   public componentDidUpdate(prevProps): void {
+    const { isRunning } = this.props;
+
     if (this.props.isOpenedBrowser !== prevProps.isOpenedBrowser) {
       this.props.measure();
     }
+
+    if (prevProps.isRunning && !isRunning) {
+      this.setPageCount();
+    }
+
   }
 
   public componentWillUnmount(): void {
     this.cacheState();
+  }
+
+  public setPageCount = () => {
+    const { result: { attempt, status } } = this.props.data;
+
+    let pageCount = attempt;
+
+    if ((attempt === 0) && (status === 'idle')) {
+      pageCount = -1;
+    }
+
+    this.setState({ pageCount });
   }
 
   private cacheState = () => {
