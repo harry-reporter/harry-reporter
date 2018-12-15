@@ -18,7 +18,12 @@ export default class Controls extends React.PureComponent<ControlsProps> {
   }
 
   private btns = [
-    { title: 'Accept', size: 'sm', onClick: this.props.onAccept },
+    {
+      title: 'Accept',
+      size: 'sm',
+      disabled: this.props.data.status !== 'fail',
+      onClick: this.props.onAccept,
+    },
   ];
 
   // TODO: объявить объекты, которые передаются в качестве пропс
@@ -31,7 +36,7 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           onChange={handleViewChange}
           viewType={viewType}
         />
-        { isGui && data.status === 'fail' && (
+        { isGui && (
           <ButtonsGroup className={'mr-3'} btns={this.btns} />
         ) }
         <Button
