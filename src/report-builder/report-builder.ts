@@ -19,13 +19,20 @@ export default class ReportBuilder {
   private hermione: IHermione;
   private skips: ISkip[];
   private pluginConfig: IPluginOpts;
-  private stats: any;
+  private stats: IHermioneStats;
 
   constructor(hermione: IHermione, pluginConfig: IPluginOpts) {
     this.tree = { name: 'root' };
     this.skips = [];
     this.hermione = hermione;
     this.pluginConfig = pluginConfig;
+    this.stats = {
+      failed: 0,
+      passed: 0,
+      retries: 0,
+      skipped: 0,
+      total: 0,
+    };
   }
 
   public format(result: IHermioneResult): TestResult {

@@ -18,7 +18,6 @@ export default class Controls extends React.PureComponent<ControlsProps> {
   }
 
   private btns = [
-    { title: 'Skip', size: 'sm' },
     { title: 'Accept', size: 'sm', onClick: this.props.onAccept },
   ];
 
