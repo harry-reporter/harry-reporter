@@ -1,0 +1,15 @@
+.ImageBox-Image {
+  max-width: 100%;
+  max-height: 400px;
+}
+.BoxViewError-ImageBox {
+  max-width: 100%;
+  max-height: 400px;
+}
+.BoxViewError-Img {
+  max-width: 100%;
+  max-height: 400px;
+}
+.BoxViewError-Message {
+  max-width: 60%;
+}

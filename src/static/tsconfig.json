@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "strict": false,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["dom", "es2017"],
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["*"]
+    }
+  },
+  "include": [
+    "./"
+  ],
+  "exclude": [
+    "node_modules",
+    "../**/*.ts"
+  ]
+}

@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+.BoxContentOnionSkin {
+  width: 100%;
+}
+
+.ImageDiffSwipe {
+  position: relative;
+
+  width: 100%;
+  max-height: 25rem;
+  margin: 0;
+}
+
+.ImageDiffSwipe__inner {
+  width: 100%;
+  max-height: 25rem;
+  margin: 0;
+}
+.ImageDiffSwipe__before {
+  position: relative;
+
+  width: 100%;
+  max-height: 25rem;
+  margin: 0;
+}
+.ImageDiffSwipe__after {
+  width: 100%;
+  max-height: 25rem;
+  margin: 0;
+}
+.ImageDiffSwipe__imgAfter {
+  position: absolute;
+  top: 0;
+
+  width: 100%;
+  max-height: 25rem;
+}
+.ImageDiffSwipe__imgBefore {
+  width: 100%;
+  max-height: 25rem;
+}
