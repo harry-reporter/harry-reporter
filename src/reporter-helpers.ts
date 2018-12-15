@@ -11,10 +11,11 @@ const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
   return Promise.map(testResult.assertViewResults, (assertResult: any) => {
     const { stateName } = assertResult;
     const actions = [];
+    const src = assertResult.refImagePath || assertResult.refImg.path;
 
     if (!(assertResult instanceof Error)) {
       actions.push(utils.copyImageAsync(
-        assertResult.refImagePath,
+        src,
         utils.getReferenceAbsolutePath(testResult, reportPath, stateName),
       ));
     }
@@ -27,7 +28,7 @@ const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
           utils.getDiffAbsolutePath(testResult, reportPath, stateName),
         ),
         utils.copyImageAsync(
-          assertResult.refImagePath,
+          src,
           utils.getReferenceAbsolutePath(testResult, reportPath, stateName),
         ),
       );
@@ -96,11 +97,15 @@ export const saveBase64Screenshot = (testResult: TestResult, reportPath: string)
   }
 
   const destPath = utils.getCurrentAbsolutePath(testResult, reportPath);
+  const screenshotBase64 = typeof testResult.screenshot === 'string' ?
+    testResult.screenshot :
+    testResult.screenshot.base64;
 
   return utils.makeDirFor(destPath)
     .then(() => fs.writeFile(
       destPath,
-      new Buffer(testResult.screenshot, 'base64'),
+      Buffer.from(screenshotBase64, 'base64'),
       'base64',
-    ));
+    ))
+    .catch((err) => console.log(err));
 };
