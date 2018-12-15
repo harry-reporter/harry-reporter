@@ -70,7 +70,15 @@ export default class HermioneRunner {
     const { autoRun } = this.guiOpts;
 
     this.treeInternal = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
-    this.treeInternal.suites = this.applyReuseData(this.treeInternal.suites);
+    this.treeInternal = Object.assign({}, this.applyReuseData(this.treeInternal));
+
+    this.reportBuilder.setStats({
+      failed: this.treeInternal.failed,
+      passed: this.treeInternal.passed,
+      retries: this.treeInternal.retries,
+      skipped: this.treeInternal.skipped,
+      total: this.treeInternal.total,
+    });
   }
 
   public updateReferenceImage(tests: any) {
@@ -153,23 +161,43 @@ export default class HermioneRunner {
     return this.hermione.readTests(this.testFiles, { grep, sets, browsers });
   }
 
-  private applyReuseData(testSuites: any) {
-    if (!testSuites) {
+  private applyReuseData(treeInternal: any) {
+    if (!treeInternal.suites) {
       return;
     }
 
     const reuseData = this.loadReuseData();
 
-    if (_.isEmpty(reuseData.suites)) {
-      return testSuites;
+    if (!_.isEmpty(reuseData.suites)) {
+      treeInternal.suites.map((suite: any) => applyReuse(reuseData)(suite));
     }
 
-    return testSuites.map((suite: any) => applyReuse(reuseData)(suite));
+    if (reuseData.failed) {
+      treeInternal.failed = parseInt(reuseData.failed, 10);
+    }
+
+    if (reuseData.passed) {
+      treeInternal.passed = parseInt(reuseData.passed, 10);
+    }
+
+    if (reuseData.retries) {
+      treeInternal.retries = parseInt(reuseData.retries, 10);
+    }
+
+    if (reuseData.skipped) {
+      treeInternal.skipped = parseInt(reuseData.skipped, 10);
+    }
+
+    if (reuseData.total) {
+      treeInternal.total = parseInt(reuseData.total, 10);
+    }
+
+    return treeInternal;
   }
 
   private loadReuseData() {
     try {
-      return require('../../' + path.resolve(this.reportPath, 'data'));
+      return require(path.resolve(this.reportPath, 'data'));
     } catch (e) {
       utils.logger.warn(chalk.yellow(`Nothing to reuse in ${this.reportPath}`));
       return {};
