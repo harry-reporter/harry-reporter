@@ -1,5 +1,11 @@
 import { TestsStore, WindowWithData } from './types';
-import { getInitialState, formatSuitesDataTemp, addTestResult, forceUpdateSuiteData, setStatusToAll } from './utils';
+import {
+  getInitialState,
+  formatSuitesDataTemp,
+  addTestResult,
+  forceUpdateSuiteData,
+  setStatusToAll,
+} from './utils';
 import { findNode } from '../utils';
 import { clone, merge } from 'lodash';
 import * as actionNames from './constants';
@@ -36,14 +42,25 @@ export const reducer = (
 
   switch (type) {
     case actionNames.INIT_GUI: {
-      const { skips, suites, gui, config, total, passed, failed, skipped, retries } = payload;
+      const {
+        skips,
+        suites,
+        gui,
+        config,
+        total,
+        passed,
+        failed,
+        skipped,
+        retries,
+      } = payload;
       return {
         ...state,
         skips,
         gui,
         config,
         ...formatSuitesDataTemp(suites),
-        stats: { total, passed, failed, skipped, retries } };
+        stats: { total, passed, failed, skipped, retries },
+      };
     }
 
     case actionNames.ACCEPT_ALL_REFS:

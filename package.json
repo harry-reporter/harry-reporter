@@ -100,6 +100,7 @@
     "react-virtualized": "^9.21.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "remote-origin-url": "^2.0.0",
     "reselect": "^4.0.0",
     "signal-exit": "^3.0.2",
     "styled-components": "^4.1.2",

@@ -6,7 +6,13 @@ import * as utils from '../../server-utils';
 import EventSource from '../event-source';
 import subscribeOnToolEvents from './report-subscriber';
 import Runner from './runner';
-import { findTestResult, formatId, formatTests, getShortMD5, mkFullTitle } from './utils';
+import {
+  findTestResult,
+  formatId,
+  formatTests,
+  getShortMD5,
+  mkFullTitle,
+} from './utils';
 import { findNode } from '../../common-utils';
 
 import ReportBuilder from '../../report-builder/report-builder';
@@ -24,7 +30,11 @@ export default class HermioneRunner {
   private guiOpts: any;
   private tests: any;
 
-  constructor(paths: string, hermione: any, { program, pluginConfig, options }: any) {
+  constructor(
+    paths: string,
+    hermione: any,
+    { program, pluginConfig, options }: any,
+  ) {
     this.testFiles = [].concat(paths);
     this.hermione = hermione;
     this.treeInternal = null;
@@ -36,7 +46,6 @@ export default class HermioneRunner {
 
     this.eventSource = new EventSource();
     this.reportBuilder = new ReportBuilder(hermione, pluginConfig);
-
     this.tests = {};
   }
 
@@ -49,21 +58,23 @@ export default class HermioneRunner {
   }
 
   public initialize() {
-    return this.readTests()
-      .then((collection: any) => {
-        this.collection = collection;
+    return this.readTests().then((collection: any) => {
+      this.collection = collection;
 
-        this.handleRunnableCollection();
-        this.subscribeOnEvents();
-      });
+      this.handleRunnableCollection();
+      this.subscribeOnEvents();
+    });
   }
 
   public run(tests: any[] = []) {
     const { grep, set: sets, browser: browsers } = this.globalOpts;
-    const formattedTests = _.flatMap([].concat(tests), (test) => formatTests(test));
+    const formattedTests = _.flatMap([].concat(tests), (test) =>
+      formatTests(test),
+    );
 
-    return Runner(this.collection, formattedTests)
-      .run((collection: any) => this.hermione.run(collection, { grep, sets, browsers }));
+    return Runner(this.collection, formattedTests).run((collection: any) =>
+      this.hermione.run(collection, { grep, sets, browsers }),
+    );
   }
 
   public fillTestsTree() {
@@ -91,7 +102,8 @@ export default class HermioneRunner {
       return Promise.map(updateResult.imagesInfo, (imageInfo: any) => {
         const { stateName } = imageInfo;
 
-        return reporterHelper.updateReferenceImage(formattedResult, this.reportPath, stateName)
+        return reporterHelper
+          .updateReferenceImage(formattedResult, this.reportPath, stateName)
           .then(() => {
             this.hermione.emit(
               this.hermione.events.UPDATE_RESULT,
@@ -101,7 +113,10 @@ export default class HermioneRunner {
       }).then(() => {
         reportBuilder.addUpdated(updateResult);
 
-        return findTestResult(reportBuilder.getSuites(), formattedResult.prepareTestResult());
+        return findTestResult(
+          reportBuilder.getSuites(),
+          formattedResult.prepareTestResult(),
+        );
       });
     });
   }
@@ -136,7 +151,12 @@ export default class HermioneRunner {
   }
 
   private subscribeOnEvents() {
-    subscribeOnToolEvents(this.hermione, this.reportBuilder, this.eventSource, this.reportPath);
+    subscribeOnToolEvents(
+      this.hermione,
+      this.reportBuilder,
+      this.eventSource,
+      this.reportPath,
+    );
   }
 
   private prepareUpdateResult(test: any) {
@@ -147,12 +167,20 @@ export default class HermioneRunner {
     const { sessionId, url } = test.metaInfo;
     const imagesInfo = test.imagesInfo.map((imageInfo: any) => {
       const { stateName } = imageInfo;
-      const imagePath = this.hermione.config.browsers[browserId].getScreenshotPath(testResult, stateName);
+      const imagePath = this.hermione.config.browsers[
+        browserId
+      ].getScreenshotPath(testResult, stateName);
 
       return _.extend(imageInfo, { imagePath });
     });
 
-    return _.merge({}, testResult, { imagesInfo, sessionId, attempt, meta: { url }, updated: true });
+    return _.merge({}, testResult, {
+      attempt,
+      imagesInfo,
+      meta: { url },
+      sessionId,
+      updated: true,
+    });
   }
 
   private readTests() {
@@ -216,28 +244,42 @@ function applyReuse(reuseData: any) {
         ? _.set(suite, 'status', getReuseStatus(reuseData.suites, suite))
         : suite;
     }
+    return _.set(
+      suite,
+      'browsers',
+      suite.browsers.map((bro: any) => {
+        const browserResult = getReuseBrowserResult(
+          reuseData.suites,
+          suite.suitePath,
+          bro.name,
+        );
 
-    return _.set(suite, 'browsers', suite.browsers.map((bro: any) => {
-      const browserResult = getReuseBrowserResult(reuseData.suites, suite.suitePath, bro.name);
+        if (browserResult) {
+          isBrowserResultReused = true;
+          suite.status = getReuseStatus(reuseData.suites, suite);
+        }
 
-      if (browserResult) {
-        isBrowserResultReused = true;
-        suite.status = getReuseStatus(reuseData.suites, suite);
-      }
-
-      return _.extend(bro, browserResult);
-    }));
+        return _.extend(bro, browserResult);
+      }),
+    );
   };
 
   return reuseBrowserResult;
 }
 
-function getReuseStatus(reuseSuites: any, { suitePath, status: defaultStatus }: any) {
+function getReuseStatus(
+  reuseSuites: any,
+  { suitePath, status: defaultStatus }: any,
+) {
   const reuseNode = findNode(reuseSuites, suitePath);
   return _.get(reuseNode, 'status', defaultStatus);
 }
 
-function getReuseBrowserResult(reuseSuites: any, suitePath: any, browserId: any) {
+function getReuseBrowserResult(
+  reuseSuites: any,
+  suitePath: any,
+  browserId: any,
+) {
   const reuseNode = findNode(reuseSuites, suitePath);
   return _.find(_.get(reuseNode, 'browsers'), { name: browserId });
 }

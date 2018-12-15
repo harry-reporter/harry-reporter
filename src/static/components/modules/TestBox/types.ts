@@ -22,6 +22,7 @@ export interface TestBoxProps {
   setTestsViewMode?: typeof setTestsViewMode;
   acceptTest?: (suite, browserId, attempt, stateName) => void;
   retryTest?: typeof retryTest;
+  gitUrl?: string;
 }
 
 export interface TestBoxState {

@@ -19,10 +19,7 @@ export const browserSelector = createSelector(
 const isOpen = (app, browsersId: string, status: string) => {
   let isOpenedBrowser = app.isOpenPerBrowser[browsersId];
   if (isOpenedBrowser === undefined) {
-    isOpenedBrowser = switchTestViewMod(
-      app.testsViewMode,
-      status,
-    );
+    isOpenedBrowser = switchTestViewMod(app.testsViewMode, status);
   }
   return isOpenedBrowser;
 };

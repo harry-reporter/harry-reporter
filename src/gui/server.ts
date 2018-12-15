@@ -17,11 +17,18 @@ export default ({ paths, hermione, guiApi, configs }: IArgs) => {
 
   guiApi.initServer(server);
 
-  server.use(express.static(path.join(__dirname, '../static'), { index: 'gui.html' }));
+  server.use(
+    express.static(path.join(__dirname, '../static'), { index: 'gui.html' }),
+  );
   server.use(express.static(process.cwd()));
-  server.use('/images', express.static(path.join(process.cwd(), pluginConfig.path, 'images')));
+  server.use(
+    '/images',
+    express.static(path.join(process.cwd(), pluginConfig.path, 'images')),
+  );
 
-  server.get('/', (req, res) => res.sendFile(path.join(__dirname, '../static', 'gui.html')));
+  server.get('/', (req, res) =>
+    res.sendFile(path.join(__dirname, '../static', 'gui.html')),
+  );
 
   server.get('/events', (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/event-stream' });
@@ -34,18 +41,20 @@ export default ({ paths, hermione, guiApi, configs }: IArgs) => {
   });
 
   server.post('/run', (req, res) => {
-    app.run(req.body)
-      .catch((err: Error) => {
-        console.error('Error while trying to run tests', err);
-      });
+    app.run(req.body).catch((err: Error) => {
+      console.error('Error while trying to run tests', err);
+    });
 
     res.sendStatus(200);
   });
 
   server.post('/update-reference', (req, res) => {
-    app.updateReferenceImage(req.body)
+    app
+      .updateReferenceImage(req.body)
       .then((updatedTests: any) => res.json(updatedTests))
-      .catch(({ message }: { message: string }) => res.status(500).send({ error: message }));
+      .catch(({ message }: { message: string }) =>
+        res.status(500).send({ error: message }),
+      );
   });
 
   onExit(() => {
@@ -53,7 +62,8 @@ export default ({ paths, hermione, guiApi, configs }: IArgs) => {
     logger.log('server shutting down');
   });
 
-  return app.initialize()
+  return app
+    .initialize()
     .then(() => {
       return Promise.fromCallback((callback) => {
         server.listen(options.port, options.hostname, callback);
