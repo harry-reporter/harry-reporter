@@ -4,9 +4,10 @@ import { isSkippedStatus } from '../../../../common-utils';
 import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs } from 'src/store/modules/tests/types';
 
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
-  const { skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
+  const { config, skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
 
   return {
+    config,
     gui,
     running,
     skips,
@@ -81,14 +82,14 @@ const enchanceUuid = (result) => {
 
 export const formatSuitesDataTemp = (suites: Suite[] = []) => {
   return {
-      suites: reduce(suites, (acc, s) => {
-          acc[getSuiteId(s)] = s;
-          return acc;
-      }, {}),
-      suiteIds: {
-          all: getSuiteIds(suites),
-          failed: getFailedSuiteIds(suites),
-      },
+    suites: reduce(suites, (acc, s) => {
+      acc[getSuiteId(s)] = s;
+      return acc;
+    }, {}),
+    suiteIds: {
+      all: getSuiteIds(suites),
+      failed: getFailedSuiteIds(suites),
+    },
   };
 };
 
@@ -137,16 +138,16 @@ export const forceUpdateSuiteData = (suites, test) => {
 
 export const setStatusToAll = (node, status) => {
   if (isArray(node)) {
-      node.forEach((n) => setStatusToAll(n, status));
+    node.forEach((n) => setStatusToAll(n, status));
   }
 
   const currentStatus = get(node, 'result.status', node.status);
   if (isSkippedStatus(currentStatus)) {
-      return;
+    return;
   }
   node.result
-      ? (node.result.status = status)
-      : node.status = status;
+    ? (node.result.status = status)
+    : node.status = status;
 
   return walk(node, (n) => setStatusToAll(n, status), Array.prototype.forEach);
 };

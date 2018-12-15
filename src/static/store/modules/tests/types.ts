@@ -34,10 +34,10 @@ export type Skip = any;
 export type SuitePath = string[];
 
 export interface Config {
-  defaultView: string;
-  baseHost: string;
-  scaleImages: boolean;
-  lazyLoadOffset: number;
+  defaultView?: string;
+  baseHost?: string;
+  scaleImages?: boolean;
+  lazyLoadOffset?: number;
   gitUrl?: string;
 }
 
