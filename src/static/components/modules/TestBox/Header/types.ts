@@ -6,6 +6,7 @@ export interface HeaderProps {
   isOpenedBox: boolean;
 
   onToggle: () => any;
+  retryHandler?: () => void;
 }
 
 export interface HeaderState {}

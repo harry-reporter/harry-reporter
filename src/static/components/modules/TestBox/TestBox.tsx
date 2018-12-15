@@ -9,7 +9,7 @@ import { Measurer, TestBoxProps, TestBoxState } from 'src/components/modules/Tes
 import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
 import { setIsOpenForTestBox } from 'src/store/modules/app/actions';
-import { acceptTest } from 'src/store/modules/tests/actions';
+import { acceptTest, retryTest } from 'src/store/modules/tests/actions';
 
 import Header from './Header';
 import Browser from './Browser/Browser';
@@ -54,11 +54,14 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   public componentDidUpdate(prevProps: TestBoxProps): void {
-    const { isOpen, measure, selectedTestsType } = this.props;
+    const { isOpen, measure, selectedTestsType, running } = this.props;
     if (isOpen !== prevProps.isOpen) {
       measure();
     }
     if (selectedTestsType !== prevProps.selectedTestsType) {
+      measure();
+    }
+    if (prevProps.running && !running) {
       measure();
     }
   }
@@ -83,8 +86,13 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   private acceptTest = (browserId, attempt, stateName) => {
-    const { data, acceptTest } = this.props;
-    acceptTest(data, browserId, attempt, stateName);
+    const { data, acceptTest: accept } = this.props;
+    accept(data, browserId, attempt, stateName);
+  }
+
+  private runTest = () => {
+    const { data, retryTest: retry } = this.props;
+    retry(data);
   }
 
   private renderBrowsers = (): any => {
@@ -115,6 +123,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
               status={data.status}
               isOpenedBox={isOpen}
               onToggle={this.toggleBox}
+              retryHandler={this.runTest}
             />
             {isOpen && this.renderBrowsers()}
           </div>
@@ -127,12 +136,14 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 const mapStateToProps = (store: RootStore, ownProps: TestBoxProps) => ({
   isOpen: testBoxSelector(store, ownProps),
   selectedTestsType: store.app.selectedTestsType,
+  running: store.tests.running,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setIsOpenForTestBox,
     acceptTest,
+    retryTest,
   }, dispatch),
 });
 
