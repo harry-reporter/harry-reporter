@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Octicon, { Clippy } from '@githubprimer/octicons-react';
+import Octicon, { Clippy, Sync } from '@githubprimer/octicons-react';
 import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
 
 import { HeaderProps, HeaderState } from './types';
@@ -25,6 +25,11 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
           {title}
         </Text>
         <ControlsStyled>
+          { status === 'running' && (
+            <div className={'d-inline-flex flex-items-center mr-3 anim-pulse'}>
+              <Octicon icon={Sync} />
+            </div>
+          ) }
           <Button
             size={'sm'}
             className={'mr-3'}

@@ -1,4 +1,4 @@
-export type TestStatus = 'error' | 'fail' | 'success' | 'idle';
+export type TestStatus = 'error' | 'fail' | 'success' | 'idle' | 'running';
 
 export interface TestsStore {
   skips: Suite[];
