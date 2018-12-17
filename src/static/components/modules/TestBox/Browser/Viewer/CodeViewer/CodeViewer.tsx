@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/languages/hljs/javascript';
+import { github } from 'react-syntax-highlighter/dist/styles/hljs';
 
 import { CodeViewerProps } from './types';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
 
 export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
 
@@ -12,8 +17,17 @@ export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
       </p>
     );
   }
+
   public render() {
-    const { metaInfo: { platform, url, file, sessionId }, testBody } = this.props;
+    const {
+      metaInfo: {
+        platform,
+        url,
+        file,
+        sessionId,
+      },
+      testBody,
+    } = this.props;
 
     return (
       <>
@@ -29,7 +43,12 @@ export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
           {this.renderItem('sessionId', sessionId)}
         </div>
         <div className='Box-row'>
-          <pre className='pl-3'>{testBody}</pre>
+          <SyntaxHighlighter
+            language='javascript'
+            style={github}
+          >
+            {testBody}
+          </SyntaxHighlighter>
         </div>
       </>
     );
