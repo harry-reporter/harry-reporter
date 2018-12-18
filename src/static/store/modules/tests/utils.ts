@@ -3,6 +3,31 @@ import { isSuiteFailed, findNode, setStatusForBranch, walk } from '../utils';
 import { isSkippedStatus } from '../../../../common-utils';
 import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs } from 'src/store/modules/tests/types';
 
+const getSuiteId = (suite: Suite) => {
+  return suite.suitePath[0];
+};
+
+const getSuiteIds = (suites: Suite[] = []) => {
+  return map(suites, getSuiteId);
+};
+
+const getFailedSuiteIds = (suites) => {
+  return getSuiteIds(filter(suites, isSuiteFailed));
+};
+
+export const formatSuitesDataTemp = (suites: Suite[] = []) => {
+  return {
+    suites: reduce(suites, (acc, s) => {
+      acc[getSuiteId(s)] = s;
+      return acc;
+    }, {}),
+    suiteIds: {
+      all: getSuiteIds(suites),
+      failed: getFailedSuiteIds(suites),
+    },
+  };
+};
+
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
   const { config, skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
 
@@ -20,6 +45,24 @@ export const getInitialState = (compiledData: CompiledData): TestsStore => {
       retries,
     },
   };
+};
+
+const enchanceUuid = (result) => {
+  result.map((test, i) => {
+    test.uuid = i;
+    test.browsers.map((browser) => {
+      browser.browsersId = `${test.uuid}${browser.name}`;
+      browser.result.imagesInfo.map((view, index) => {
+        view.viewId = `${test.uuid}${browser.name}result${index}`;
+      });
+      browser.retries.map((retry) => {
+        retry.imagesInfo.map((view, index) => {
+          view.viewId = `${test.uuid}${browser.name}retries${index}`;
+        });
+      });
+    });
+  });
+  return result;
 };
 
 export const flatSuites = ({ suites = {}, filterSuites, filterBrowsers }: FormatSuitesDataArgs) => {
@@ -62,47 +105,9 @@ export const flatSuites = ({ suites = {}, filterSuites, filterBrowsers }: Format
   return enchanceUuid(suiteList);
 };
 
-const enchanceUuid = (result) => {
-  result.map((test, i) => {
-    test.uuid = i;
-    test.browsers.map((browser) => {
-      browser.browsersId = `${test.uuid}${browser.name}`;
-      browser.result.imagesInfo.map((view, index) => {
-        view.viewId = `${test.uuid}${browser.name}result${index}`;
-      });
-      browser.retries.map((retry) => {
-        retry.imagesInfo.map((view, index) => {
-          view.viewId = `${test.uuid}${browser.name}retries${index}`;
-        });
-      });
-    });
-  });
-  return result;
-};
-
-export const formatSuitesDataTemp = (suites: Suite[] = []) => {
-  return {
-    suites: reduce(suites, (acc, s) => {
-      acc[getSuiteId(s)] = s;
-      return acc;
-    }, {}),
-    suiteIds: {
-      all: getSuiteIds(suites),
-      failed: getFailedSuiteIds(suites),
-    },
-  };
-};
-
-const getFailedSuiteIds = (suites) => {
-  return getSuiteIds(filter(suites, isSuiteFailed));
-};
-
-const getSuiteIds = (suites: Suite[] = []) => {
-  return map(suites, getSuiteId);
-};
-
-const getSuiteId = (suite: Suite) => {
-  return suite.suitePath[0];
+export const forceUpdateSuiteData = (suites, test) => {
+  const id = getSuiteId(test);
+  suites[id] = cloneDeep(suites[id]);
 };
 
 export const addTestResult = (state: TestsStore, action): TestsStore => {
@@ -129,11 +134,6 @@ export const addTestResult = (state: TestsStore, action): TestsStore => {
   assign(suiteIds, { failed: getFailedSuiteIds(suites) });
 
   return assign({}, state, { suiteIds, suites });
-};
-
-export const forceUpdateSuiteData = (suites, test) => {
-  const id = getSuiteId(test);
-  suites[id] = cloneDeep(suites[id]);
 };
 
 export const setStatusToAll = (node, status) => {

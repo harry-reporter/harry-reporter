@@ -61,7 +61,10 @@ export default (
       ? reportBuilder.addFail(data)
       : reportBuilder.addError(data);
 
-    const testResult = findTestResult(reportBuilder.getSuites(), formattedResult.prepareTestResult());
+    const testResult = findTestResult(
+      reportBuilder.getSuites(),
+      formattedResult.prepareTestResult(),
+    );
     failHandler(data)
       .then(() => client.emit(clientEvents.TEST_RESULT, testResult));
   });

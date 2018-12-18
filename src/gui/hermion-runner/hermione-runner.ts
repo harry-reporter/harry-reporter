@@ -68,7 +68,7 @@ export default class HermioneRunner {
 
   public run(tests: any[] = []) {
     const { grep, set: sets, browser: browsers } = this.globalOpts;
-    const formattedTests = _.flatMap([].concat(tests), (test) =>
+    const formattedTests = _.flatMap([].concat(tests), test =>
       formatTests(test),
     );
 
@@ -80,8 +80,8 @@ export default class HermioneRunner {
   public fillTestsTree() {
     const { autoRun } = this.guiOpts;
 
-    this.treeInternal = Object.assign(this.reportBuilder.getResult(), { gui: true, autoRun });
-    this.treeInternal = Object.assign({}, this.applyReuseData(this.treeInternal));
+    this.treeInternal = Object.assign(this.reportBuilder.getResult(), { autoRun, gui: true });
+    this.treeInternal = { ...this.applyReuseData(this.treeInternal) };
 
     this.reportBuilder.setStats({
       failed: this.treeInternal.failed,
@@ -167,9 +167,8 @@ export default class HermioneRunner {
     const { sessionId, url } = test.metaInfo;
     const imagesInfo = test.imagesInfo.map((imageInfo: any) => {
       const { stateName } = imageInfo;
-      const imagePath = this.hermione.config.browsers[
-        browserId
-      ].getScreenshotPath(testResult, stateName);
+      const imagePath = this.hermione.config.browsers[browserId]
+        .getScreenshotPath(testResult, stateName);
 
       return _.extend(imageInfo, { imagePath });
     });
@@ -177,8 +176,8 @@ export default class HermioneRunner {
     return _.merge({}, testResult, {
       attempt,
       imagesInfo,
-      meta: { url },
       sessionId,
+      meta: { url },
       updated: true,
     });
   }

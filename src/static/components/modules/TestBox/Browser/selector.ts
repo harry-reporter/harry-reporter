@@ -5,6 +5,14 @@ import { switchTestViewMod } from '../common-utils';
 const appSelector = (store: RootStore) => store.app;
 const getProps = (_, props) => props.data;
 
+const isOpen = (app, browsersId: string, status: string) => {
+  let isOpenedBrowser = app.isOpenPerBrowser[browsersId];
+  if (isOpenedBrowser === undefined) {
+    isOpenedBrowser = switchTestViewMod(app.testsViewMode, status);
+  }
+  return isOpenedBrowser;
+};
+
 export const browserSelector = createSelector(
   appSelector,
   getProps,
@@ -15,11 +23,3 @@ export const browserSelector = createSelector(
     };
   },
 );
-
-const isOpen = (app, browsersId: string, status: string) => {
-  let isOpenedBrowser = app.isOpenPerBrowser[browsersId];
-  if (isOpenedBrowser === undefined) {
-    isOpenedBrowser = switchTestViewMod(app.testsViewMode, status);
-  }
-  return isOpenedBrowser;
-};

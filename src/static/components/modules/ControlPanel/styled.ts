@@ -1,4 +1,3 @@
-import ControlPanel from './ControlPanel';
 import styled from 'src/theme';
 
 export default styled.nav`

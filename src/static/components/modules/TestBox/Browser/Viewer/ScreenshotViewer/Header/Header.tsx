@@ -19,7 +19,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
   );
 
   public render() {
-    const { stateName, onClick, isOpen, color, onToggle } = this.props;
+    const { stateName, isOpen, color } = this.props;
     return (
       <div className={this.cnHeader} onClick={this.handleClickAtHeader}>
         <h4 className={`Title Box-title text-${color}`}>{stateName}</h4>

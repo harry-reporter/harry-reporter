@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import './SuccessBox.css';
-import { ImagesInfo } from '../types';
 import { ImageInfo } from 'src/store/modules/tests/types';
 
 class SuccessBox extends React.PureComponent<ImageInfo> {

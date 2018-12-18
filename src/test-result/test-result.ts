@@ -119,11 +119,12 @@ export default class TestResult {
     return this.imagesInfo;
   }
 
-  // hack which should be removed when html-reporter is able to show all assert view fails for one test
+  // hack which should be removed when html-reporter is able to show
+  // all assert view fails for one test
   private get firstAssertViewFail() {
     return _.find(
       this.testResult.assertViewResults,
-      (result) => result instanceof Error,
+      result => result instanceof Error,
     );
   }
 

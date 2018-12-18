@@ -5,16 +5,6 @@ import { switchTestViewMod } from '../../../../common-utils';
 const appSelector = (store: RootStore) => store.app;
 const getProps = (_, props) => props;
 
-export const viewSelector = createSelector(
-  appSelector,
-  getProps,
-  (app, propsData) => {
-    return {
-      isOpenedScreenView: isOpen(app, propsData.viewId, propsData.status),
-    };
-  },
-);
-
 const isOpen = (app, viewId, status) => {
   let isOpenedView = app.isOpenPerView[viewId];
   if (isOpenedView === undefined) {
@@ -25,3 +15,13 @@ const isOpen = (app, viewId, status) => {
   }
   return isOpenedView;
 };
+
+export const viewSelector = createSelector(
+  appSelector,
+  getProps,
+  (app, propsData) => {
+    return {
+      isOpenedScreenView: isOpen(app, propsData.viewId, propsData.status),
+    };
+  },
+);

@@ -5,7 +5,7 @@ import { saveBase64Screenshot, saveTestImages } from './reporter-helpers';
 
 import ReportBuilder from './report-builder/report-builder';
 import { IHermione, IPluginOpts } from './types';
-import { IHermioneResult } from './report-builder/types';
+import { IHermioneResult, IHermioneStats } from './report-builder/types';
 import TestResult from './test-result/test-result';
 
 module.exports = (hermione: IHermione, opts: IPluginOpts): void => {
@@ -34,10 +34,10 @@ const prepareData = (
 
   return new Promise((resolve) => {
     // Test is skipped
-    hermione.on(hermione.events.TEST_PENDING, (testResult) =>
+    hermione.on(hermione.events.TEST_PENDING, (testResult: IHermioneResult) =>
       reportBuilder.addSkipped(testResult));
 
-    hermione.on(hermione.events.TEST_PASS, (testResult) =>
+    hermione.on(hermione.events.TEST_PASS, (testResult: IHermioneResult) =>
       reportBuilder.addSuccess(testResult));
 
     hermione.on(hermione.events.TEST_FAIL, failHandler);
@@ -46,7 +46,7 @@ const prepareData = (
 
     // Will be triggered after test execution.
     // The handler accepts a stats of tests execution.
-    hermione.on(hermione.events.RUNNER_END, (stats) =>
+    hermione.on(hermione.events.RUNNER_END, (stats: IHermioneStats) =>
       resolve(reportBuilder.setStats(stats)));
   });
 };
@@ -70,7 +70,7 @@ const prepareImages = (
   };
 
   return new Promise((resolve, reject) => {
-    let queue: Promise<{} | void> = Promise.resolve();
+    let queue: Promise<any> = Promise.resolve();
 
     hermione.on(hermione.events.TEST_PASS, (testResult) => {
       queue = queue.then(() => saveTestImages(reportBuilder.format(testResult), reportPath));

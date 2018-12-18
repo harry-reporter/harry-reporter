@@ -3,10 +3,10 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import fsExtra from 'fs-extra';
 
-import {isSkippedStatus, findNode, setStatusForBranch} from '../common-utils';
-import {getDataFrom, getStatNameForStatus, getImagePaths} from './utils';
-import {IImageInfo, ITest, IBrowser, ISuite, IData, IDataCollection} from './types';
-import {ISkip, IImagesInfo} from '../test-result/types';
+import { isSkippedStatus, findNode, setStatusForBranch } from '../common-utils';
+import { getDataFrom, getStatNameForStatus, getImagePaths } from './utils';
+import { IImageInfo, ITest, IBrowser, ISuite, IData, IDataCollection } from './types';
+import { ISkip } from '../test-result/types';
 
 const fs = Promise.promisifyAll(fsExtra);
 
@@ -38,7 +38,7 @@ export default class DataTree {
 
   private mergeSkips(srcSkips: ISkip[]) {
     srcSkips.forEach((skip: ISkip) => {
-      if (!_.find(this.data.skips, {suite: skip.suite, browser: skip.browser})) {
+      if (!_.find(this.data.skips, { suite: skip.suite, browser: skip.browser })) {
         this.data.skips.push(skip);
       }
     });
@@ -116,15 +116,18 @@ export default class DataTree {
     const newAttempt: number = existentBro.retries.length;
 
     await this.moveImages(retry, { newAttempt });
-    retry = this.changeFieldsWithAttempt(retry, { newAttempt });
+    const attemptedRetry = this.changeFieldsWithAttempt(retry, { newAttempt });
 
-    existentBro.retries.push(retry);
+    existentBro.retries.push(attemptedRetry);
     this.data.retries += 1;
   }
 
   private async changeTestResult(existentBro: IBrowser, result: ITest, suitePath: string[]) {
-    await this.moveImages(result, {newAttempt: existentBro.retries.length});
-    existentBro.result = this.changeFieldsWithAttempt(result, {newAttempt: existentBro.retries.length});
+    await this.moveImages(result, { newAttempt: existentBro.retries.length });
+    existentBro.result = this.changeFieldsWithAttempt(
+      result,
+      { newAttempt: existentBro.retries.length },
+    );
 
     const statName: string = getStatNameForStatus(existentBro.result.status);
     this.data[statName] += 1;
@@ -135,7 +138,10 @@ export default class DataTree {
   }
 
   private mergeStatistics(node: (ISuite | IBrowser)) {
-    const testResultStatuses: string[] = getDataFrom(node, {fieldName: 'status', fromFields: 'result'});
+    const testResultStatuses: string[] = getDataFrom(
+      node,
+      { fieldName: 'status', fromFields: 'result' },
+    );
 
     testResultStatuses.forEach((testStatus: string) => {
       const statName: string = getStatNameForStatus(testStatus);
@@ -145,13 +151,16 @@ export default class DataTree {
       }
     });
 
-    const testRetryStatuses: string[] = getDataFrom(node, {fieldName: 'status', fromFields: 'retries'});
+    const testRetryStatuses: string[] = getDataFrom(
+      node,
+      { fieldName: 'status', fromFields: 'retries' },
+    );
     this.data.retries += testRetryStatuses.length;
   }
 
   private async moveImages(
     node: (ITest | ISuite | IBrowser),
-    {newAttempt, fromFields}: {newAttempt?: number, fromFields?: string[]},
+    { newAttempt, fromFields }: { newAttempt?: number, fromFields?: string[] },
   ) {
     await Promise.map(getImagePaths(node, fromFields), async (imgPath: any) => {
       const srcImgPath: string = path.resolve(this.srcPath, imgPath);
@@ -164,7 +173,7 @@ export default class DataTree {
     });
   }
 
-  private changeFieldsWithAttempt(testResult: ITest, {newAttempt}: {newAttempt: number}) {
+  private changeFieldsWithAttempt(testResult: ITest, { newAttempt }: { newAttempt: number }) {
     const pathes: string[] = ['expectedPath', 'actualPath', 'diffPath'];
     const imagesInfo: IImageInfo[] = testResult.imagesInfo.map((imageInfo: IImageInfo) => {
       return _.mapValues(imageInfo, (val: any, key: any) => {
@@ -174,11 +183,11 @@ export default class DataTree {
       });
     });
 
-    return _.extend({}, testResult, { attempt: newAttempt, imagesInfo });
+    return _.extend({}, testResult, { imagesInfo, attempt: newAttempt });
   }
 
   private findBrowserResult(suitePath: string[], browserId: string) {
     const existentNode = findNode(this.data.suites, suitePath);
-    return _.find<IBrowser>(_.get(existentNode, 'browsers'), {name: browserId});
+    return _.find<IBrowser>(_.get(existentNode, 'browsers'), { name: browserId });
   }
 }

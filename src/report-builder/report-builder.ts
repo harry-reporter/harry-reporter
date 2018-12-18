@@ -101,12 +101,11 @@ export default class ReportBuilder {
 
   public addRetry(result: IHermioneResult) {
     const formattedResult = this.format(result);
+    const retry: TestResult = formattedResult.hasDiff()
+      ? this.addFailResult(formattedResult)
+      : this.addErrorResult(formattedResult);
 
-    if (formattedResult.hasDiff()) {
-      return this.addFailResult(formattedResult);
-    } else {
-      return this.addErrorResult(formattedResult);
-    }
+    return retry;
   }
 
   public save() {
@@ -162,11 +161,14 @@ export default class ReportBuilder {
 
     this.sortTree();
 
-    return _.extend({
-      config: { defaultView, baseHost, scaleImages, lazyLoadOffset, gitUrl },
-      skips: _.uniq(this.skips),
-      suites: this.tree.children,
-    }, this.stats);
+    return _.extend(
+      {
+        config: { defaultView, baseHost, scaleImages, lazyLoadOffset, gitUrl },
+        skips: _.uniq(this.skips),
+        suites: this.tree.children,
+      },
+      this.stats,
+    );
   }
 
   private addSuccessResult(formattedResult: any, status: any) {
@@ -199,8 +201,8 @@ export default class ReportBuilder {
     const { baseHost } = this.pluginConfig;
     const suiteUrl = suite.getUrl({ baseHost });
     const metaInfo = _.merge(result.meta, {
-      file: suite.file,
       sessionId,
+      file: suite.file,
       url: suite.fullUrl,
     });
     const testResult = {
@@ -208,11 +210,11 @@ export default class ReportBuilder {
       imagesInfo,
       metaInfo,
       multipleTabs,
-      name: browserId,
       scenario,
-      screenshot: Boolean(screenshot),
       suiteUrl,
       testBody,
+      name: browserId,
+      screenshot: Boolean(screenshot),
     };
 
     return { ...testResult, ...props };
@@ -352,11 +354,13 @@ const extendTestWithImagePaths = (
     test.imagesInfo = oldImagesInfo;
     newImagesInfo.forEach((imageInfo: IImagesInfo) => {
       const { stateName } = imageInfo;
-      const index = _.findIndex(test.imagesInfo, { stateName });
+      let index = _.findIndex(test.imagesInfo, { stateName });
 
-      test.imagesInfo[
-        index >= 0 ? index : _.findLastIndex(test.imagesInfo)
-      ] = imageInfo;
+      index = index >= 0
+        ? index
+        : _.findLastIndex(test.imagesInfo);
+
+      test.imagesInfo[index] = imageInfo;
     });
   }
 
