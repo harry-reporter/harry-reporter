@@ -2,38 +2,18 @@ import Promise from 'bluebird';
 import fs from 'fs-extra';
 import _ from 'lodash';
 import path from 'path';
+import finder from 'find-package-json';
+import GitUrlParse from 'git-url-parse';
+import { execSync } from 'child_process';
 
-import {
-  ERROR,
-  FAIL,
-  IDLE,
-  RUNNING,
-  SKIPPED,
-  SUCCESS,
-  UPDATED,
-} from '../constants/test-statuses';
-import {
-  getPathsFor,
-  hasImage,
-  logger,
-  prepareCommonJSData,
-} from '../server-utils';
-import {
-  hasFails,
-  hasNoRefImageErrors,
-  setStatusForBranch,
-} from '../common-utils';
+import { ERROR, FAIL, IDLE, RUNNING, SKIPPED, SUCCESS, UPDATED } from '../constants/test-statuses';
+import { getPathsFor, hasImage, logger, prepareCommonJSData } from '../server-utils';
+import { hasFails, hasNoRefImageErrors, setStatusForBranch } from '../common-utils';
 import TestResult from '../test-result/test-result';
 
 import { IHermione, IPluginOpts } from '../types';
 import { IHermioneStats, ITree, IHermioneResult } from './types';
-import {
-  ISkip,
-  IChild,
-  IResult,
-  IProps,
-  IImagesInfo,
-} from '../test-result/types';
+import { ISkip, IChild, IResult, IProps, IImagesInfo } from '../test-result/types';
 
 const NO_STATE = 'NO_STATE';
 
@@ -150,14 +130,27 @@ export default class ReportBuilder {
     return path.resolve(`${this.pluginConfig.path}/index.html`);
   }
 
-  private getResult() {
+  public getResult() {
     const {
       defaultView,
       baseHost,
       scaleImages,
       lazyLoadOffset,
-      gitUrl,
     } = this.pluginConfig;
+    let { gitUrl } = this.pluginConfig;
+    if (!gitUrl) {
+      const f = finder();
+      const repo = f.next().value.repository;
+      if (repo) {
+        gitUrl = typeof repo === 'string' ? repo : repo.url;
+      }
+    }
+    if (gitUrl !== '') {
+      const currentBranch = execSync('git rev-parse --abbrev-ref HEAD');
+      const onlyUrl = GitUrlParse(gitUrl);
+      const url = `https://${onlyUrl.source}/${onlyUrl.owner}/${onlyUrl.name}/blob/${currentBranch}`;
+      gitUrl = url.trim();
+    }
 
     this.sortTree();
 
@@ -288,6 +281,7 @@ export default class ReportBuilder {
   }
 
   private saveDataFile(saveFn: any) {
+
     return saveFn(
       path.join(this.pluginConfig.path, 'data.js'),
       prepareCommonJSData(this.getResult()),

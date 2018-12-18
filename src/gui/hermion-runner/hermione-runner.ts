@@ -22,7 +22,7 @@ export default class HermioneRunner {
   public hermione: any;
   public globalOpts: any;
   public collection: any;
-  public reportBuilder: any;
+  public reportBuilder: ReportBuilder;
   public eventSource: any;
   public reportPath: string;
   private testFiles: string[];
@@ -90,6 +90,8 @@ export default class HermioneRunner {
       skipped: this.treeInternal.skipped,
       total: this.treeInternal.total,
     });
+    //this.reportBuilder.addConfig({ gitUrl: this.treeInternal.config.gitUrl })
+
   }
 
   public updateReferenceImage(tests: any) {
@@ -218,7 +220,11 @@ export default class HermioneRunner {
     if (reuseData.total) {
       treeInternal.total = parseInt(reuseData.total, 10);
     }
-
+    /*
+        if (reuseData.config.gitUrl) {
+          treeInternal.config.gitUrl = reuseData.config.gitUrl;
+        }
+    */
     return treeInternal;
   }
 
@@ -277,7 +283,7 @@ function getReuseStatus(
 function getReuseBrowserResult(
   reuseSuites: any,
   suitePath: any,
-  browserId: any,
+  browserId: string,
 ) {
   const reuseNode = findNode(reuseSuites, suitePath);
   return _.find(_.get(reuseNode, 'browsers'), { name: browserId });
