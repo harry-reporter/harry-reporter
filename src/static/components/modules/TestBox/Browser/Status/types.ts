@@ -7,7 +7,8 @@ export interface StatusProps {
   data: Attempt;
   pageCount: number;
   pageCurrent: number;
-  handleDataChange: (e: number) => void;
+  skipComment: string;
 
+  handleDataChange: (e: number) => void;
   onClickAtTitle: (e) => any;
 }

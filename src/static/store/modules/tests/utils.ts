@@ -1,7 +1,7 @@
 import { reduce, filter, map, assign, clone, cloneDeep, omit, isArray, get } from 'lodash';
 import { isSuiteFailed, findNode, setStatusForBranch, walk } from '../utils';
 import { isSkippedStatus } from '../../../../common-utils';
-import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs } from 'src/store/modules/tests/types';
+import { CompiledData, Suite, TestsStore, FormatSuitesDataArgs, Skips, Skip } from 'src/store/modules/tests/types';
 
 const getSuiteId = (suite: Suite) => {
   return suite.suitePath[0];
@@ -15,7 +15,7 @@ const getFailedSuiteIds = (suites) => {
   return getSuiteIds(filter(suites, isSuiteFailed));
 };
 
-export const formatSuitesDataTemp = (suites: Suite[] = []) => {
+export const formatSuitesData = (suites: Suite[] = []) => {
   return {
     suites: reduce(suites, (acc, s) => {
       acc[getSuiteId(s)] = s;
@@ -28,6 +28,10 @@ export const formatSuitesDataTemp = (suites: Suite[] = []) => {
   };
 };
 
+export const formatSkips = (skips: Skip[]): Skips => {
+  return skips.reduce((acc, skip) => ({ ...acc, [`${skip.suite} ${skip.browser}`]: skip }), {});
+};
+
 export const getInitialState = (compiledData: CompiledData): TestsStore => {
   const { config, skips, suites, total, passed, failed, skipped, retries, gui = false, running = false } = compiledData;
 
@@ -35,8 +39,8 @@ export const getInitialState = (compiledData: CompiledData): TestsStore => {
     config,
     gui,
     running,
-    skips,
-    ...formatSuitesDataTemp(suites),
+    skips: formatSkips(skips),
+    ...formatSuitesData(suites),
     stats: {
       total,
       passed,

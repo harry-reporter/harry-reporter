@@ -1,10 +1,8 @@
 export interface ControlViewersProps {
-  selectedId: number;
   onChange: (e: any) => void;
   viewType: string;
+  isOpenedBrowser: boolean;
 
   measure?: () => any;
 }
-export interface ControlViewersState {
-  selectedId: number;
-}
+export interface ControlViewersState {}

@@ -33,6 +33,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
       url,
       status,
       gitUrl,
+      skipComment,
     } = this.props;
     return (
       <div className={this.cnHeader} onClick={this.handleClickAtHeader}>
@@ -43,6 +44,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
           handleDataChange={handleDataChange}
           pageCurrent={pageCurrent}
           pageCount={pageCount}
+          skipComment={skipComment}
         />
         <Controls
           isGui={isGui}

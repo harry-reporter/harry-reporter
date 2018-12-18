@@ -72,7 +72,7 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
         >
           {({ measure }) => {
             const { tests, selectedTestsType, gui } = this.props;
-            const testBoxIndex = `${tests[index].suitePath.join('/')}`;
+            const testBoxIndex = `${tests[index].suitePath.join(' ')}`;
 
             return (
               <TestBox

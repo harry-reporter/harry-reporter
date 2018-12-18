@@ -15,4 +15,5 @@ export interface HeaderProps {
   status: TestStatus;
   url?: string;
   gitUrl?: string;
+  skipComment: string;
 }
