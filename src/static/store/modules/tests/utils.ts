@@ -145,6 +145,7 @@ export const setStatusToAll = (node, status) => {
   if (isSkippedStatus(currentStatus)) {
     return;
   }
+
   node.result
     ? (node.result.status = status)
     : node.status = status;
