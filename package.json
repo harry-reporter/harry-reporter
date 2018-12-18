@@ -13,6 +13,7 @@
     "lint": "npm run lint:ts",
     "lint:ts": "tslint -p tsconfig.json -c tslint.json src/**/*.ts",
     "lint:static": "tslint './src/static/**/*.ts*' --format stylish -c './src/static/tslint.json'",
+    "prepublish": "standard-version && npm run build",
     "test": "mocha"
   },
   "repository": {
@@ -64,6 +65,7 @@
     "redux-devtools-extension": "^2.13.7",
     "sass-loader": "^7.1.0",
     "sinon": "^7.1.1",
+    "standard-version": "^4.4.0",
     "style-loader": "^0.23.1",
     "stylelint": "^9.8.0",
     "stylelint-config-standard": "^18.2.0",
