@@ -31,14 +31,14 @@ class ViewBox extends React.Component<ImageInfo> {
     const {
       measure,
       isOpenedScreenView,
-      setIsOpenForView,
+      setIsOpenForView: setOpenForView,
       status,
     } = this.props;
 
     const boxAttr = {
       onLoad: measure,
       'isOpenedScreenView': isOpenedScreenView,
-      'setIsOpenForView': setIsOpenForView,
+      'setIsOpenForView': setOpenForView,
     };
 
     // todo: не могу использовать isFailedTest - принимает suite, а в этом контексте ImageInfo

@@ -1,8 +1,6 @@
 {
   "defaultSeverity": "error",
-  "extends": [
-    "tslint:latest"
-  ],
+  "extends": ["tslint-config-airbnb"],
   "jsRules": {},
   "rules": {
     "semicolon": [true, "always"],
@@ -11,6 +9,7 @@
     "no-implicit-dependencies": false,
     "missing-jsdoc": false,
     "ordered-imports": false,
-    "no-console": false
+    "no-console": false,
+    "import-name": false
   }
 }

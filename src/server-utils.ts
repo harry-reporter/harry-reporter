@@ -16,19 +16,31 @@ export const getCurrentPath = (testResult: TestResult, stateName: string) =>
 export const getDiffPath = (testResult: TestResult, stateName: string) =>
   createPath('diff', testResult, stateName);
 
-export const getReferenceAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
+export const getReferenceAbsolutePath = (
+  testResult: TestResult,
+  reportDir: string,
+  stateName?: string,
+) => {
   const referenceImagePath = getReferencePath(testResult, stateName);
 
   return path.resolve(reportDir, referenceImagePath);
 };
 
-export const getCurrentAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
+export const getCurrentAbsolutePath = (
+  testResult: TestResult,
+  reportDir: string,
+  stateName?: string,
+) => {
   const currentImagePath = getCurrentPath(testResult, stateName);
 
   return path.resolve(reportDir, currentImagePath);
 };
 
-export const getDiffAbsolutePath = (testResult: TestResult, reportDir: string, stateName?: string) => {
+export const getDiffAbsolutePath = (
+  testResult: TestResult,
+  reportDir: string,
+  stateName?: string,
+) => {
   const diffImagePath = getDiffPath(testResult, stateName);
 
   return path.resolve(reportDir, diffImagePath);

@@ -67,7 +67,11 @@ export const saveTestImages = (testResult: TestResult, reportPath: string): any 
   return Promise.all(actions);
 };
 
-export const saveTestCurrentImage = (testResult: TestResult, reportPath: string, stateName: string) => {
+export const saveTestCurrentImage = (
+  testResult: TestResult,
+  reportPath: string,
+  stateName: string,
+) => {
 
   const src = stateName
     ? _.find<IImagesInfo>(testResult.assertViewResults, { stateName }).currentImagePath
@@ -78,7 +82,11 @@ export const saveTestCurrentImage = (testResult: TestResult, reportPath: string,
     : Promise.resolve();
 };
 
-export const updateReferenceImage = (testResult: TestResult, reportPath: string, stateName: string) => {
+export const updateReferenceImage = (
+  testResult: TestResult,
+  reportPath: string,
+  stateName: string,
+) => {
   const src = testResult.actualPath
     ? path.resolve(reportPath, testResult.actualPath)
     : utils.getCurrentAbsolutePath(testResult, reportPath, stateName);
@@ -107,5 +115,5 @@ export const saveBase64Screenshot = (testResult: TestResult, reportPath: string)
       Buffer.from(screenshotBase64, 'base64'),
       'base64',
     ))
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
 };

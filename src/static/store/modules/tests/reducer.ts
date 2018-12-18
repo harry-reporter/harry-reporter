@@ -4,10 +4,9 @@ import {
   formatSuitesDataTemp,
   addTestResult,
   forceUpdateSuiteData,
-  setStatusToAll,
 } from './utils';
 import { findNode } from '../utils';
-import { clone, merge } from 'lodash';
+import { clone } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {

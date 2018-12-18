@@ -4,6 +4,14 @@ import { RootStore } from 'src/store/types/store';
 const appSelector = (store: RootStore) => store.app;
 const getProps = (_, props) => props;
 
+const screenModeView = (app, viewId) => {
+  let screenViewMode = app.screenPerView[viewId];
+  if (screenViewMode === undefined) {
+    screenViewMode = app.screenViewMode;
+  }
+  return screenViewMode;
+};
+
 export const screenSelector = createSelector(
   appSelector,
   getProps,
@@ -13,12 +21,3 @@ export const screenSelector = createSelector(
     };
   },
 );
-
-const screenModeView = (app, viewId) => {
-  let screenViewMode = app.screenPerView[viewId];
-  if (screenViewMode === undefined) {
-    screenViewMode = app.screenViewMode;
-  }
-  return screenViewMode;
-};
-

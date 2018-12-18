@@ -24,7 +24,6 @@
     "no-unsafe-any": false,
     "no-empty-interface": false,
     "no-implicit-dependencies": false,
-    "no-unused-variable": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "no-submodule-imports": false,

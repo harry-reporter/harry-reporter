@@ -1,8 +1,8 @@
 import runGui from '../gui';
 import Api from '../gui/api';
 import commandList from './index';
-import {IGuiCommandOptions} from './types';
-import {IPluginOpts, IHermioneConfig} from '../types';
+import { IGuiCommandOptions } from './types';
+import { IPluginOpts, IHermioneConfig } from '../types';
 
 // args: comander, config, hermione
 export default (program: any, pluginConfig: IPluginOpts, hermione: IHermioneConfig) => {

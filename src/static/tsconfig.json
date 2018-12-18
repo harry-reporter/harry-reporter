@@ -9,13 +9,13 @@
     "lib": ["dom", "es2017"],
     "esModuleInterop": true,
     "baseUrl": ".",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "src/*": ["*"]
     }
   },
-  "include": [
-    "./"
-  ],
+  "include": ["./"],
   "exclude": [
     "node_modules",
     "../**/*.ts"

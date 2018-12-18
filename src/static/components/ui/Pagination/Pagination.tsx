@@ -6,7 +6,7 @@ import { SubNavStyled, SubNavItemStyled } from './styled';
 import { IPaginationProps } from './types';
 
 class Pagination extends React.PureComponent<IPaginationProps, {}> {
-  private static defaultProps = {
+  public static defaultProps = {
     hasPreventDefault: false,
   };
 

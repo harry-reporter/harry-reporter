@@ -1,5 +1,5 @@
-import {IHermioneConfig} from '../types';
-import {IReason, ISkip, IMetaInfo, IProps} from '../test-result/types';
+import { IHermioneConfig } from '../types';
+import { IReason, ISkip, IMetaInfo } from '../test-result/types';
 
 export interface IImageInfo {
   status?: string;

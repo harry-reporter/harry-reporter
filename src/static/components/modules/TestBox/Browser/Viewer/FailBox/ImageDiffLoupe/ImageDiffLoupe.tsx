@@ -5,8 +5,6 @@ import Loupe from './Loupe/Loupe';
 import '../ImageDiffLoupe/ImageDiffLoupe.css';
 import './types';
 
-const BORDERWIDTH = 3;
-
 export default class ImageDiffLoupe extends React.Component<ImageDiffProps, ImageDiffState> {
   public loupeRef;
   public imgRef;

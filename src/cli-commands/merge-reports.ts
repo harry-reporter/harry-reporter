@@ -1,9 +1,9 @@
 import commands from './';
-import {IMergeReportsCommandOptions} from './types';
+import { IMergeReportsCommandOptions } from './types';
 import mergeReports from '../merge-reports';
-import {logError} from '../server-utils';
+import { logError } from '../server-utils';
 
-export default (program: any, {path}: {path: string}) => {
+export default (program: any, { path }: { path: string }) => {
   program
     .command(`${commands.MERGE_REPORTS} [paths...]`)
     .allowUnknownOption()

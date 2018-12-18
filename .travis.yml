@@ -3,4 +3,9 @@ node_js:
   - "10"
 script:
   - commitlint-travis
+  - npm run lint
   - npm test
+cache: npm
+branches:
+  only:
+    - master

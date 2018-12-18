@@ -40,7 +40,10 @@ export default class App {
 
   private runWithoutRetries(tests: any) {
     if (_.isEmpty(this.browserConfigs)) {
-      this.browserConfigs = _.map(this.hermione.config.getBrowserIds(), (id) => this.hermione.config.forBrowser(id));
+      this.browserConfigs = _.map(
+        this.hermione.config.getBrowserIds(),
+        id => this.hermione.config.forBrowser(id),
+      );
     }
 
     this.disableRetries();

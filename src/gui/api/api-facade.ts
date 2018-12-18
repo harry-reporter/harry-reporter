@@ -6,7 +6,7 @@ interface IguiEvents {
 }
 
 export default class ApiFacade extends EventEmitter {
-  private events: IguiEvents;
+  protected events: IguiEvents;
 
   constructor() {
     super();

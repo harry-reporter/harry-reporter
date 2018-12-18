@@ -1,5 +1,5 @@
 import { SUCCESS, FAIL, ERROR, SKIPPED, UPDATED, IDLE } from './constants/test-statuses';
-import { isArray, find, get, values } from 'lodash';
+import { find, get, values } from 'lodash';
 import { getCommonErrors } from './constants/errors';
 import { IReason, IImagesInfo } from './test-result/types';
 
@@ -12,12 +12,17 @@ const walk = (node: any, cb: any, fn: any = Array.prototype.some) => {
 const hasFailedImages = (result: any) => {
   const { imagesInfo = [], status: resultStatus } = result;
 
-  return imagesInfo.some(({ status }: { status: string }) => isErroredStatus(status) || isFailStatus(status))
-    || isErroredStatus(resultStatus) || isFailStatus(resultStatus);
+  return imagesInfo.some(({ status }: { status: string }) =>
+    isErroredStatus(status) ||
+    isFailStatus(status)) ||
+    isErroredStatus(resultStatus) ||
+    isFailStatus(resultStatus);
 };
 
 export const hasNoRefImageErrors = ({ imagesInfo = [] }: any) => (
-  Boolean(imagesInfo.filter((v: IImagesInfo) => get(v, 'reason.stack', '').startsWith(NO_REF_IMAGE_ERROR)).length)
+  Boolean(imagesInfo.filter((v: IImagesInfo) =>
+    get(v, 'reason.stack', '').startsWith(NO_REF_IMAGE_ERROR),
+  ).length)
 );
 
 export const hasFails = (node: any) => {
@@ -34,28 +39,32 @@ export const isAcceptable = ({ status, reason }: { status: string, reason: IReas
 };
 
 export const findNode = (node: any, suitePath: string[]): any => {
-  suitePath = suitePath.slice();
+  const path = suitePath.slice();
+  let nodeValues;
+
   if (!node.children) {
-    node = values(node);
+    nodeValues = values(node);
+
     const tree = {
-      children: node,
+      children: nodeValues,
       name: 'root',
     };
-    return findNode(tree, suitePath);
+
+    return findNode(tree, path);
   }
 
-  const pathPart = suitePath.shift();
+  const pathPart = path.shift();
   const child = find(node.children, { name: pathPart });
 
   if (!child) {
     return;
   }
 
-  if (child.name === pathPart && !suitePath.length) {
+  if (child.name === pathPart && !path.length) {
     return child;
   }
 
-  return findNode(child, suitePath);
+  return findNode(child, path);
 };
 
 export const setStatusForBranch = (nodes: any, suitePath: string[], status: string) => {
@@ -69,8 +78,8 @@ export const setStatusForBranch = (nodes: any, suitePath: string[], status: stri
   }
 
   node.status = status;
-  suitePath = suitePath.slice(0, -1);
-  setStatusForBranch(nodes, suitePath, status);
+  const path = suitePath.slice(0, -1);
+  setStatusForBranch(nodes, path, status);
 };
 
 export const isSuccessStatus = (status: string): boolean => status === SUCCESS;

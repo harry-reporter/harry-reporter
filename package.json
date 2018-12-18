@@ -10,10 +10,10 @@
     "build": "rm -rf lib && npm run build:core && npm run build:static",
     "build:core": "rm -rf lib && tsc",
     "build:static": "cd src/static && webpack -p --config=webpack.prod.js",
-    "lint": "npm run lint:ts",
-    "lint:ts": "tslint -p tsconfig.json -c tslint.json src/**/*.ts",
-    "lint:static": "tslint './src/static/**/*.ts*' --format stylish -c './src/static/tslint.json'",
-    "prepublish": "standard-version && npm run build",
+    "lint": "npm run lint:core && npm run lint:static",
+    "lint:core": "tslint -p tsconfig.json -t stylish -e src/static",
+    "lint:static": "tslint -p src/static/tsconfig.json -c src/static/tslint.json -t stylish 'src/static/**/*.ts?(x)'",
+    "prepublishOnly": "standard-version && npm run build",
     "test": "mocha"
   },
   "repository": {
@@ -67,8 +67,6 @@
     "sinon": "^7.1.1",
     "standard-version": "^4.4.0",
     "style-loader": "^0.23.1",
-    "stylelint": "^9.8.0",
-    "stylelint-config-standard": "^18.2.0",
     "ts-loader": "^5.3.1",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.1",
