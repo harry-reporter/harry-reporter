@@ -1,6 +1,6 @@
 import * as React from 'react';
 import cn from 'classnames';
-import { getColorByStatus } from 'src/utils';
+import { getColorByStatus, isSkippedStatus } from 'src/utils';
 
 import Pagination from 'src/components/ui/Pagination';
 import StatusIcon from 'src/components/modules/TestBox/Browser/Status/Icon';
@@ -21,6 +21,7 @@ export default class Status extends React.PureComponent<StatusProps> {
       data: { name },
     } = this.props;
 
+    const isSkippedTest = isSkippedStatus(status);
     const color = getColorByStatus(status);
     const cnStatus = cn(className, 'd-flex flex-justify-between flex-items-center');
 
@@ -55,6 +56,13 @@ export default class Status extends React.PureComponent<StatusProps> {
               pageCurrent={pageCurrent}
             />
           </>
+        }
+        {
+          isSkippedTest &&
+          <Text as={'span'} textColor={'gray'} ml={3}>
+            <i>Comment:</i>{' '}
+            <Text as={'span'} textColor={'gray'}>skipComment</Text>
+          </Text>
         }
       </Text>
     );

@@ -1,10 +1,11 @@
 import { TestsStore, WindowWithData } from './types';
 import {
   getInitialState,
-  formatSuitesDataTemp,
+  formatSuitesData,
   addTestResult,
   forceUpdateSuiteData,
   setStatusToAll,
+  formatSkips,
 } from './utils';
 import { findNode } from '../utils';
 import { clone, values } from 'lodash';
@@ -19,7 +20,7 @@ const defaultState: TestsStore = {
     failed: [],
   },
   suites: {},
-  skips: [],
+  skips: {},
   stats: {
     total: 0,
     passed: 0,
@@ -58,10 +59,10 @@ export const reducer = (
       } = payload;
       return {
         ...state,
-        skips,
+        skips: formatSkips(skips),
         gui,
         config,
-        ...formatSuitesDataTemp(suites),
+        ...formatSuitesData(suites),
         stats: { total, passed, failed, skipped, retries },
       };
     }

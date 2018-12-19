@@ -21,6 +21,8 @@ export interface BrowserProps {
   index: number;
   onAccept: (browserId, attempt, stateName?) => void;
   gitUrl?: string;
+  testBoxIndex: string;
+  skipComment?: string;
 }
 export interface BrowserState {
   viewType: TypeView;

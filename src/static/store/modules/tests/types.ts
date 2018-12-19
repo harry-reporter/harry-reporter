@@ -1,7 +1,7 @@
 export type TestStatus = 'error' | 'fail' | 'success' | 'idle' | 'running' | 'skipped';
 
 export interface TestsStore {
-  skips: Suite[];
+  skips: Skips;
   stats: Stats;
   gui: boolean;
   running?: boolean;
@@ -22,6 +22,10 @@ export interface Suites {
   [key: string]: Suite;
 }
 
+export interface Skips {
+  [key: string]: Skip;
+}
+
 export interface CompiledData extends Stats {
   skips: Skip[];
   config: Config;
@@ -30,7 +34,12 @@ export interface CompiledData extends Stats {
   running: boolean;
 }
 
-export type Skip = any;
+export interface Skip {
+  comment: string;
+  browser: string;
+  suite: string;
+}
+
 export type SuitePath = string[];
 
 export interface Config {

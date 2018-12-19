@@ -15,7 +15,7 @@ export default class ScriptViewer extends React.PureComponent<IScriptViewerProps
         </div>
         <div className='Box-row'>
           <pre className='pl-3'>
-            {scenario || ''}
+            {scenario || 'Scenario file not found'}
           </pre>
         </div>
       </>

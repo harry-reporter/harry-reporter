@@ -67,11 +67,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
 
     let pageCount = attempt;
 
-    // TODO: описать условие нормально
-    if (
-      attempt === 0 &&
-      (status === 'idle' || status === 'skipped' || status === 'running')
-    ) {
+    if (attempt === 0 && status === 'idle') {
       pageCount = -1;
     }
 
@@ -82,7 +78,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     const { cache, suiteData } = this.props;
     const { isOpen, viewData, viewType, pageCurrent } = this.state;
 
-    const suiteIndex = suiteData.suitePath.join('/');
+    const suiteIndex = suiteData.suitePath.join(' ');
 
     cache.set(`browser-${viewData.name}`, suiteIndex, {
       isOpen,
@@ -94,7 +90,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   private initStateFromCache = () => {
     const { cache, suiteData, measure } = this.props;
     const { viewData } = this.state;
-    const cacheTest = cache.data[suiteData.suitePath.join('/')];
+    const cacheTest = cache.data[suiteData.suitePath.join(' ')];
 
     if (cacheTest) {
       const key = `browser-${viewData.name}`;
@@ -118,15 +114,22 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   private handleViewChange = (viewType: TypeView): void => {
-    this.setState({ viewType }, this.props.measure);
+    this.setState({ viewType, isOpen: true }, this.props.measure);
   }
 
   private handleDataChange = (pageNumber: number): void => {
-    const { result, retries } = this.props.data;
+    const { measure, data: { result, retries } } = this.props;
     const { pageCount } = this.state;
-    const resultPage = pageNumber === pageCount ? result : retries[pageNumber];
 
-    this.setState({ pageCurrent: pageNumber, viewData: resultPage });
+    const resultPage = pageNumber === pageCount
+      ? result
+      : retries[pageNumber];
+
+    this.setState({
+      pageCurrent: pageNumber,
+      isOpen: true,
+      viewData: resultPage,
+    }, measure);
   }
 
   private toggleBox = () => {
@@ -159,7 +162,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public render(): JSX.Element {
-    const { isGui, url, status, gitUrl } = this.props;
+    const { isGui, url, status, gitUrl, skipComment } = this.props;
     const { viewType, pageCurrent, pageCount, viewData, isOpen } = this.state;
     return (
       <div className={'Box-row p-0'}>
@@ -177,6 +180,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
           pageCount={pageCount}
           url={url}
           gitUrl={gitUrl}
+          skipComment={skipComment}
         />
         {isOpen && this.renderViewer()}
       </div>
@@ -184,9 +188,10 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 }
 
-function mapStateToProps(store: RootStore, ownProps: BrowserProps) {
-  return browserSelector(store, ownProps);
-}
+// TODO: привести к нормальному виду
+const mapStateToProps = (store: RootStore, ownProps: BrowserProps) => ({
+  ...browserSelector(store, ownProps),
+});
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({ setIsOpenForBrowser }, dispatch),

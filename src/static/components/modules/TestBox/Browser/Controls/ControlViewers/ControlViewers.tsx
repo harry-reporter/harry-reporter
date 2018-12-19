@@ -11,28 +11,28 @@ export default class ControlViewers extends React.PureComponent<ControlViewersPr
   }
 
   public render(): JSX.Element {
-    const { viewType } = this.props;
+    const { viewType, isOpenedBrowser } = this.props;
 
     const buttonOptions: ButtonProps[] = [
       {
         title: '',
         size: 'sm',
         icon: Code,
-        isSelected: viewType === 'code',
+        isSelected: isOpenedBrowser && viewType === 'code',
         onClick: this.handleClickAtButton('code'),
       },
       {
         title: '',
         size: 'sm',
         icon: ListUnordered,
-        isSelected: viewType === 'tests',
+        isSelected: isOpenedBrowser && viewType === 'tests',
         onClick: this.handleClickAtButton('tests'),
       },
       {
         title: '',
         size: 'sm',
         icon: File,
-        isSelected: viewType === 'screenshot',
+        isSelected: isOpenedBrowser && viewType === 'screenshot',
         onClick: this.handleClickAtButton('screenshot'),
       },
     ];

@@ -46,11 +46,13 @@ export default class Controls extends React.PureComponent<ControlsProps> {
       url,
       gitUrl,
     } = this.props;
+
     const disabled: boolean = !gitUrl || gitUrl === '';
+
     return (
       <ControlsStyled>
         <ControlViewers
-          selectedId={2}
+          isOpenedBrowser={isOpenedBrowser}
           onChange={handleViewChange}
           viewType={viewType}
         />

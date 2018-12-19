@@ -100,12 +100,13 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   }
 
   private renderBrowsers = (): any => {
-    const { data, isGui, isRunning, gitUrl } = this.props;
+    const { data, isGui, isRunning, gitUrl, index } = this.props;
     return data.browsers.map((item, id) => (
       <Browser
         key={item.name}
         isGui={isGui}
         data={item}
+        testBoxIndex={index}
         index={id}
         isRunning={isRunning}
         status={item.result.status}
@@ -117,7 +118,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
   public render(): JSX.Element {
     const { data, style, className, isOpen, isRunning } = this.props;
-    const suite = data.suitePath.join(' / ');
+    const suite = data.suitePath.join(' ');
     const cnTestBox = cn('Box mb-3 mt-1', className);
 
     return (
