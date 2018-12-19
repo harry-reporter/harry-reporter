@@ -1,6 +1,6 @@
-# harry-reporter
+# harry-reporter [![Build Status](https://travis-ci.org/harry-reporter/harry-reporter.svg?branch=master)](https://travis-ci.org/harry-reporter/harry-reporter)
 
-Plugin for and [hermione](https://github.com/gemini-testing/hermione) which is intended to aggregate the results of tests running into html report. Inspired by [html-reporter](https://github.com/gemini-testing/html-reporter).
+Plugin for [hermione](https://github.com/gemini-testing/hermione) which is intended to aggregate the results of tests running into html report. Inspired by [html-reporter](https://github.com/gemini-testing/html-reporter).
 
 You can read more about hermione plugins [here](https://github.com/gemini-testing/hermione#plugins).
 
@@ -33,9 +33,7 @@ $ html_reporter_path=custom/dir hermione test
 $ hermione test --html-reporter-path custom/dir
 ```
 
-### Hermione Usage
-
-Add plugin to your `hermione` config file:
+Adding plugin to your `hermione` config file:
 
 ```js
 module.exports = {
