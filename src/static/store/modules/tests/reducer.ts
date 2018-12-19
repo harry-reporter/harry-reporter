@@ -4,9 +4,10 @@ import {
   formatSuitesDataTemp,
   addTestResult,
   forceUpdateSuiteData,
+  setStatusToAll,
 } from './utils';
 import { findNode } from '../utils';
-import { clone } from 'lodash';
+import { clone, values } from 'lodash';
 import * as actionNames from './constants';
 
 const defaultState: TestsStore = {
@@ -70,7 +71,7 @@ export const reducer = (
 
     case actionNames.RUN_ALL: {
       const suites = { ...state.suites };
-      // setStatusToAll(suites, action.payload.status); // TODO: fix error
+      values(suites).forEach((suite) => setStatusToAll(suite, action.payload.status));
       return { ...state, suites, running: true };
     }
 
