@@ -14,7 +14,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
   private getTitle = () => this.props.title;
 
   public render(): JSX.Element {
-    const { title, isOpenedBox, status, retryHandler, isRunning } = this.props;
+    const { title, isOpenedBox, status, retryHandler, isRunning, onToggle } = this.props;
     const textColor = getColorByStatus(status);
     const Chevron = getChevron(isOpenedBox);
 
@@ -22,7 +22,12 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
       <div
         className={'Box-row d-flex flex-justify-between flex-items-center p-3'}
       >
-        <Text as={'span'} textColor={textColor} textType={'bold'}>
+        <Text
+          as={'span'}
+          textColor={textColor}
+          textType={'bold'}
+          onClick={onToggle}
+        >
           {title}
         </Text>
         <ControlsStyled>
@@ -43,7 +48,7 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
           </ClipboardStyled>
           <ButtonIconContainerStyled
             role={'button'}
-            onClick={this.props.onToggle}
+            onClick={onToggle}
           >
             <Octicon icon={Chevron} />
           </ButtonIconContainerStyled>
