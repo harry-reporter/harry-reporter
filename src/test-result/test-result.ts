@@ -63,6 +63,24 @@ export default class TestResult {
     this.testResult.imagesInfo = imagesInfo;
   }
 
+  public getCurrImg(stateName) {
+    const assertViewResult = _.find(this.assertViewResults, { stateName });
+
+    return _.get(
+      assertViewResult,
+      'currImg',
+      _.get(assertViewResult, 'currentImagePath'), // hermione@0.90.* fallback
+    );
+  }
+
+  public getErrImg() {
+    const path = typeof this.screenshot === 'string'
+      ? this.screenshot
+      : this.screenshot.path || undefined;
+
+    return path;
+  }
+
   public hasDiff() {
     return this.assertViewResults.some((result: any) =>
       this.isImageDiffError(result));
