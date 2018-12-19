@@ -20,7 +20,7 @@ export default class Controls extends React.PureComponent<ControlsProps> {
     const pathGit = this.props.gitUrl;
     const pathFile = this.props.data.metaInfo.file;
     if (pathGit) {
-      const url = `${pathGit}/blob/master/${pathFile}`;
+      const url = `${pathGit}/${pathFile}`;
       window.open(url, '_blank');
     }
   }
