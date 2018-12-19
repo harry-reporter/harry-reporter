@@ -5,7 +5,6 @@ import _ from 'lodash';
 
 import * as utils from './server-utils';
 import TestResult from './test-result/test-result';
-import { IImagesInfo } from './test-result/types';
 
 const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
   return Promise.map(testResult.assertViewResults, (assertResult: any) => {
@@ -42,40 +41,16 @@ const saveAssertViewImages = (testResult: TestResult, reportPath: string) => {
   });
 };
 
-export const saveTestImages = (testResult: TestResult, reportPath: string): any => {
-  if (testResult.assertViewResults) {
-    return saveAssertViewImages(testResult, reportPath);
-  }
-
-  const actions = [
-    utils.copyImageAsync(
-      testResult.referencePath,
-      utils.getReferenceAbsolutePath(testResult, reportPath),
-    ),
-  ];
-
-  if (testResult.hasDiff()) {
-    actions.push(
-      exports.saveTestCurrentImage(testResult, reportPath),
-      utils.saveDiff(
-        testResult,
-        utils.getDiffAbsolutePath(testResult, reportPath),
-      ),
-    );
-  }
-
-  return Promise.all(actions);
-};
+export const saveTestImages = (testResult: TestResult, reportPath: string): any =>
+  saveAssertViewImages(testResult, reportPath);
 
 export const saveTestCurrentImage = (
   testResult: TestResult,
   reportPath: string,
   stateName: string,
 ) => {
-
-  const src = stateName
-    ? _.find<IImagesInfo>(testResult.assertViewResults, { stateName }).currentImagePath
-    : testResult.getImagePath() || testResult.currentPath || testResult.screenshot;
+  const curImg = testResult.getCurrImg(stateName);
+  const src = (curImg.path || curImg) || testResult.getErrImg();
 
   return src
     ? utils.copyImageAsync(src, utils.getCurrentAbsolutePath(testResult, reportPath, stateName))

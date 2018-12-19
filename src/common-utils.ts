@@ -40,13 +40,10 @@ export const isAcceptable = ({ status, reason }: { status: string, reason: IReas
 
 export const findNode = (node: any, suitePath: string[]): any => {
   const path = suitePath.slice();
-  let nodeValues;
 
   if (!node.children) {
-    nodeValues = values(node);
-
     const tree = {
-      children: nodeValues,
+      children: values(node),
       name: 'root',
     };
 
