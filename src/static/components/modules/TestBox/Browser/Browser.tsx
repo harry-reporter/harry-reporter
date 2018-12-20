@@ -27,7 +27,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     } = this.props.data;
 
     this.state = {
-      isOpen: false,
+      isOpen: true,
       viewData: result,
       viewType: this.screenshot,
       pageCount: attempt,
@@ -45,15 +45,13 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public componentDidUpdate(prevProps): void {
-    const { isRunning } = this.props;
-
-    if (this.props.isOpenedBrowser !== prevProps.isOpenedBrowser) {
-      this.props.measure();
-    }
+    const { isRunning, measure } = this.props;
 
     if (prevProps.isRunning && !isRunning) {
       this.setPageCount();
     }
+
+    measure();
   }
 
   public componentWillUnmount(): void {

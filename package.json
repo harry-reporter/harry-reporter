@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel dev:core dev:static",
     "dev:core": "tsc -w",
-    "dev:static": "cd src/static && cross-env GUI=false webpack-dev-server -d --config=webpack.dev.js",
+    "dev:static": "cd src/static && cross-env GUI=true webpack-dev-server -d --config=webpack.dev.js",
     "build": "rm -rf lib && npm run build:core && npm run build:static",
     "build:core": "rm -rf lib && tsc",
     "build:static": "cd src/static && webpack -p --config=webpack.prod.js",
@@ -99,6 +99,7 @@
     "react": "^16.6.3",
     "react-clipboard.js": "^1.1.4",
     "react-dom": "^16.6.3",
+    "react-highlight.js": "^1.0.7",
     "react-redux": "^5.1.1",
     "react-syntax-highlighter": "^10.1.2",
     "react-virtualized": "^9.21.0",
