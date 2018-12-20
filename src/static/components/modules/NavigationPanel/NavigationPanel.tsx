@@ -14,7 +14,7 @@ const NavigationPanel: React.SFC<NavigationPanelProps> = (props) => {
   const navigationList = [
     {
       name: 'total',
-      component: <Status mr={3} name={'Total Tests'} value={total}  />,
+      component: <Status mr={3} name={'Total Tests'} value={total} />,
     },
     {
       name: 'passed',
@@ -26,11 +26,11 @@ const NavigationPanel: React.SFC<NavigationPanelProps> = (props) => {
     },
     {
       name: 'skipped',
-      component: <Status mr={3} name={'Skipped'} value={skipped} color={'orange-light'} />,
+      component: <Status mr={3} name={'Skipped'} value={skipped} color={'gray'} />,
     },
     {
       name: 'retries',
-      component: <Status mr={3} name={'Retries'} value={retries} color={'gray'} />,
+      component: <Status mr={3} name={'Retries'} value={retries} color={'yellow'} />,
     },
   ];
 
@@ -40,7 +40,7 @@ const NavigationPanel: React.SFC<NavigationPanelProps> = (props) => {
 
   return (
     <section>
-      <NavigationStyled onChange={handleChange} dataList={navigationList}  />
+      <NavigationStyled onChange={handleChange} dataList={navigationList} />
     </section>
   );
 };

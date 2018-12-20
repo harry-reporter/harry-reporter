@@ -7,6 +7,16 @@ export const ClipboardStyled = styled(Clipboard)`
   &:hover {
     cursor: pointer;
   }
+  color: rgb(106, 115, 125);
+`;
+
+export const HeaderStyled = styled.div`
+  margin: -1px -1px 0;
+  padding-top: 13px;
+  padding-bottom: 14px;
+`;
+export const TextStyled = styled.span`
+  line-height: 1.25;
 `;
 
 export const ControlsStyled = styled.div`
@@ -19,4 +29,6 @@ export const ButtonIconContainerStyled = styled.div`
   &:hover {
     cursor: pointer;
   }
+  vertical-align: middle;
+  color: rgb(106, 115, 125);
 `;

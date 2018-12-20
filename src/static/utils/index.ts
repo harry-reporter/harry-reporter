@@ -21,8 +21,8 @@ export const getColorByStatus = (status: TestStatus) => {
     case 'fail':
     case 'error': return 'red';
 
-    case 'running':
-    case 'skipped': return 'orange-light';
+    case 'running': return 'yellow';
+    case 'skipped': return 'gray';
 
     default: return 'gray';
   }

@@ -15,7 +15,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
 
   private cnHeader = cn(
     this.props.className,
-    'Box Box-row Box--condensed Box-header d-flex flex-justify-between',
+    'Box Box-row Box--condensed Box-header d-flex flex-justify-between pt-2 pb-2',
   );
 
   public render() {

@@ -16,7 +16,7 @@ export default class ButtonEye extends React.PureComponent<IButtonEye> {
     return (
       <div className='ButtonEye' aria-label='Eye'>
         <a href={this.getUrl(this.props.url, this.props.host)} target='_blank' className='ButtonEye-link text-gray'>
-          <Octicon icon={Eye} />
+          <Octicon icon={Eye} verticalAlign='middle' />
         </a>
       </div>
     );

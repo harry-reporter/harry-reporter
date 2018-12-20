@@ -51,25 +51,29 @@ export default class Controls extends React.PureComponent<ControlsProps> {
 
     return (
       <ControlsStyled>
-        <ControlViewers
-          isOpenedBrowser={isOpenedBrowser}
-          onChange={handleViewChange}
-          viewType={viewType}
-        />
-        {isGui && <ButtonsGroup className={'mr-3'} btns={this.btns} />}
-        <Button
-          size={'sm'}
-          className={'mr-3'}
-          disabled={disabled}
-          title={'View'}
-          onClick={this.handleViewClick}
-        />
-        <ButtonIconContainerStyled className={'mr-3'} role={'button'}>
-          <ButtonEye url={data.metaInfo.url} host={url} />
-        </ButtonIconContainerStyled>
-        <ButtonIconContainerStyled role={'button'} onClick={onToggle}>
-          <Octicon icon={getChevron(isOpenedBrowser)} />
-        </ButtonIconContainerStyled>
+        <div className='d-flex flex-items-center'>
+          <ControlViewers
+            isOpenedBrowser={isOpenedBrowser}
+            onChange={handleViewChange}
+            viewType={viewType}
+          />
+          {isGui && <ButtonsGroup className={'mr-1'} btns={this.btns} />}
+          <Button
+            size={'sm'}
+            className={'mr-3'}
+            disabled={disabled}
+            title={'View'}
+            onClick={this.handleViewClick}
+          />
+          <div className='d-inline-flex flex-items-center'>
+            <ButtonIconContainerStyled className={'mr-3'} role={'button'}>
+              <ButtonEye url={data.metaInfo.url} host={url} />
+            </ButtonIconContainerStyled>
+            <ButtonIconContainerStyled role={'button'} onClick={onToggle}>
+              <Octicon icon={getChevron(isOpenedBrowser)} verticalAlign='middle' />
+            </ButtonIconContainerStyled>
+          </div>
+        </div>
       </ControlsStyled>
     );
   }
