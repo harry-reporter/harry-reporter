@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { ThemeProvider, theme } from '../theme';
 import { store } from '../store';
-import 'primer/build/build.css';
 
 import GlobalStyle from './GlobalStyle';
 import Header from './layouts/Header/Header';
