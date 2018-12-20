@@ -49,7 +49,10 @@ class TestsContainer extends React.Component<TestsContainerProps, TestsContainer
       });
     });
 
-    eventSource.addEventListener(clientEvents.END, () => testsEnd());
+    eventSource.addEventListener(clientEvents.END, (ev: MessageEvent) => {
+      const data = JSON.parse(ev.data);
+      testsEnd(data);
+    });
   }
 
   private renderList = () => ({ height, width, isScrolling, onChildScroll, scrollTop }) => (

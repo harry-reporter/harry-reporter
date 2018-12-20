@@ -74,7 +74,14 @@ export const reducer = (
     case actionNames.RUN_ALL: {
       const suites = { ...state.suites };
       values(suites).forEach((suite) => setStatusToAll(suite, action.payload.status));
-      return { ...state, suites, running: true };
+      return {
+        ...state,
+        suites,
+        running: true,
+        stats: {
+          ...defaultState.stats,
+        },
+      };
     }
 
     case actionNames.SUITE_BEGIN: {
@@ -111,7 +118,7 @@ export const reducer = (
     }
 
     case actionNames.TESTS_END: {
-      return { ...state, running: false };
+      return { ...state, running: false, stats: { ...payload.stats } };
     }
 
     case actionNames.TEST_RESULT: {

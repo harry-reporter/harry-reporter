@@ -79,6 +79,6 @@ export default (
     return reportBuilder
       .setStats(stats)
       .save()
-      .then(() => client.emit(clientEvents.END));
+      .then(() => client.emit(clientEvents.END, { stats }));
   });
 };
