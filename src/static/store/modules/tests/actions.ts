@@ -72,4 +72,4 @@ export const retryTest = (suite) => {
 export const suiteBegin = (suite) => ({ type: actionNames.SUITE_BEGIN, payload: suite });
 export const testBegin = (test) => ({ type: actionNames.TEST_BEGIN, payload: test });
 export const testResult = (result) => ({ type: actionNames.TEST_RESULT, payload: result });
-export const testsEnd = () => ({ type: actionNames.TESTS_END });
+export const testsEnd = (stats) => ({ type: actionNames.TESTS_END, payload: stats });
