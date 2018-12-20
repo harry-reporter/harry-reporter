@@ -10,6 +10,7 @@ import {
 import { findNode } from '../utils';
 import { clone, values } from 'lodash';
 import * as actionNames from './constants';
+import { isSkippedStatus } from '../../../../common-utils';
 
 const defaultState: TestsStore = {
   config: {
@@ -94,7 +95,7 @@ export const reducer = (
       if (test) {
         test.status = status;
         test.browsers.forEach((b) => {
-          if (b.name === browserId) {
+          if (b.name === browserId && !isSkippedStatus(b.result.status)) {
             b.result.status = status;
           }
         });
