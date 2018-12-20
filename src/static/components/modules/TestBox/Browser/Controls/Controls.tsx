@@ -56,7 +56,7 @@ export default class Controls extends React.PureComponent<ControlsProps> {
           onChange={handleViewChange}
           viewType={viewType}
         />
-        {isGui && <ButtonsGroup className={'mr-3'} btns={this.btns} />}
+        {isGui && <ButtonsGroup className={'mr-1'} btns={this.btns} />}
         <Button
           size={'sm'}
           className={'mr-3'}
