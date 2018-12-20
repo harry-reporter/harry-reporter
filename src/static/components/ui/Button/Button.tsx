@@ -4,7 +4,6 @@ import cn from 'classnames';
 import Octicon from '@githubprimer/octicons-react';
 
 import { ButtonProps } from './types';
-import 'primer-buttons/build/build.css';
 
 const Button: React.SFC<ButtonProps> = (props) => {
   const { children = null, disabled = false, icon, className, title, isSelected, size, asLink, ...restProps } = props;
