@@ -5,8 +5,10 @@ import { TextProps } from './types';
 import { withMargin } from 'src/components/hoc/withMargin';
 import { withPadding } from 'src/components/hoc/withPadding';
 
-const Text: React.SFC<TextProps> = ({ as: Tag, children, className, textColor, textType, onClick }) => {
-  const cnText = cn(className, `text-${textType}`, `text-${textColor}`);
+import './style.css';
+
+const Text: React.SFC<TextProps> = ({ as: Tag, children, className, textColor, textType, textWidth, onClick }) => {
+  const cnText = cn(className, `text-${textType}`, `text-${textColor}`, `m-0`, `text-${textWidth}`);
 
   return (
     <Tag onClick={onClick} className={cnText}>{children}</Tag>

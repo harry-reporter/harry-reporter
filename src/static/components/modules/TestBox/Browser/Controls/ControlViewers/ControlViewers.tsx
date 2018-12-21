@@ -37,6 +37,6 @@ export default class ControlViewers extends React.PureComponent<ControlViewersPr
       },
     ];
 
-    return <ButtonsGroup className={'mr-3'} btns={buttonOptions} />;
+    return <ButtonsGroup className={'mr-1'} btns={buttonOptions} />;
   }
 }

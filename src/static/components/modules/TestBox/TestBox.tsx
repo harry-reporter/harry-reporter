@@ -14,6 +14,7 @@ import { RootStore } from 'src/store/types/store';
 import { TestsViewMode } from 'src/store/modules/app/types';
 import { setIsOpenForTestBox } from 'src/store/modules/app/actions';
 import { acceptTest, retryTest } from 'src/store/modules/tests/actions';
+import { TestBoxStyled } from './styled';
 
 import Header from './Header';
 import Browser from './Browser/Browser';
@@ -119,22 +120,24 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
   public render(): JSX.Element {
     const { data, style, className, isOpen, isRunning } = this.props;
     const suite = data.suitePath.join(' ');
-    const cnTestBox = cn('Box mb-3 mt-1', className);
+    const cnTestBox = cn('Box', 'TestBox', className);
 
     return (
       <MeasurerContext.Provider value={this.measurer}>
         <div style={style}>
-          <div className={cnTestBox}>
-            <Header
-              title={suite}
-              status={data.status}
-              isOpenedBox={isOpen}
-              onToggle={this.toggleBox}
-              retryHandler={this.runTest}
-              isRunning={isRunning}
-            />
-            {isOpen && this.renderBrowsers()}
-          </div>
+          <TestBoxStyled>
+            <div className={cnTestBox}>
+              <Header
+                title={suite}
+                status={data.status}
+                isOpenedBox={isOpen}
+                onToggle={this.toggleBox}
+                retryHandler={this.runTest}
+                isRunning={isRunning}
+              />
+              {isOpen && this.renderBrowsers()}
+            </div>
+          </TestBoxStyled>
         </div>
       </MeasurerContext.Provider>
     );

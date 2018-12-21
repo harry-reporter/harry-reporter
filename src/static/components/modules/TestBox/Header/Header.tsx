@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import Octicon, { Clippy, Sync } from '@githubprimer/octicons-react';
-import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled } from './styled';
+import { ClipboardStyled, ControlsStyled, ButtonIconContainerStyled, HeaderStyled, TextStyled } from './styled';
 
 import { HeaderProps, HeaderState } from './types';
 import { getChevron } from '../common-utils';
@@ -19,41 +19,48 @@ class Header extends React.PureComponent<HeaderProps, HeaderState> {
     const Chevron = getChevron(isOpenedBox);
 
     return (
-      <div
-        className={'Box-row d-flex flex-justify-between flex-items-center p-3'}
-      >
-        <Text
-          as={'span'}
-          textColor={textColor}
-          textType={'bold'}
-          onClick={onToggle}
+      <HeaderStyled>
+        <div
+          className={'Box-row d-flex flex-justify-between flex-items-center pl-3 pr-3 pt-0 pb-0'}
         >
-          {title}
-        </Text>
-        <ControlsStyled>
-          { status === 'running' && (
-            <div className={'d-inline-flex flex-items-center mr-3 anim-pulse'}>
-              <Octicon icon={Sync} />
+          <TextStyled>
+            <Text
+              as={'span'}
+              textColor={textColor}
+              textType={'bold'}
+              onClick={onToggle}
+            >
+              {title}
+            </Text>
+          </TextStyled>
+          <ControlsStyled>
+            {status === 'running' && (
+              <div className={'d-inline-flex flex-items-center mr-3 anim-pulse'}>
+                <Octicon icon={Sync} />
+              </div>
+            )}
+            <Button
+              size={'sm'}
+              className={'mr-3'}
+              title={'Run'}
+              onClick={retryHandler}
+              disabled={isRunning}
+            />
+            <div className='d-inline-flex flex-items-center'>
+              <ClipboardStyled component='div' option-text={this.getTitle}>
+                <Octicon icon={Clippy} verticalAlign='text-top' />
+              </ClipboardStyled>
+
+              <ButtonIconContainerStyled
+                role={'button'}
+                onClick={onToggle}
+              >
+                <Octicon icon={Chevron} />
+              </ButtonIconContainerStyled>
             </div>
-          ) }
-          <Button
-            size={'sm'}
-            className={'mr-3'}
-            title={'Run'}
-            onClick={retryHandler}
-            disabled={isRunning}
-          />
-          <ClipboardStyled component='div' option-text={this.getTitle}>
-            <Octicon icon={Clippy} />
-          </ClipboardStyled>
-          <ButtonIconContainerStyled
-            role={'button'}
-            onClick={onToggle}
-          >
-            <Octicon icon={Chevron} />
-          </ButtonIconContainerStyled>
-        </ControlsStyled>
-      </div>
+          </ControlsStyled>
+        </div>
+      </HeaderStyled>
     );
   }
 }
