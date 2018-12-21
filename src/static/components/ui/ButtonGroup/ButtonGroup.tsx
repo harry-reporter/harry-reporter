@@ -4,7 +4,6 @@ import cn from 'classnames';
 import Button from '../Button';
 
 import { IButtonsGroupProps } from './types';
-import 'primer-buttons/build/build.css';
 
 class ButtonsGroup extends React.Component<IButtonsGroupProps> {
   public renderBtns = (): React.ReactNode => {
