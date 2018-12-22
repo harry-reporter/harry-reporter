@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/harry-reporter/harry-reporter/compare/v2.1.2...v2.1.3) (2018-12-22)
+
+
+### Bug Fixes
+
+* button View can get repository from package.json ([9567e2f](https://github.com/harry-reporter/harry-reporter/commit/9567e2f))
+* design improvements ([74b4c4c](https://github.com/harry-reporter/harry-reporter/commit/74b4c4c))
+* disable set running status for skipped tests ([644d68e](https://github.com/harry-reporter/harry-reporter/commit/644d68e))
+* even more backward compatibility with hermione@^0.90.2 ([94ae1d3](https://github.com/harry-reporter/harry-reporter/commit/94ae1d3))
+* fixed browser box bugs ([afa59e8](https://github.com/harry-reporter/harry-reporter/commit/afa59e8))
+* fixed toggle test bugs ([67e6fdf](https://github.com/harry-reporter/harry-reporter/commit/67e6fdf))
+* return alert style ([1b3d1f6](https://github.com/harry-reporter/harry-reporter/commit/1b3d1f6))
+* set status on run all ([2bfc135](https://github.com/harry-reporter/harry-reporter/commit/2bfc135))
+* toggle test by click on title ([ea42e98](https://github.com/harry-reporter/harry-reporter/commit/ea42e98))
+
+
+### Features
+
+* add stats reset after run tests ([2e6abe0](https://github.com/harry-reporter/harry-reporter/commit/2e6abe0))
+* added favicon ([944bedb](https://github.com/harry-reporter/harry-reporter/commit/944bedb))
+* code viewer syntax highlightning ([51bbf17](https://github.com/harry-reporter/harry-reporter/commit/51bbf17))
+
+
+
 <a name="2.1.2"></a>
 ## 2.1.2 (2018-12-16)
 

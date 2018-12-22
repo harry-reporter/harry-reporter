@@ -1,6 +1,6 @@
 {
   "name": "harry-reporter",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Reporter plugin for hermione",
   "main": "lib/index.js",
   "scripts": {
