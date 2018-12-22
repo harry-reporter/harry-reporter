@@ -102,6 +102,7 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
   private renderBrowsers = (): any => {
     const { data, isGui, isRunning, gitUrl, index } = this.props;
+
     return data.browsers.map((item, id) => (
       <Browser
         key={item.name}
@@ -119,8 +120,8 @@ class TestBox extends React.Component<TestBoxProps, TestBoxState> {
 
   public render(): JSX.Element {
     const { data, style, className, isOpen, isRunning } = this.props;
-    const suite = data.suitePath.join(' ');
     const cnTestBox = cn('Box', 'TestBox', className);
+    const suite = data.suitePath.join(' / ');
 
     return (
       <MeasurerContext.Provider value={this.measurer}>

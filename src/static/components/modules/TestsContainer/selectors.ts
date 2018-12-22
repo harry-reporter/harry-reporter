@@ -23,12 +23,14 @@ export const getTestsByType = createSelector(
         return flatSuites({
           suites: pick(suites, suiteIds.all),
           filterSuites: (suite) => isSuccessStatus(suite.status),
+          filterBrowsers: (browser: Browser) => isSuccessStatus(browser.result.status),
         });
 
       case 'failed':
         return flatSuites({
           suites: pick(suites, suiteIds.failed),
           filterSuites: (suite: Suite) => isFailedTest(suite),
+          filterBrowsers: (browser: Browser) => isFailedTest({ status: browser.result.status }),
         });
 
       case 'skipped':

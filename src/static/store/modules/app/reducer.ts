@@ -10,7 +10,7 @@ const defaultState: AppStore = {
   isOpenPerBrowser: {},
   isOpenPerView: {},
   screenPerView: {},
-  testsViewMode: TestsViewMode.expandErrors,
+  testsViewMode: TestsViewMode.expandAll,
 };
 
 export const reducer = (state: AppStore = defaultState, action): AppStore => {

@@ -47,7 +47,7 @@ export default class CodeViewer extends React.PureComponent<CodeViewerProps> {
             language='javascript'
             style={github}
           >
-            {testBody}
+            {testBody || ''}
           </SyntaxHighlighter>
         </div>
       </>
