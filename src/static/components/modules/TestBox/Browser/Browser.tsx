@@ -18,7 +18,6 @@ import { TypeView } from 'src/store/modules/tests/types';
 
 class Browser extends React.Component<BrowserProps, BrowserState> {
   private screenshot: TypeView = 'screenshot';
-  private code: TypeView = 'code';
   constructor(props) {
     super(props);
     const {
@@ -36,10 +35,6 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
   }
 
   public componentDidMount(): void {
-    if (!this.isScreenShot()) {
-      this.setState({ viewType: this.code });
-    }
-
     this.initStateFromCache();
     this.setPageCount();
   }
@@ -106,11 +101,6 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
     }
   }
 
-  private isScreenShot(): boolean {
-    const { imagesInfo } = this.props.data.result;
-    return imagesInfo.length > 0;
-  }
-
   private handleViewChange = (viewType: TypeView): void => {
     this.setState({ viewType, isOpen: true }, this.props.measure);
   }
@@ -153,6 +143,7 @@ class Browser extends React.Component<BrowserProps, BrowserState> {
         ViewerWrapper = ScriptViewer;
         break;
       case 'screenshot':
+      default:
         ViewerWrapper = ScreenshotViewer;
         break;
     }
