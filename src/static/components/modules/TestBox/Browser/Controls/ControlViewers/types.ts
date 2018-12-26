@@ -1,8 +1,10 @@
+import { TypeView } from 'src/store/modules/tests/types';
+
 export interface ControlViewersProps {
   onChange: (e: any) => void;
-  viewType: string;
+  viewType: TypeView;
   isOpenedBrowser: boolean;
 
   measure?: () => any;
 }
-export interface ControlViewersState {}
+export interface ControlViewersState { }

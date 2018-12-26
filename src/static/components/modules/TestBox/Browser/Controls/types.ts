@@ -1,4 +1,4 @@
-import { Attempt } from 'src/store/modules/tests/types';
+import { Attempt, TypeView } from 'src/store/modules/tests/types';
 
 export interface ControlsProps {
   isGui: boolean;
@@ -7,7 +7,7 @@ export interface ControlsProps {
   handleViewChange: (e: string) => void;
   onToggle: () => any;
   onAccept: () => any;
-  viewType: string;
+  viewType: TypeView;
   url: string;
   gitUrl?: string;
 }

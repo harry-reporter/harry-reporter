@@ -14,6 +14,14 @@ class ScreenshotViewer extends React.PureComponent<Attempt> {
   }
 
   public renderViewBox = () => {
+    const { imagesInfo } = this.props;
+    if (imagesInfo.length === 0) {
+      return (
+        <div className={`Box-row Box-row--darkgray d-flex flex-justify-center`}>
+          <span className='text-green'>Ошибок не обнаружено</span>
+        </div>
+      );
+    }
     return this.props.imagesInfo.map((item: ImageInfo) => {
       return (
         <React.Fragment key={item.viewId}>
